@@ -1,0 +1,169 @@
+/* @group Fundamentals */
+
+/* { margin: 0; padding: 0 } */
+
+/* Is this portable? */
+html {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+}
+
+body {
+  background: white;
+  color: black;
+  text-align: left;
+  min-height: 100%;
+  position: relative;
+}
+
+div.indent {
+  padding-left: 10px;
+  }
+
+p {
+  padding-left: 10px;
+}
+
+ul, ol {
+  margin: 0.8em 0 0.8em 2em;
+}
+
+dl {
+  margin: 0.8em 0;
+}
+
+dt {
+  font-weight: bold;
+}
+dd {
+  margin-left: 2em;
+}
+
+a { text-decoration: none; }
+a[href]:link { color: rgb(196,69,29); }
+a[href]:visited { color: rgb(171,105,84); }
+a[href]:hover { text-decoration:underline; }
+
+/* @end */
+
+td { 
+  vertical-align: top;
+  background-color: #eeeeff;
+  padding: 5px;
+ }
+
+td.variable.bound {
+  background-color: #ffeeee;
+}
+
+td.kind {
+  background-color: #E5EBE4;
+}
+
+td.type {
+  background-color: #FFE5CF;
+}
+
+.type.large {
+  font-size: 120%;
+}
+
+.variable {
+  font-family: monospace;
+  font-weight: normal;
+  color:       blue;
+}
+
+.constraints {
+  background-color: #fff1da;  
+}
+
+.variable.bound {
+  color: red;
+}
+
+.kind {
+  font-family:   monospace;
+  padding-left:  10px;
+  padding-right: 10px;
+  white-space:   nowrap;
+}
+
+.annotation {
+  background-color: #eeeeff;
+  width: 99%;
+  font-family: Vollkorn;
+  padding: 5px;
+}
+
+
+.type {
+  font-family: monospace;
+  font-weight: bold;
+  color:       #C75D00;
+}
+
+.class {
+  font-family: monospace;
+  color:       green;
+  font-weight: bold;
+}
+
+
+td.constructor { 
+  font-family: monospace;
+  background-color: #eeffcc;
+  color: #333333;
+  font-weight: bold;
+}
+
+#meta {
+  margin-left: 10px;
+}
+#description {
+  margin-left: 10px;
+}
+#structure {
+  margin-left: 10px;
+}
+
+td.function {
+ background-color: #FFF1BA;
+ color: #A38A26;
+
+}
+/* @group Fonts & Sizes */
+
+/* Basic technique & IE workarounds from YUI 3
+   For reasons, see:
+      http://yui.yahooapis.com/3.1.1/build/cssfonts/fonts.css
+ */
+ 
+body {
+  font:13px/1.4 sans-serif;
+  *font-size:small; /* for IE */
+  *font:x-small; /* for IE in quirks mode */
+}
+
+h1 { font-size: 146.5%; /* 19pt */ } 
+h2 { font-size: 131%;   /* 17pt */ }
+h3 { font-size: 116%;   /* 15pt */ }
+h4 { font-size: 100%;   /* 13pt */ }
+h5 { font-size: 100%;   /* 13pt */ }
+
+select, input, button, textarea {
+  font:99% sans-serif;
+}
+
+.fixedwidth {
+   font-family:monospace;
+}
+
+pre, code, kbd, samp, tt, .src {
+  font-family:monospace;
+  *font-size:108%;
+  line-height: 124%;
+}
+

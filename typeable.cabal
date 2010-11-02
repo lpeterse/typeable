@@ -1,0 +1,42 @@
+Name:            typeable
+Version:         0.0
+Cabal-Version:   >= 1.2
+Build-Type:      Simple
+License:         BSD3
+License-File:    LICENSE
+Copyright:       (c) 2010 OpenCorpus Research Group - University of Osbnabrueck
+Author:          OpenCorpus Research Group <info@open-corpus.org>
+Maintainer:      OpenCorpus Research Group <info@open-corpus.org>
+Bug-Reports:     http://trac.open-corpus.org/
+Stability:       alpha
+Homepage:        http://typeable.org
+Category:        
+Tested-With:     GHC == 6.12.3
+Synopsis:        Web server for collecting and serving type definitions.
+Description:     follows up
+                 .
+                 please be patient 
+Data-Files:
+                 README, INSTALL, BUGS, changelog
+
+Library
+ Build-Depends:   base >= 4.0,
+                  Crypto >= 4.2.2,
+                  mtl,
+                  haskell-src,
+                  time,
+                  process,
+                  containers,
+                  bytestring,
+                  text,
+                  blaze-html,
+                  url,
+                  happstack-server 
+ hs-source-dirs:  src
+ Exposed-Modules: FormatHtml, Types, TypesDefault, InternalTypeDefs, FormatHaskell, Context
+
+Executable        typeserver 
+ hs-source-dirs:  src
+ main-is:         typeserver.hs
+ Build-depends:   base >= 4.0
+ ghc-options:     -threaded -O2
