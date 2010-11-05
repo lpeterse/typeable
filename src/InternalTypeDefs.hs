@@ -49,6 +49,8 @@ instance Eq Concrete where
   (==) = undefined
 instance Ord Concrete where
   compare = undefined
+instance Show Concrete where
+  show = undefined
 
 data (Kind n) => Abstraction n = Var | NextVar n deriving (Eq, Ord, Show)
 
@@ -87,7 +89,6 @@ data Variable = Variable Word deriving (Eq, Ord, Show)
 data (Kind k) => Type k v   = Reference     UUID             -- entweder extern der Ordnung k
                             | BoundVariable k                      -- oder gebundene Variable
                             | FreeVariable  v                      -- oder freie Variable der Ordnung k
-                            | Forall        v
                             | Reduction     (Type k v) (Type k v)  -- oder Typkonstruktor höherer Ordnung wird angewandt
                             deriving (Eq, Ord, Show)
 
