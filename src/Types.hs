@@ -1616,3 +1616,540 @@ t35       = defaultType {
                                  ]
           }               
 
+
+t59 = defaultType {
+	identifier = "90eceef9-1189-4a18-903b-9cf36eb18e97",
+	name = "Permission",
+	semantics = "File access permission mask.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "Permission",
+			constructorFields = [
+				defaultField {
+					fieldName = "read",
+					fieldSemantics = "Read permission.",
+					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+				},
+				defaultField {
+					fieldName = "write",
+					fieldSemantics = "Write permission.",
+					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+				},
+				defaultField {
+					fieldName = "exec",
+					fieldSemantics = "Execute permission.",
+					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+				}
+			]
+		}
+	]
+}
+
+t60 = defaultType {
+	identifier = "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8",
+	name = "UnixTime",
+	semantics = "UNIX time stamp.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "UnixTime",
+			constructorFields = [
+				defaultField {
+					fieldName = "nanoSeconds",
+					fieldSemantics = "Nanoseconds since the Epoch, 1970-01-01 00:00 +0000.",
+					fieldType = Reference "ac2e770f2132aced749ec197385ff552"
+				}
+			]
+		}
+	]
+}
+
+t61 = defaultType {
+	identifier = "41f3d3c6-311b-4f18-a600-758219595871",
+	name = "SpecialType",
+	semantics = "Special file type.",
+	constructors = Just [
+		defaultConstructor { constructorName = "Character" },
+		defaultConstructor { constructorName = "Block" }
+	]
+}
+
+t62 = defaultType {
+	identifier = "fa052506-7ac8-4473-a274-c4bac5ad0cc4",
+	name = "IPCType",
+	semantics = "IPC object type.",
+	constructors = Just [
+		defaultConstructor { constructorName = "Pipe" },
+		defaultConstructor { constructorName = "Socket" }
+	]
+}
+
+t63 = defaultType' {
+	identifier = "027770dd-5134-4ee0-8cd8-faf29e962167",
+	name = "File",
+	semantics = "File system file.",
+	constructors = Just [
+		defaultConstructor' {
+			constructorName = "Directory",
+			constructorSemantics = "File directory.",
+			constructorFields = [
+				defaultField' {
+					fieldName = "defacl",
+					fieldSemantics = "Default permission mask for access control lists.",
+					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+				},
+				defaultField' {
+					fieldName = "entries",
+					fieldSemantics = "Directory entries.",
+					fieldType =
+						(Reduction
+							(Reduction
+								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(Reference "4f7db06c439541658a09689d3e7dd909")
+							)
+							(Reduction
+								(Reference "4eabdb36-0fbf-4df6-9dcd-33d16dac9516")
+								(BoundVariable Var)
+							)
+						)
+				}
+			]
+		},
+		defaultConstructor' {
+			constructorName = "Link",
+			constructorSemantics = "Symbolic link.",
+			constructorFields = [
+				defaultField' {
+					fieldName = "target",
+					fieldSemantics = "Link target.",
+					fieldType = Reference "5448c6b7-9a08-4b4e-a40d-442c4fd2e125"
+				}
+			]
+		},
+		defaultConstructor' {
+			constructorName = "Special",
+			constructorSemantics = "Special (device) file.",
+			constructorFields = [
+				defaultField' {
+					fieldName = "specialType",
+					fieldSemantics = "Type of special file.",
+					fieldType = Reference "41f3d3c6-311b-4f18-a600-758219595871"
+				},
+				defaultField' {
+					fieldName = "major",
+					fieldSemantics = "Major device number.",
+					fieldType = Reference "62d2d537-1f08-461a-a328-bc06561594f6"
+				},
+				defaultField' {
+					fieldName = "minor",
+					fieldSemantics = "Minor device number.",
+					fieldType = Reference "62d2d537-1f08-461a-a328-bc06561594f6"
+				}
+			]
+		},
+		defaultConstructor' {
+			constructorName = "IPC",
+			constructorSemantics = "Inter-process communication object.",
+			constructorFields = [
+				defaultField' {
+					fieldName = "ipcType",
+					fieldSemantics = "Type of IPC object.",
+					fieldType = Reference "fa052506-7ac8-4473-a274-c4bac5ad0cc4"
+				}
+			]
+		},
+		defaultConstructor' {
+			constructorName = "Regular",
+			constructorSemantics = "Regular file.",
+			constructorFields = [
+				defaultField' {
+					fieldName = "content",
+					fieldSemantics = "File content.",
+					fieldType = Reference "f9f2f27af0f649b4bc8946c467c3b76a"
+				}
+			]
+		}
+	]
+}
+
+t64 = defaultType' {
+	identifier = "4eabdb36-0fbf-4df6-9dcd-33d16dac9516",
+	name = "Inode",
+	semantics = "File system inode.",
+	constructors = Just [
+		defaultConstructor' {
+			constructorName = "Inode",
+			constructorFields = [
+				defaultField' {
+					fieldName = "owner",
+					fieldSemantics = "File owner.",
+					fieldType = BoundVariable Var
+				},
+				defaultField' {
+					fieldName = "group",
+					fieldSemantics = "File owner group.",
+					fieldType = BoundVariable Var
+				},
+				defaultField' {
+					fieldName = "setuid",
+					fieldSemantics = "Set user ID flag.",
+					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+				},
+				defaultField' {
+					fieldName = "setgid",
+					fieldSemantics = "Set group ID flag.",
+					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+				},
+				defaultField' {
+					fieldName = "sticky",
+					fieldSemantics = "Sticky bit.",
+					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+				},
+				defaultField' {
+					fieldName = "uperm",
+					fieldSemantics = "User access permission mask.",
+					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+				},
+				defaultField' {
+					fieldName = "gperm",
+					fieldSemantics = "Group access permission mask.",
+					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+				},
+				defaultField' {
+					fieldName = "operm",
+					fieldSemantics = "Other access permission mask.",
+					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+				},
+				defaultField' {
+					fieldName = "mask",
+					fieldSemantics = "Maximum permissions to be granted via access control lists.",
+					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+				},
+				defaultField' {
+					fieldName = "usracl",
+					fieldSemantics = "User access control list.",
+					fieldType =
+						(Reduction
+							(Reduction
+								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(BoundVariable Var)
+							)
+							(Reference "90eceef9-1189-4a18-903b-9cf36eb18e97")
+						)
+				},
+				defaultField' {
+					fieldName = "grpacl",
+					fieldSemantics = "Group access control list.",
+					fieldType =
+						(Reduction
+							(Reduction
+								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(BoundVariable Var)
+							)
+							(Reference "90eceef9-1189-4a18-903b-9cf36eb18e97")
+						)
+				},
+				defaultField' {
+					fieldName = "mtime",
+					fieldSemantics = "Time of last modification.",
+					fieldType = Reference "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
+				},
+				defaultField' {
+					fieldName = "ctime",
+					fieldSemantics = "Time of file creation.",
+					fieldType = Reference "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
+				},
+				defaultField' {
+					fieldName = "xattr",
+					fieldSemantics = "Extended attributes.",
+					fieldType =
+						(Reduction
+							(Reduction
+								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(Reference "4f7db06c439541658a09689d3e7dd909")
+							)
+							(Reference "f9f2f27af0f649b4bc8946c467c3b76a")
+						)
+				},
+				defaultField' {
+					fieldName = "file",
+					fieldSemantics = "The actual file.",
+					fieldType =
+						(Reduction
+							(Reference "027770dd-5134-4ee0-8cd8-faf29e962167")
+							(BoundVariable Var)
+						)
+				}
+			]
+		}
+	]
+}
+
+t65 = defaultType {
+	identifier = "f2c4f6dd-d939-444b-a209-fbdf2152eb54",
+	name = "SchemeSymbol",
+	semantics = "URI scheme symbol.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "Latin",
+			constructorFields = [
+				defaultField {
+					fieldName = "latin",
+					fieldType = Reference "6716d098a58743379e54c12f249cdc0c"
+				}
+			]
+		},
+		defaultConstructor {
+			constructorName = "Decimal",
+			constructorFields = [
+				defaultField {
+					fieldName = "decimal",
+					fieldType = Reference "ff421b2c31774c37a7336c8245a74da9"
+				}
+			]
+		},
+		defaultConstructor { constructorName = "Plus" },
+		defaultConstructor { constructorName = "Minus" },
+		defaultConstructor { constructorName = "FullStop" }
+	]
+}
+
+t66 = defaultType {
+	identifier = "6e2f1233-f1c8-4e6b-9bb3-7c405c666234",
+	name = "SchemeName",
+	semantics = "URI scheme.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "SchemeName",
+			constructorFields = [
+				defaultField {
+					fieldName = "initial",
+					fieldType = Reference "6716d098a58743379e54c12f249cdc0c"
+				},
+				defaultField {
+					fieldName = "rest",
+					fieldType =
+						(Reduction
+							(Reference "0ba85f3f10099c75d4b696d0cf944e09")
+							(Reference "f2c4f6dd-d939-444b-a209-fbdf2152eb54")
+						)
+				}
+			]
+		}
+	]
+}
+
+t67 = defaultType {
+	identifier = "a078d512-3ead-415d-8d85-7dc6dc15b475",
+	name = "RootlessPath",
+	semantics = "Root-less path name.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "RootlessPath",
+			constructorFields = [
+				defaultField {
+					fieldName = "segments",
+					fieldSemantics = "Path segments.",
+					fieldType =
+						(Reduction
+							(Reference "0ba85f3f10099c75d4b696d0cf944e09")
+							(Reference "4f7db06c439541658a09689d3e7dd909")
+						)
+				}
+			]
+		}
+	]
+}
+
+t68 = defaultType {
+	identifier = "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a",
+	name = "AbsolutePath",
+	semantics = "Absolute path name.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "AbsolutePath",
+			constructorFields = [
+				defaultField {
+					fieldName = "segments",
+					fieldSemantics = "Path segments.",
+					fieldType =
+						(Reduction
+							(Reference "0ba85f3f10099c75d4b696d0cf944e09")
+							(Reference "4f7db06c439541658a09689d3e7dd909")
+						)
+				}
+			]
+		}
+	]
+}
+
+t69 = defaultType {
+	identifier = "5448c6b7-9a08-4b4e-a40d-442c4fd2e125",
+	name = "Path",
+	semantics = "Path name.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "AbsolutePath",
+			constructorFields = [
+				defaultField {
+					fieldName = "absolute",
+					fieldType = Reference "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
+				}
+			]
+		},
+		defaultConstructor {
+			constructorName = "RootlessPath",
+			constructorFields = [
+				defaultField {
+					fieldName = "rootless",
+					fieldType = Reference "a078d512-3ead-415d-8d85-7dc6dc15b475"
+				}
+			]
+		}
+	]
+}
+
+t70 = defaultType {
+	identifier = "8068cbda-f35e-4618-a7e7-98c67ff9bee0",
+	name = "Hierarchy",
+	semantics = "URI hierarchy",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "Authority",
+			constructorFields = [
+				defaultField {
+					fieldName = "authority",
+					fieldType = Reference "335b7633-0e72-4b64-a525-6190fb579dad"
+				},
+				defaultField {
+					fieldName = "absolute",
+					fieldType = Reference "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
+				}
+			]
+		},
+		defaultConstructor {
+			constructorName = "Path",
+			constructorFields = [
+				defaultField {
+					fieldName = "rootless",
+					fieldType = Reference "a078d512-3ead-415d-8d85-7dc6dc15b475"
+				}
+			]
+		}
+	]
+}
+
+t71 = defaultType {
+	identifier = "e393b15b-944c-4b35-97cd-02b1be6d693b",
+	name = "URI",
+	semantics = "Uniform Resource Identifier",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "URI",
+			constructorFields = [
+				defaultField {
+					fieldName = "scheme",
+					fieldType = Reference "6e2f1233-f1c8-4e6b-9bb3-7c405c666234"
+				},
+				defaultField {
+					fieldName = "hierarchy",
+					fieldType = Reference "8068cbda-f35e-4618-a7e7-98c67ff9bee0"
+				},
+				defaultField {
+					fieldName = "query",
+					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+				},
+				defaultField {
+					fieldName = "fragment",
+					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+				}
+			]
+		}
+	]
+}
+
+t74 = defaultType {
+	identifier = "a9c05900-6c8d-4849-af90-2d3ad12ee3cc",
+	name = "IP",
+	semantics = "Internet Protocol address.",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "IPv6",
+			constructorSemantics = "IP version 6 address.",
+			constructorFields = [
+				defaultField {
+					fieldName = "ipv6",
+					fieldType = Reference "bbabbac1510d49aa9da25d8033147c54"
+				}
+			]
+		},
+		defaultConstructor {
+			constructorName = "IPv4",
+			constructorSemantics = "IP version 4 address.",
+			constructorFields = [
+				defaultField {
+					fieldName = "ipv4",
+					fieldType = Reference "1a55145e5bd21e8adc14067707192552"
+				}
+			]
+		}
+	]
+}
+
+t75 = defaultType {
+	identifier = "335b7633-0e72-4b64-a525-6190fb579dad",
+	name = "Authority",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "Authority",
+			constructorFields = [
+				defaultField {
+					fieldName = "userinfo",
+					fieldSemantics = "User information.",
+					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+				},
+				defaultField {
+					fieldName = "host",
+					fieldSemantics = "Host",
+					fieldType = Reference "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06"
+				},
+				defaultField {
+					fieldName = "port",
+					fieldSemantics = "Port number",
+					fieldType =
+						(Reduction
+							(Reference "f8f49ef6bbe874a42926fa23d5b3bc19")
+							(Reference "62d2d5371f08461aa328bc06561594f6")
+						)
+				}
+			]
+		}
+	]
+}
+
+t76 = defaultType {
+	identifier = "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06",
+	name = "Host",
+	semantics = "URI host",
+	constructors = Just [
+		defaultConstructor {
+			constructorName = "IP",
+			constructorFields = [
+				defaultField {
+					fieldName = "ip",
+					fieldSemantics = "IP address",
+					fieldType = Reference "a9c05900-6c8d-4849-af90-2d3ad12ee3cc"
+				}
+			]
+		},
+		defaultConstructor {
+			constructorName = "RegName",
+			constructorFields = [
+				defaultField {
+					fieldName = "regName",
+					fieldSemantics = "Registered name",
+					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+				}
+			]
+		}
+	]
+}

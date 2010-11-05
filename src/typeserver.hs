@@ -147,6 +147,22 @@ types   = [  wrap t1
            , wrap t56
            , wrap t57
            , wrap t58
+           , wrap t59
+           , wrap t60
+           , wrap t61
+           , wrap t62
+           , wrap t63
+           , wrap t64
+           , wrap t65
+           , wrap t66
+           , wrap t67
+           , wrap t68
+           , wrap t69
+           , wrap t70
+           , wrap t71
+           , wrap t74
+           , wrap t75
+           , wrap t76
         ]
 
 
