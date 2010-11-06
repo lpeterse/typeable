@@ -47,5 +47,3 @@ type2HsUnBangedTy (Reduction a b)   = do a' <- type2HsUnBangedTy a
                                          return $ HsTyApp a' b'  
 type2HsUnBangedTy (BoundVariable v) = return $ HsTyVar $ HsIdent $ var2String v 
 
-var2String :: (PeanoNumber k) => k -> String
-var2String x = [toEnum (97 + fromEnum x)]

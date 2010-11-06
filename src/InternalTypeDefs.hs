@@ -25,6 +25,9 @@ import qualified Data.Map as M
 
 type List a = [a]
 
+var2String :: (PeanoNumber k) => k -> String
+var2String x = [toEnum (97 + fromEnum x)]
+
 instance IsString UUID where
   fromString = UUID . fromInteger . fst . P.head . readHex . (P.filter isHexDigit)
 

@@ -1345,7 +1345,6 @@ t35       = defaultType {
                                   , defaultConstructor { constructorName = "KAR", constructorSemantics = "Karen languages" }
                                   , defaultConstructor { constructorName = "KAS", constructorSemantics = "Kashmiri" }
                                   , defaultConstructor { constructorName = "KAT", constructorSemantics = "Georgian" }
-                                  , defaultConstructor { constructorName = "KAT", constructorSemantics = "Georgian" }
                                   , defaultConstructor { constructorName = "KAU", constructorSemantics = "Kanuri" }
                                   , defaultConstructor { constructorName = "KAW", constructorSemantics = "Kawi" }
                                   , defaultConstructor { constructorName = "KAZ", constructorSemantics = "Kazakh" }
