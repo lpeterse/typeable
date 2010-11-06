@@ -32,6 +32,7 @@ t56      = defaultType {
            , constructors = Just []
            }
 
+t57 :: TypeDefinition (Succ Zero) 
 t57      = defaultType' {
              identifier   = "9e2e1e47-8e09-4a8a-be55-07f8574ac91f"
            , name         = "Succ"

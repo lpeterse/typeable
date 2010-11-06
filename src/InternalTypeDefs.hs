@@ -3,6 +3,8 @@
 module InternalTypeDefs where
 
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
+import Typeable.T606f253533d3420da3465afae341d598 -- Time
+import Typeable.Tc1b1f6c722c2436fab3180146520814e
 
 import Data.Word
 import Data.LargeWord
