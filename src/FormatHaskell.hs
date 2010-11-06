@@ -5,10 +5,13 @@ import Language.Haskell.Syntax
 import Context
 import InternalTypeDefs
 
-typeDefinition2HsDataDecl :: forall k . (Kind k) => TypeDefinition k -> Context HsDecl
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
+
+typeDefinition2HsDataDecl :: forall k . (PeanoNumber k) => TypeDefinition k -> Context HsDecl
 typeDefinition2HsDataDecl t = do typeName <- upperDesignator2HsIdent $ name t
                                  let context      = []
-                                 let vars         = varCount :: [k]
+                                 let vars         = domain :: [k]
                                  constructors <- case constructors t of
                                                    Just cs -> mapM constructor2HsConDecl cs
                                                    Nothing -> return []
@@ -21,7 +24,7 @@ typeDefinition2HsDataDecl t = do typeName <- upperDesignator2HsIdent $ name t
                                             constructors
                                             derives
 
-constructor2HsConDecl     :: (Kind a) => Constructor a    -> Context HsConDecl
+constructor2HsConDecl     :: (PeanoNumber a) => Constructor a    -> Context HsConDecl
 constructor2HsConDecl c    = do let fs = constructorFields c 
                                 let f x = do n  <- lowerDesignator2HsIdent (fieldName x)
                                              ty <- type2HsUnBangedTy (fieldType x) 
@@ -36,7 +39,7 @@ upperDesignator2HsIdent x   = return $ HsIdent (show x)
 lowerDesignator2HsIdent    :: LowerDesignator  -> Context HsName
 lowerDesignator2HsIdent x   = return $ HsIdent (show x)
 
-type2HsUnBangedTy                  :: (Kind a) => Type a Void -> Context HsType 
+type2HsUnBangedTy                  :: (PeanoNumber a) => Type a Void -> Context HsType 
 type2HsUnBangedTy (Reference u)     = do x <- humanify u
                                          return $ HsTyCon $ UnQual $ HsIdent $ x  
 type2HsUnBangedTy (Reduction a b)   = do a' <- type2HsUnBangedTy a
@@ -44,5 +47,5 @@ type2HsUnBangedTy (Reduction a b)   = do a' <- type2HsUnBangedTy a
                                          return $ HsTyApp a' b'  
 type2HsUnBangedTy (BoundVariable v) = return $ HsTyVar $ HsIdent $ var2String v 
 
-var2String :: (Kind k) => k -> String
+var2String :: (PeanoNumber k) => k -> String
 var2String x = [toEnum (97 + fromEnum x)]

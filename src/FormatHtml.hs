@@ -3,6 +3,11 @@
 
 module FormatHtml where
 
+import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+import Typeable.T421496848904471ea3197f25e2a02b72
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
+
 import Prelude
 import Data.String
 import Data.List
@@ -55,7 +60,7 @@ instance Htmlize Norm where
 instance Htmlize U.URL where
   htmlize x = return $ a (string $ show x) ! href (stringValue $ show x)
 
-instance Kind k => Htmlize (Inline k) where
+instance PeanoNumber k => Htmlize (Inline k) where
   htmlize (Plain t)       = return $         text t
   htmlize (Emph  t)       = return $ em     (text t) 
   htmlize (Strong t)      = return $ strong (text t)
@@ -67,14 +72,14 @@ instance Kind k => Htmlize (Inline k) where
   htmlize (Type t)        = undefined
   htmlize (Class i)       = undefined
 
-instance (Htmlize k, Kind k) => Htmlize (Constraint k) where
+instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
                                  i'  <- humanify i
                                  return $ do H.a ! href (stringValue $ "../class/"++(show i)) $ H.span ! class_ "class" $ string i'
                                              preEscapedText "&nbsp;"
                                              ts'
 
-instance Kind k => Htmlize (Annotation k) where
+instance PeanoNumber k => Htmlize (Annotation k) where
   htmlize (Block m)   | M.null m    = return mempty
                       | otherwise   = let f (l,c) = htmlize c >>= return . (H.div ! lang (stringValue (show l))) 
                                       in  mapM f (M.toList m) >>= return . mconcat
@@ -86,21 +91,21 @@ instance Kind k => Htmlize (Annotation k) where
                                          return $ ol $ mconcat $ P.map li xs'
   htmlize (TitledList xs)           = undefined
 
-instance (Kind k, Htmlize k) => Htmlize (Field k) where
+instance (PeanoNumber k, Htmlize k) => Htmlize (Field k) where
   htmlize (Field n s t) = do t' <- htmlize t
                              s' <- htmlize s
                              return $ tr $ do td ! class_ "function"   $ string (show n)
                                               td ! class_ "type"       $ t'
                                               td ! class_ "annotation" $ s'
 
-instance (Kind k, Htmlize k) => Htmlize (Constructor k) where
+instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
   htmlize (Constructor n s cs) = do s'  <- htmlize s
                                     cs' <- htmlize cs
                                     return $ do tr $ do td ! class_ "constructor" ! rowspan (stringValue $ show (P.length cs + 1)) $ string (show n)
                                                         td ! class_ "annotation"  ! colspan "3" $ s'
                                                 cs'
 
-instance (Kind k, Htmlize k, Show v) => Htmlize (Type k v) where
+instance (PeanoNumber k, Htmlize k, Show v) => Htmlize (Type k v) where
   htmlize (Reference i)     = humanify i >>= return . (a ! href (stringValue $ show i)) . string
   htmlize (BoundVariable v) = htmlize v
   htmlize (FreeVariable v)  = return $ string (show v)
@@ -112,10 +117,10 @@ instance (Kind k, Htmlize k, Show v) => Htmlize (Type k v) where
                                              t2'
                                              string ")"
 
-instance Htmlize Concrete where
+instance Htmlize Zero where
   htmlize = undefined
 
-instance (Kind k) => Htmlize (Abstraction k) where
+instance (PeanoNumber k) => Htmlize (Succ k) where
   htmlize x = return $ H.span ! class_ "variable bound" $ string $ return (toEnum (97 + fromEnum x) :: Char)
 
 instance Htmlize UUID where
@@ -125,13 +130,13 @@ instance Htmlize a => Htmlize [a] where
   htmlize xs = do xs' <- mapM htmlize xs
                   return $ mconcat xs'
 
-instance (Htmlize k, Kind k) => Htmlize (TypeDefinition k) where
+instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
   htmlize x  = do a  <- htmlize (semantics x)
                   b  <- htmlize $ S.toList (constraints x)
                   c  <- case constructors x of
                           Nothing -> return $ tr $ td ! colspan "4" $ "This is a primitive type. Its possible values are described above."
                           Just y  -> htmlize y
-                  let vars = varCount :: [k]
+                  let vars = domain :: [k]
                   bv <- mapM htmlize vars
                   return $   do H.h2 "Meta"
                                 H.div ! A.id "meta" $ do

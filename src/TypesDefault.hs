@@ -2,8 +2,10 @@
 {-# OPTIONS -XExistentialQuantification #-}
 module TypesDefault where
 
---import Typedoc
 import InternalTypeDefs
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+import Typeable.T421496848904471ea3197f25e2a02b72
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
 import qualified Data.Set as S
 import qualified Data.Map as M
@@ -14,7 +16,7 @@ list   x =  Reduction (Reference "0ba85f3f10099c75d4b696d0cf944e09") x
 
 --
 
-defaultType_ :: (Kind a) => TypeDefinition a
+defaultType_ :: (PeanoNumber a) => TypeDefinition a
 defaultType_  = TypeDefinition {
                  identifier   = undefined
                , antecedent   = Nothing
@@ -29,57 +31,57 @@ defaultType_  = TypeDefinition {
                , constructors = Just []
                }
 
-defaultType :: TypeDefinition Concrete
+defaultType :: TypeDefinition Zero
 defaultType = defaultType_
  
                
-defaultType' :: TypeDefinition (Abstraction Concrete)    
+defaultType' :: TypeDefinition (Succ Zero)    
 defaultType' = defaultType_
 
-defaultType'' :: TypeDefinition (Abstraction  (Abstraction Concrete))
+defaultType'' :: TypeDefinition (Succ  (Succ Zero))
 defaultType'' = defaultType_
 
-defaultType''' :: TypeDefinition (Abstraction (Abstraction (Abstraction Concrete)))           
+defaultType''' :: TypeDefinition (Succ (Succ (Succ Zero)))           
 defaultType''' = defaultType_
 
 
 
-defaultConstructor_ :: (Kind a) => Constructor a
+defaultConstructor_ :: (PeanoNumber a) => Constructor a
 defaultConstructor_  = Constructor {
                          constructorName       = undefined
                        , constructorSemantics  = ""
                        , constructorFields     = []
                        }
 
-defaultConstructor :: Constructor Concrete
+defaultConstructor :: Constructor Zero
 defaultConstructor = defaultConstructor_
 
-defaultConstructor' :: Constructor (Abstraction Concrete)
+defaultConstructor' :: Constructor (Succ Zero)
 defaultConstructor' = defaultConstructor_
 
-defaultConstructor'' :: Constructor (Abstraction (Abstraction Concrete))
+defaultConstructor'' :: Constructor (Succ (Succ Zero))
 defaultConstructor'' = defaultConstructor_
 
-defaultConstructor''' :: Constructor (Abstraction (Abstraction (Abstraction Concrete)))
+defaultConstructor''' :: Constructor (Succ (Succ (Succ Zero)))
 defaultConstructor''' = defaultConstructor_
 
 
 
-defaultField_      :: (Kind a) => Field a
+defaultField_      :: (PeanoNumber a) => Field a
 defaultField_       = Field {
                         fieldName             = undefined
                       , fieldSemantics        = ""
                       , fieldType             = undefined
                       }
 
-defaultField  :: Field Concrete
+defaultField  :: Field Zero
 defaultField   = defaultField_
 
-defaultField' :: Field (Abstraction Concrete)
+defaultField' :: Field (Succ Zero)
 defaultField' = defaultField_
 
-defaultField'' :: Field (Abstraction (Abstraction Concrete))
+defaultField'' :: Field (Succ (Succ Zero))
 defaultField'' = defaultField_
 
-defaultField''' :: Field (Abstraction (Abstraction (Abstraction Concrete)))
+defaultField''' :: Field (Succ (Succ (Succ Zero)))
 defaultField''' = defaultField_

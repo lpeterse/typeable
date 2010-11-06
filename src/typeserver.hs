@@ -1,6 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS -XTypeSynonymInstances  -XFlexibleInstances -XExistentialQuantification #-}
+{-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances -XExistentialQuantification #-}
 module Main where
+
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+import Typeable.T421496848904471ea3197f25e2a02b72
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
 import Happstack.Server
 import Text.Blaze
@@ -52,9 +56,9 @@ serveOverview  = ok $ toResponse $ encapsulate ts
 --
 
 
-data WrappedType = forall a. (Htmlize a, Kind a) => WrappedType { unwrap :: (TypeDefinition a) }
+data WrappedType = forall a. (Htmlize a, PeanoNumber a) => WrappedType { unwrap :: (TypeDefinition a) }
 
-wrap  :: (Htmlize a, Kind a) => TypeDefinition a -> (UUID, WrappedType)
+wrap  :: (Htmlize a, PeanoNumber a) => TypeDefinition a -> (UUID, WrappedType)
 wrap x = (identifier x, WrappedType x)
 
 typemap  :: M.Map UUID WrappedType 

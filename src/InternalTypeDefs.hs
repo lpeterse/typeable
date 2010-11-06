@@ -2,6 +2,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module InternalTypeDefs where
 
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
+
 import Data.Word
 import Data.LargeWord
 import GHC.Real
@@ -21,11 +23,13 @@ import Data.Data
 
 import qualified Data.Map as M
 
+type List a = [a]
+
 instance IsString UUID where
   fromString = UUID . fromInteger . fst . P.head . readHex . (P.filter isHexDigit)
 
 -- Wunderfein. Hierein könnte man sogar noch automatische Ersetzung von URLs etc. machen
-instance Kind k => IsString (Annotation k) where
+instance PeanoNumber k => IsString (Annotation k) where
   fromString [] = Block M.empty
   fromString xs = Block (M.singleton ENG [Plain (fromString xs)])
 
@@ -39,39 +43,7 @@ instance Show UUID where
 
 type DateTime   = Int     
 
-class Enum a => Kind a where
-  varCount :: [a]
-
-data KindRep = Concrete | Abstraction KindRep KindRep deriving (Eq, Ord, Show)
-
-data Concrete deriving (Typeable)
-instance Eq Concrete where
-  (==) = undefined
-instance Ord Concrete where
-  compare = undefined
-instance Show Concrete where
-  show = undefined
-
-data (Kind n) => Abstraction n = Var | NextVar n deriving (Eq, Ord, Show)
-
-instance Enum Concrete where
-  fromEnum = error "instance Enum Concrete -> fromEnum"
-  toEnum   = error "instance Enum Concrete -> toEnum"
- 
-instance Kind k => Enum (Abstraction k) where
-  fromEnum Var         = 0
-  fromEnum (NextVar x) = 1 + (fromEnum x)
-  toEnum 0             = Var
-  toEnum n             = NextVar (toEnum (n-1))
-
-
-
-instance Kind Concrete where
-  varCount = []
-instance (Kind n) => Kind (Abstraction n) where
-  varCount = case varCount :: [n] of
-               [] -> [Var]
-               xs -> Var:(P.map NextVar xs)
+--data PeanoNumberRep = Concrete | Abstraction PeanoNumberRep PeanoNumberRep deriving (Eq, Ord, Show)
 
 data Void
 
@@ -86,48 +58,48 @@ instance Show Void where
 
 data Variable = Variable Word deriving (Eq, Ord, Show)
 
-data (Kind k) => Type k v   = Reference     UUID             -- entweder extern der Ordnung k
-                            | BoundVariable k                      -- oder gebundene Variable
-                            | FreeVariable  v                      -- oder freie Variable der Ordnung k
-                            | Reduction     (Type k v) (Type k v)  -- oder Typkonstruktor höherer Ordnung wird angewandt
-                            deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Type k v   = Reference     UUID             -- entweder extern der Ordnung k
+                                   | BoundVariable k                      -- oder gebundene Variable
+                                   | FreeVariable  v                      -- oder freie Variable der Ordnung k
+                                   | Reduction     (Type k v) (Type k v)  -- oder Typkonstruktor höherer Ordnung wird angewandt
+                                   deriving (Eq, Ord, Show)
 
-data (Kind k) => Constraint k = Constraint {
-                                  constraintClass :: UUID
-                                , constraintVars  :: [Type k Void]
-                                }
-                                deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Constraint k = Constraint {
+                                            constraintClass :: UUID
+                                          , constraintVars  :: [Type k Void]
+                                          }
+                                          deriving (Eq, Ord, Show)
 
-data (Kind k) => TypeDefinition k = TypeDefinition {
-                identifier      :: UUID
-              , antecedent      :: Maybe UUID
-              , created         :: DateTime
-              , modified        :: DateTime
-              , author          :: Institution
-              , maintainer      :: Institution
-              , name            :: UpperDesignator
-              , semantics       :: Annotation k
-              , variables       :: Map k (Annotation k)
-              , constraints     :: Set (Constraint k)
-              , constructors    :: Maybe [Constructor k]
-              }
+data (PeanoNumber k) => TypeDefinition k = TypeDefinition {
+                          identifier      :: UUID
+                        , antecedent      :: Maybe UUID
+                        , created         :: DateTime
+                        , modified        :: DateTime
+                        , author          :: Institution
+                        , maintainer      :: Institution
+                        , name            :: UpperDesignator
+                        , semantics       :: Annotation k
+                        , variables       :: Map k (Annotation k)
+                        , constraints     :: Set (Constraint k)
+                        , constructors    :: Maybe [Constructor k]
+                        }
               deriving (Eq, Ord, Show)
 
-data (Kind k) => ClassDefinition k = ClassDefinition {
+data (PeanoNumber k) => ClassDefinition k = ClassDefinition {
                                        classIdentifier :: UUID
                                      , classAntecedent :: Maybe UUID
                                      , className       :: UpperDesignator
                                      }
                                      deriving (Eq, Ord, Show)
 
-data (Kind k) => Constructor k = Constructor {
+data (PeanoNumber k) => Constructor k = Constructor {
                       constructorName      :: UpperDesignator
                     , constructorSemantics :: Annotation k
                     , constructorFields    :: [Field k] 
                     }
                     deriving (Eq, Ord, Show)
 
-data (Kind k) => Field k = Field {
+data (PeanoNumber k) => Field k = Field {
                           fieldName      :: LowerDesignator
                         , fieldSemantics :: Annotation k
                         , fieldType      :: Type k Void
@@ -138,24 +110,24 @@ data ISO_639_2B = ENG deriving (Eq, Ord, Show)
 
 type Language a   = Map ISO_639_2B a 
 
-data (Kind k) => Annotation k   = Block          (Language [Inline k])
-                                | IndentList     [Annotation k]
-                                | BulletList     [Annotation k]
-                                | IndexedList    [Annotation k]
-                                | TitledList     [(Language Text, Annotation k)]
-                                deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Annotation k   = Block          (Language [Inline k])
+                                       | IndentList     [Annotation k]
+                                       | BulletList     [Annotation k]
+                                       | IndexedList    [Annotation k]
+                                       | TitledList     [(Language Text, Annotation k)]
+                                       deriving (Eq, Ord, Show)
 
-data (Kind k) => Inline k       = Plain          Text
-                                | Emph           Text
-                                | Strong         Text
-                                | Subscript      Text
-                                | Superscript    Text
-                                | Monospace      Text
-                                | URL            URL 
-                                | Norm           Norm
-                                | Type           (Type k Variable)
-                                | Class          UUID
-                                deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Inline k       = Plain          Text
+                                       | Emph           Text
+                                       | Strong         Text
+                                       | Subscript      Text
+                                       | Superscript    Text
+                                       | Monospace      Text
+                                       | URL            URL 
+                                       | Norm           Norm
+                                       | Type           (Type k Variable)
+                                       | Class          UUID
+                                       deriving (Eq, Ord, Show)
 
 data Institution = Person      {}
                  | University  {}
@@ -257,3 +229,22 @@ instance IsString [Symbol] where
                       | otherwise           = error $ "Character '"++(show x)++"' is not allowed here.'"
                       where i = fromEnum x
 
+--
+
+{--
+data StructuredText a = Paragraph   { paragraph   :: Map Language (List (TextElement a)) }
+                      | IndentList  { indentList  :: List (StructuredText a) }
+                      | BulletList  { bulletList  :: List (StructuredText a) }
+                      | IndexedList { indexedList :: List (StructuredText a) }
+                      | TitledList  { titledList  :: List (Tuple (Map Language T.Text) (StructuredText a)) }
+
+data TextElement a = Text        { text      :: T.Text
+                                 , weight    :: ()
+                                 , italic    :: Bool
+                                 , monospace :: Bool
+                                 , cancelled :: Bool
+                                 }
+                   | Math        { tex :: T.Text }
+                   | Hyperlink   { url :: T.Text }
+                   | Extension   { ext :: a }
+                   --}

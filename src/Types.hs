@@ -1,6 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Types where
 
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+import Typeable.T421496848904471ea3197f25e2a02b72
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
+
 import TypesDefault
 import InternalTypeDefs
 import qualified Data.Set as S
@@ -10,7 +14,7 @@ import qualified Data.Set as S
 -----
 
 
-t1      :: TypeDefinition Concrete
+t1      :: TypeDefinition Zero
 t1       = defaultType {
              identifier   = "0219c59f732a8ef507215fbdb4cceacd"
            , name         = "Bool"
@@ -32,13 +36,13 @@ t57      = defaultType' {
              identifier   = "9e2e1e47-8e09-4a8a-be55-07f8574ac91f"
            , name         = "Succ"
            , semantics    = "Counting in the peano sense. Interpreted as a set it is the set that contains n ordinal numbers."
-           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable Var]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable First]]
            , constructors = Just [
                                    defaultConstructor' { constructorName   = "First" }
                                  , defaultConstructor' { constructorName   = "Next"
                                                        , constructorFields = [ defaultField'
                                                                                { fieldName = "previous"
-                                                                               , fieldType = BoundVariable Var
+                                                                               , fieldType = BoundVariable First
                                                                                }
                                                                              ]
                                                        }
@@ -49,8 +53,8 @@ t58      = defaultType'' {
              identifier   = "9035333f-c91c-42f8-ab8f-ba4c3f256a7b"
            , name         = "FOL"
            , semantics    = "Formulas of the first order predicate logic. The structure is limited to the necessary: NAND. Other conjunctors are seen as a shorthand notation for: ..."
-           , constraints  = S.fromList [ Constraint "0d864b18-19bd-4230-905b-bad04a4c195e" [BoundVariable Var]
-                                       , Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable (NextVar Var)]
+           , constraints  = S.fromList [ Constraint "0d864b18-19bd-4230-905b-bad04a4c195e" [BoundVariable First]
+                                       , Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable (Next First)]
                                        ]
            , constructors = Just [
                                    defaultConstructor'' { constructorName   = "True" }
@@ -60,9 +64,9 @@ t58      = defaultType'' {
                                                                                 , fieldType = Reduction
                                                                                                 (Reduction
                                                                                                   (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable Var)
+                                                                                                  (BoundVariable First)
                                                                                                 )
-                                                                                                (BoundVariable (NextVar Var))
+                                                                                                (BoundVariable (Next First))
                                                                                 }
                                                                               ]
                                                         }
@@ -72,18 +76,18 @@ t58      = defaultType'' {
                                                                                 , fieldType = Reduction
                                                                                                 (Reduction
                                                                                                   (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable Var)
+                                                                                                  (BoundVariable First)
                                                                                                 )
-                                                                                                (BoundVariable (NextVar Var))
+                                                                                                (BoundVariable (Next First))
                                                                                 }
                                                                               , defaultField''
                                                                                 { fieldName = "right"
                                                                                 , fieldType = Reduction
                                                                                                 (Reduction
                                                                                                   (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable Var)
+                                                                                                  (BoundVariable First)
                                                                                                 )
-                                                                                                (BoundVariable (NextVar Var))
+                                                                                                (BoundVariable (Next First))
                                                                                 }
                                                                               ]
                                                         }
@@ -91,8 +95,8 @@ t58      = defaultType'' {
                                                         , constructorFields = [ defaultField''
                                                                                 { fieldName = "predicate"
                                                                                 , fieldType = Reduction
-                                                                                                (BoundVariable Var)
-                                                                                                (BoundVariable (NextVar Var))
+                                                                                                (BoundVariable First)
+                                                                                                (BoundVariable (Next First))
                                                                                 }
                                                                               ]
                                                         }
@@ -102,11 +106,11 @@ t58      = defaultType'' {
                                                                                 , fieldType = Reduction
                                                                                                 (Reduction
                                                                                                   (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable Var)
+                                                                                                  (BoundVariable First)
                                                                                                 )
                                                                                                 (Reduction 
                                                                                                   (Reference "9e2e1e47-8e09-4a8a-be55-07f8574ac91f")
-                                                                                                  (BoundVariable (NextVar Var))
+                                                                                                  (BoundVariable (Next First))
                                                                                                 )
                                                                                 }
                                                                               ]
@@ -257,14 +261,14 @@ t48      = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName = "ext"
-                                                           , fieldType = BoundVariable Var
+                                                           , fieldType = BoundVariable First
                                                            }
                                                          ]
                                    }
                                  ]
           }
           
-t45     :: TypeDefinition Concrete
+t45     :: TypeDefinition Zero
 t45      = defaultType {
              identifier   = "c1b1f6c7-22c2-436f-ab31-80146520814e"
            , name         = "UTC"
@@ -272,7 +276,7 @@ t45      = defaultType {
            , constructors = Just [] 
            }
           
-t46     :: TypeDefinition Concrete
+t46     :: TypeDefinition Zero
 t46      = defaultType {
              identifier   = "aaaa6ecd-826d-4604-801c-4fa962cc1446"
            , name         = "TAI"
@@ -293,7 +297,7 @@ t47      = defaultType' {
           
           
 
-t2      :: TypeDefinition (Abstraction Concrete)
+t2      :: TypeDefinition (Succ Zero)
 t2       = defaultType' {
              identifier   = "0ba85f3f10099c75d4b696d0cf944e09"
            , name         = "List"
@@ -305,14 +309,14 @@ t2       = defaultType' {
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "head"
                                                                   , fieldSemantics = "element"
-                                                                  , fieldType      = (BoundVariable Var)
+                                                                  , fieldType      = (BoundVariable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "tail"
                                                                   , fieldSemantics = "the remaining list"
                                                                   , fieldType      = Reduction 
                                                                                        (Reference "0ba85f3f10099c75d4b696d0cf944e09") 
-                                                                                       (BoundVariable Var)  
+                                                                                       (BoundVariable First)  
                                                                   }
                                                               ]
                                      } 
@@ -327,7 +331,7 @@ t43       = defaultType' {
              identifier   = "b0221a43-509e-4edd-b062-101bfd794bc4"
            , name         = "StructuredText"
            , semantics    = "A Markup format."
-           , constraints  = S.fromList [Constraint "edba1ef6-3e72-4b61-8256-9040555253a8" [BoundVariable Var]]
+           , constraints  = S.fromList [Constraint "edba1ef6-3e72-4b61-8256-9040555253a8" [BoundVariable First]]
            , constructors = Just [ 
                                    defaultConstructor'
                                    { constructorName   = "Paragraph"
@@ -343,7 +347,7 @@ t43       = defaultType' {
                                                                                (Reference "0ba85f3f10099c75d4b696d0cf944e09")
                                                                                (Reduction
                                                                                  (Reference "9592f9fa-4fae-437a-9e8d-0917c14ff068")
-                                                                                 (BoundVariable Var)
+                                                                                 (BoundVariable First)
                                                                                )
                                                                              )
                                                            }
@@ -358,7 +362,7 @@ t43       = defaultType' {
                                                                             (Reference "0ba85f3f10099c75d4b696d0cf944e09")
                                                                             (Reduction
                                                                               (Reference "b0221a43509e4eddb062101bfd794bc4")
-                                                                              (BoundVariable Var)
+                                                                              (BoundVariable First)
                                                                             )
                                                            }
                                                          ]
@@ -372,7 +376,7 @@ t43       = defaultType' {
                                                                             (Reference "0ba85f3f10099c75d4b696d0cf944e09")
                                                                             (Reduction
                                                                               (Reference "b0221a43509e4eddb062101bfd794bc4")
-                                                                              (BoundVariable Var)
+                                                                              (BoundVariable First)
                                                                             )
                                                            }
                                                          ]
@@ -386,7 +390,7 @@ t43       = defaultType' {
                                                                             (Reference "0ba85f3f10099c75d4b696d0cf944e09")
                                                                             (Reduction
                                                                               (Reference "b0221a43509e4eddb062101bfd794bc4")
-                                                                              (BoundVariable Var)
+                                                                              (BoundVariable First)
                                                                             )
                                                            }
                                                          ]
@@ -411,7 +415,7 @@ t43       = defaultType' {
                                                                                )
                                                                                (Reduction
                                                                                  (Reference "b0221a43509e4eddb062101bfd794bc4") -- StructuredText
-                                                                                 (BoundVariable Var)
+                                                                                 (BoundVariable First)
                                                                                )
                                                                              )
                                                            }
@@ -437,12 +441,12 @@ t44       = defaultType' {
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Reduction 
                                                                                        (Reference "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (BoundVariable Var)
+                                                                                       (BoundVariable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "fields"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = list (Reduction (Reference "205895c8-d2df-475b-8d5e-ad5ee33d9f63") (BoundVariable Var))
+                                                                  , fieldType      = list (Reduction (Reference "205895c8-d2df-475b-8d5e-ad5ee33d9f63") (BoundVariable First))
                                                                   }
                                                                ]
                                    }
@@ -466,7 +470,7 @@ t51      = defaultType' {
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Reduction 
                                                                                        (Reference "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (BoundVariable Var)
+                                                                                       (BoundVariable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "type"
@@ -474,7 +478,7 @@ t51      = defaultType' {
                                                                   , fieldType      = Reduction
                                                                                        (Reduction 
                                                                                          (Reference "0174bd2264004820bfe34e211cb35a7d") 
-                                                                                         (BoundVariable Var)
+                                                                                         (BoundVariable First)
                                                                                        )
                                                                                        (Reference "f47867c11a4d4e30ab652240dd8e72ba")
                                                                   }
@@ -483,12 +487,12 @@ t51      = defaultType' {
                                  ]
           }
  
-t42     :: TypeDefinition (Abstraction Concrete)
+t42     :: TypeDefinition (Succ Zero)
 t42      = defaultType' {
              identifier   = "3e815311-18e1-4888-be21-de7921b15bb5"
            , name         = "TypeDefintion"
            , semantics    = "This is the datatype the whole system relies on :-)"
-           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable Var]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable First]]
            , constructors = Just [
                                    defaultConstructor' 
                                      { constructorName      = "TypeDefinition"
@@ -514,7 +518,7 @@ t42      = defaultType' {
                                                                   , fieldSemantics = "The type's semantics in general. Details may be described in the constructors or fields."
                                                                   , fieldType      = Reduction 
                                                                                        (Reference "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (BoundVariable Var)
+                                                                                       (BoundVariable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "creation"
@@ -544,8 +548,8 @@ t42      = defaultType' {
                                                                   { fieldName      = "variables"
                                                                   , fieldSemantics = "Details concerning the type's variables."
                                                                   , fieldType      = Reduction 
-                                                                                       (Reduction (Reference "43c6cd1333b04fc8a480668ecb24768e") (BoundVariable Var)) 
-                                                                                       (Reduction (Reference "b0221a43-509e-4edd-b062-101bfd794bc4") (BoundVariable Var)) 
+                                                                                       (Reduction (Reference "43c6cd1333b04fc8a480668ecb24768e") (BoundVariable First)) 
+                                                                                       (Reduction (Reference "b0221a43-509e-4edd-b062-101bfd794bc4") (BoundVariable First)) 
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "constraints"
@@ -554,7 +558,7 @@ t42      = defaultType' {
                                                                                        (Reference "7af30cce93724981a16a80f3f193dc33")
                                                                                        (Reduction
                                                                                          (Reference "2a94a7a8-d4e0-4975-9d8d-d546e72293ff")
-                                                                                         (BoundVariable Var)
+                                                                                         (BoundVariable First)
                                                                                        )
                                                                   }
                                                                ,  defaultField' 
@@ -562,7 +566,7 @@ t42      = defaultType' {
                                                                   , fieldSemantics = "The type's value constructors. If it is nothing, this means the type is abstract. Otherwise the constructors are listed whereas the order is relevant. Note the semantic difference between just the empty list and nothing."
                                                                   , fieldType      = Reduction 
                                                                                        (Reference "f8f49ef6bbe874a42926fa23d5b3bc19")  
-                                                                                       (list      (Reduction (Reference "37c8a341-f0b3-4cc6-bbbc-9f2403f09be3") (BoundVariable Var)))
+                                                                                       (list      (Reduction (Reference "37c8a341-f0b3-4cc6-bbbc-9f2403f09be3") (BoundVariable First)))
                                                                   }
                                                            ]
                                      } 
@@ -589,7 +593,7 @@ t41       = defaultType'' {
                                    , constructorSemantics = "Bound variable. You supply the set of variables manually via $a"
                                    , constructorFields    = [ defaultField''
                                                               { fieldName      = "boundVariable"
-                                                              , fieldType      = BoundVariable Var
+                                                              , fieldType      = BoundVariable First
                                                               }
                                                             ]
                                    } 
@@ -598,7 +602,7 @@ t41       = defaultType'' {
                                    , constructorSemantics = "Free variable. May be bound by forall. Domain is supplied via $b."
                                    , constructorFields    = [ defaultField''
                                                               { fieldName      = "freeVariable"
-                                                              , fieldType      = BoundVariable (NextVar Var)
+                                                              , fieldType      = BoundVariable (Next First)
                                                               }
                                                             ]
                                    } 
@@ -610,25 +614,25 @@ t41       = defaultType'' {
                                                               , fieldType      = Reduction
                                                                                    (Reduction 
                                                                                       (Reference "0174bd22-6400-4820-bfe3-4e211cb35a7d")
-                                                                                      (BoundVariable Var)
+                                                                                      (BoundVariable First)
                                                                                    )
-                                                                                   (BoundVariable (NextVar Var))
+                                                                                   (BoundVariable (Next First))
                                                               }
                                                             , defaultField''
                                                               { fieldName      = "argumentType"
                                                               , fieldType      = Reduction
                                                                                    (Reduction 
                                                                                       (Reference "0174bd22-6400-4820-bfe3-4e211cb35a7d")
-                                                                                      (BoundVariable Var)
+                                                                                      (BoundVariable First)
                                                                                    )
-                                                                                   (BoundVariable (NextVar Var))
+                                                                                   (BoundVariable (Next First))
                                                               }
                                                             ]
                                    } 
                                 ]
                        }
                        
-t36     :: TypeDefinition Concrete
+t36     :: TypeDefinition Zero
 t36      = defaultType {
              identifier   = "4f7db06c-4395-4165-8a09-689d3e7dd909"
            , name         = "Text"
@@ -636,7 +640,7 @@ t36      = defaultType {
            , constructors = Nothing
           }
 
-t37     :: TypeDefinition Concrete
+t37     :: TypeDefinition Zero
 t37      = defaultType {
              identifier   = "f9f2f27a-f0f6-49b4-bc89-46c467c3b76a"
            , name         = "ByteString"
@@ -644,7 +648,7 @@ t37      = defaultType {
            , constructors = Nothing
           }
                        
-t38     :: TypeDefinition Concrete
+t38     :: TypeDefinition Zero
 t38      = defaultType {
              identifier   = "c211e54d-6eef-4234-a7b6-75d5f696efe5"
            , name         = "Rational"
@@ -652,7 +656,7 @@ t38      = defaultType {
            , constructors = Nothing
           }
 
-t39     :: TypeDefinition Concrete
+t39     :: TypeDefinition Zero
 t39      = defaultType {
              identifier   = "5e5c664c-fc32-4271-b542-bf7ab0c9c104"
            , name         = "RationalUnsigned"
@@ -660,7 +664,7 @@ t39      = defaultType {
            , constructors = Nothing
           }
 
-t3      :: TypeDefinition Concrete
+t3      :: TypeDefinition Zero
 t3       = defaultType {
              identifier   = "16f4245df3cc0b534f028235ff8aae16"
            , name         = "Char"
@@ -669,7 +673,7 @@ t3       = defaultType {
           }
 
           
-t4      :: TypeDefinition Concrete
+t4      :: TypeDefinition Zero
 t4       = defaultType {
              identifier   = "c74c35ddb3ef689646c50be868d11bdf"
            , name         = "Float"
@@ -678,7 +682,7 @@ t4       = defaultType {
           }
 
                     
-t5      :: TypeDefinition Concrete
+t5      :: TypeDefinition Zero
 t5       = defaultType {
              identifier   = "4b19d19d959322ac0ccd319a4d275bd0"
            , name         = "Double"
@@ -687,7 +691,7 @@ t5       = defaultType {
           }
 
 
-t6      :: TypeDefinition Concrete
+t6      :: TypeDefinition Zero
 t6       = defaultType {
              identifier   = "ec78dc6268e4fe6fe6df461f40359d62"
            , name         = "Int8"
@@ -696,7 +700,7 @@ t6       = defaultType {
           }
 
 
-t7      :: TypeDefinition Concrete
+t7      :: TypeDefinition Zero
 t7       = defaultType {
              identifier   = "7ee200d207963cca2d2a49719e97e973"
            , name         = "Int16"
@@ -704,7 +708,7 @@ t7       = defaultType {
            , constructors = Nothing
           }
 
-t8      :: TypeDefinition Concrete
+t8      :: TypeDefinition Zero
 t8       = defaultType {
              identifier   = "7b05ee3f0bbe6569f48d3947ec425493"
            , name         = "Int32"
@@ -712,7 +716,7 @@ t8       = defaultType {
            , constructors = Nothing
           }
 
-t9      :: TypeDefinition Concrete
+t9      :: TypeDefinition Zero
 t9       = defaultType {
              identifier   = "cc620c86261c781e03c8efd9a974b1cf"
            , name         = "Int64"
@@ -720,7 +724,7 @@ t9       = defaultType {
            , constructors = Nothing
           }
 
-t10      :: TypeDefinition Concrete
+t10      :: TypeDefinition Zero
 t10       = defaultType {
              identifier   = "7704e26b08886d6b8c3c788a3a0b2db0)"
            , name         = "Word8"
@@ -728,7 +732,7 @@ t10       = defaultType {
            , constructors = Nothing
           }
 
-t11      :: TypeDefinition Concrete
+t11      :: TypeDefinition Zero
 t11      = defaultType {
              identifier   = "2b567f4ccc26027e, 0xa78edd227800fe94"
            , name         = "Word16"
@@ -736,7 +740,7 @@ t11      = defaultType {
            , constructors = Nothing
           }
 
-t12      :: TypeDefinition Concrete
+t12      :: TypeDefinition Zero
 t12       = defaultType {
              identifier   = "1a55145e5bd21e8adc14067707192552"
            , name         = "Word32"
@@ -744,7 +748,7 @@ t12       = defaultType {
            , constructors = Nothing
           }
 
-t13      :: TypeDefinition Concrete
+t13      :: TypeDefinition Zero
 t13       = defaultType {
              identifier   = "187e33b43715d8fe529de5014c864d85"
            , name         = "Word64"
@@ -752,7 +756,7 @@ t13       = defaultType {
            , constructors = Nothing
           }
 
-t14      :: TypeDefinition Concrete
+t14      :: TypeDefinition Zero
 t14       = defaultType {
              identifier   = "bbabbac1-510d-49aa-9da2-5d8033147c54"
            , name         = "Word128"
@@ -760,7 +764,7 @@ t14       = defaultType {
            , constructors = Nothing
           }
 
-t15      :: TypeDefinition Concrete
+t15      :: TypeDefinition Zero
 t15       = defaultType {
              identifier   = "90ce401b-d12d-4afc-be37-331bed9e0423"
            , name         = "Word256"
@@ -768,7 +772,7 @@ t15       = defaultType {
            , constructors = Nothing
           }
 
-t16      :: TypeDefinition Concrete
+t16      :: TypeDefinition Zero
 t16       = defaultType {
              identifier   = "c15eddf1-94ad-4428-8cba-be701d5ae517"
            , name         = "Word512"
@@ -776,7 +780,7 @@ t16       = defaultType {
            , constructors = Nothing
           }
 
-t17      :: TypeDefinition Concrete
+t17      :: TypeDefinition Zero
 t17       = defaultType {
              identifier   = "ac2e770f2132aced749ec197385ff552"
            , name         = "Int"
@@ -786,7 +790,7 @@ t17       = defaultType {
 
 
 
-t18      :: TypeDefinition Concrete
+t18      :: TypeDefinition Zero
 t18       = defaultType {
              identifier   = "8006b4b18388f841272dbebeee847723"
            , name         = "Integer"
@@ -796,7 +800,7 @@ t18       = defaultType {
 
 
 
-t19      :: TypeDefinition Concrete
+t19      :: TypeDefinition Zero
 t19       = defaultType {
              identifier   = "62d2d537-1f08-461a-a328-bc06561594f6"
            , name         = "Word"
@@ -806,7 +810,7 @@ t19       = defaultType {
 
 
 
-t20     :: TypeDefinition Concrete
+t20     :: TypeDefinition Zero
 t20       = defaultType {
              identifier   = "982dce09-43f6-4a74-858f-f22c753ab01d"
            , name         = "Wordeger"
@@ -826,7 +830,7 @@ t21       = defaultType'' {
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "left"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = (BoundVariable Var)
+                                                                  , fieldType      = (BoundVariable First)
                                                                   }
                                                               ]
                                      } 
@@ -836,7 +840,7 @@ t21       = defaultType'' {
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "left"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = (BoundVariable (NextVar Var))
+                                                                  , fieldType      = (BoundVariable (Next First))
                                                                   }
                                                               ]
                                      } 
@@ -859,7 +863,7 @@ t22      = defaultType' {
                                      , constructorSemantics = "This constructor wraps a value "
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "just"
-                                                                  , fieldType      = (BoundVariable Var)
+                                                                  , fieldType      = (BoundVariable First)
                                                                   }
                                                               ]
                                      } 
@@ -884,12 +888,12 @@ t24       = defaultType'' {
                                     { constructorName = "Tuple"
                                     , constructorFields = [ defaultField''
                                                               { fieldName = "fst"
-                                                              , fieldType = (BoundVariable Var)
+                                                              , fieldType = (BoundVariable First)
                                                               }
                                                               
                                                             , defaultField''
                                                               { fieldName = "snd"
-                                                              ,  fieldType = (BoundVariable (NextVar Var))
+                                                              ,  fieldType = (BoundVariable (Next First))
                                                               }
                                                           ]
                                     
@@ -1099,7 +1103,7 @@ t40       = defaultType' {
              identifier   = "606f2535-33d3-420d-a346-5afae341d598"
            , name         = "Time"
            , semantics    = "This type is used for noting a point in time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
-           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [BoundVariable Var]]
+           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [BoundVariable First]]
            , constructors = Just [
                                   defaultConstructor' 
                                     { constructorName = "Time"
@@ -1708,7 +1712,7 @@ t63 = defaultType' {
 							)
 							(Reduction
 								(Reference "4eabdb36-0fbf-4df6-9dcd-33d16dac9516")
-								(BoundVariable Var)
+								(BoundVariable First)
 							)
 						)
 				}
@@ -1782,12 +1786,12 @@ t64 = defaultType' {
 				defaultField' {
 					fieldName = "owner",
 					fieldSemantics = "File owner.",
-					fieldType = BoundVariable Var
+					fieldType = BoundVariable First
 				},
 				defaultField' {
 					fieldName = "group",
 					fieldSemantics = "File owner group.",
-					fieldType = BoundVariable Var
+					fieldType = BoundVariable First
 				},
 				defaultField' {
 					fieldName = "setuid",
@@ -1831,7 +1835,7 @@ t64 = defaultType' {
 						(Reduction
 							(Reduction
 								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
-								(BoundVariable Var)
+								(BoundVariable First)
 							)
 							(Reference "90eceef9-1189-4a18-903b-9cf36eb18e97")
 						)
@@ -1843,7 +1847,7 @@ t64 = defaultType' {
 						(Reduction
 							(Reduction
 								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
-								(BoundVariable Var)
+								(BoundVariable First)
 							)
 							(Reference "90eceef9-1189-4a18-903b-9cf36eb18e97")
 						)
@@ -1876,7 +1880,7 @@ t64 = defaultType' {
 					fieldType =
 						(Reduction
 							(Reference "027770dd-5134-4ee0-8cd8-faf29e962167")
-							(BoundVariable Var)
+							(BoundVariable First)
 						)
 				}
 			]
