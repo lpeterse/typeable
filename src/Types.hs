@@ -37,13 +37,13 @@ t57      = defaultType' {
              identifier   = "9e2e1e47-8e09-4a8a-be55-07f8574ac91f"
            , name         = "Succ"
            , semantics    = "Counting in the peano sense. Interpreted as a set it is the set that contains n ordinal numbers."
-           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable First]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor' { constructorName   = "First" }
                                  , defaultConstructor' { constructorName   = "Next"
                                                        , constructorFields = [ defaultField'
                                                                                { fieldName = "previous"
-                                                                               , fieldType = BoundVariable First
+                                                                               , fieldType = Variable First
                                                                                }
                                                                              ]
                                                        }
@@ -54,64 +54,64 @@ t58      = defaultType'' {
              identifier   = "9035333f-c91c-42f8-ab8f-ba4c3f256a7b"
            , name         = "FOL"
            , semantics    = "Formulas of the first order predicate logic. The structure is limited to the necessary: NAND. Other conjunctors are seen as a shorthand notation for: ..."
-           , constraints  = S.fromList [ Constraint "0d864b18-19bd-4230-905b-bad04a4c195e" [BoundVariable First]
-                                       , Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable (Next First)]
+           , constraints  = S.fromList [ Constraint "0d864b18-19bd-4230-905b-bad04a4c195e" [Variable First]
+                                       , Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable (Next First)]
                                        ]
            , constructors = Just [
                                    defaultConstructor'' { constructorName   = "True" }
                                  , defaultConstructor'' { constructorName   = "Negation"
                                                         , constructorFields = [ defaultField''
                                                                                 { fieldName = "negated"
-                                                                                , fieldType = Reduction
-                                                                                                (Reduction
-                                                                                                  (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable First)
+                                                                                , fieldType = Application
+                                                                                                (Application
+                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
+                                                                                                  (Variable First)
                                                                                                 )
-                                                                                                (BoundVariable (Next First))
+                                                                                                (Variable (Next First))
                                                                                 }
                                                                               ]
                                                         }
                                  , defaultConstructor'' { constructorName   = "And"
                                                         , constructorFields = [ defaultField''
                                                                                 { fieldName = "left"
-                                                                                , fieldType = Reduction
-                                                                                                (Reduction
-                                                                                                  (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable First)
+                                                                                , fieldType = Application
+                                                                                                (Application
+                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
+                                                                                                  (Variable First)
                                                                                                 )
-                                                                                                (BoundVariable (Next First))
+                                                                                                (Variable (Next First))
                                                                                 }
                                                                               , defaultField''
                                                                                 { fieldName = "right"
-                                                                                , fieldType = Reduction
-                                                                                                (Reduction
-                                                                                                  (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable First)
+                                                                                , fieldType = Application
+                                                                                                (Application
+                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
+                                                                                                  (Variable First)
                                                                                                 )
-                                                                                                (BoundVariable (Next First))
+                                                                                                (Variable (Next First))
                                                                                 }
                                                                               ]
                                                         }
                                  , defaultConstructor'' { constructorName   = "Predicate"
                                                         , constructorFields = [ defaultField''
                                                                                 { fieldName = "predicate"
-                                                                                , fieldType = Reduction
-                                                                                                (BoundVariable First)
-                                                                                                (BoundVariable (Next First))
+                                                                                , fieldType = Application
+                                                                                                (Variable First)
+                                                                                                (Variable (Next First))
                                                                                 }
                                                                               ]
                                                         }
                                  , defaultConstructor'' { constructorName   = "Forall"
                                                         , constructorFields = [ defaultField''
                                                                                 { fieldName = "universal"
-                                                                                , fieldType = Reduction
-                                                                                                (Reduction
-                                                                                                  (Reference "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (BoundVariable First)
+                                                                                , fieldType = Application
+                                                                                                (Application
+                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
+                                                                                                  (Variable First)
                                                                                                 )
-                                                                                                (Reduction 
-                                                                                                  (Reference "9e2e1e47-8e09-4a8a-be55-07f8574ac91f")
-                                                                                                  (BoundVariable (Next First))
+                                                                                                (Application 
+                                                                                                  (DataType "9e2e1e47-8e09-4a8a-be55-07f8574ac91f")
+                                                                                                  (Variable (Next First))
                                                                                                 )
                                                                                 }
                                                                               ]
@@ -180,17 +180,17 @@ t49      = defaultType {
                                    , constructorFields  = [
                                                             defaultField
                                                             { fieldName     = "properName"
-                                                            , fieldType     = Reference "543df2bd-0c7c-4819-b9bb-4b94b326fce7"
+                                                            , fieldType     = DataType "543df2bd-0c7c-4819-b9bb-4b94b326fce7"
                                                             }
                                                           , defaultField
                                                             { fieldName     = "contactInformation"
-                                                            , fieldType     = Reference "53e0d483-a641-4425-9dce-752799d64305"
+                                                            , fieldType     = DataType "53e0d483-a641-4425-9dce-752799d64305"
                                                             }
                                                           , defaultField
                                                             { fieldName     = "licenses"
-                                                            , fieldType     = Reduction
-                                                                                (Reference "7af30cce93724981a16a80f3f193dc33")
-                                                                                (Reference "2afd6f4f-357f-47e5-97d3-1c5e3f44c5cd")
+                                                            , fieldType     = Application
+                                                                                (DataType "7af30cce93724981a16a80f3f193dc33")
+                                                                                (DataType "2afd6f4f-357f-47e5-97d3-1c5e3f44c5cd")
                                                             }
                                                           ]
                                    }
@@ -215,27 +215,27 @@ t48      = defaultType' {
                                    , constructorFields  = [
                                                             defaultField'
                                                             { fieldName      = "text"
-                                                            , fieldType      = Reference "4f7db06c439541658a09689d3e7dd909"
+                                                            , fieldType      = DataType "4f7db06c439541658a09689d3e7dd909"
                                                             }
                                                           , defaultField'
                                                             { fieldName      = "weight"
                                                             , fieldSemantics = "States how bold the text is."
-                                                            , fieldType      = Reference "314bc0db-ad9b-4a13-9e30-24da394ecf6f"
+                                                            , fieldType      = DataType "314bc0db-ad9b-4a13-9e30-24da394ecf6f"
                                                             }
                                                           , defaultField'
                                                             { fieldName      = "italic"
                                                             , fieldSemantics = "States whether the text is to be printed italic."
-                                                            , fieldType      = Reference "0219c59f732a8ef507215fbdb4cceacd"
+                                                            , fieldType      = DataType "0219c59f732a8ef507215fbdb4cceacd"
                                                             }
                                                           , defaultField'
                                                             { fieldName      = "monospace"
                                                             , fieldSemantics = "States whether the text is to be printed with fixed length characters."
-                                                            , fieldType      = Reference "0219c59f732a8ef507215fbdb4cceacd"
+                                                            , fieldType      = DataType "0219c59f732a8ef507215fbdb4cceacd"
                                                             }
                                                           , defaultField'  
                                                             { fieldName      = "cancelled"
                                                             , fieldSemantics = "States whether the text is stroked out."
-                                                            , fieldType      = Reference "0219c59f732a8ef507215fbdb4cceacd"
+                                                            , fieldType      = DataType "0219c59f732a8ef507215fbdb4cceacd"
                                                             }
                                                          ]
                                    }
@@ -244,7 +244,7 @@ t48      = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName = "tex"
-                                                           , fieldType = Reference "b586fd6a-e075-49c4-b641-465feb232a00"
+                                                           , fieldType = DataType "b586fd6a-e075-49c4-b641-465feb232a00"
                                                            }
                                                          ]
                                    }
@@ -253,7 +253,7 @@ t48      = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName = "url"
-                                                           , fieldType = Reference "ac64dc3f-cc3b-4ad9-b23f-576b794ac36c"
+                                                           , fieldType = DataType "ac64dc3f-cc3b-4ad9-b23f-576b794ac36c"
                                                            }
                                                          ]
                                    }
@@ -262,7 +262,7 @@ t48      = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName = "ext"
-                                                           , fieldType = BoundVariable First
+                                                           , fieldType = Variable First
                                                            }
                                                          ]
                                    }
@@ -310,14 +310,14 @@ t2       = defaultType' {
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "head"
                                                                   , fieldSemantics = "element"
-                                                                  , fieldType      = (BoundVariable First)
+                                                                  , fieldType      = (Variable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "tail"
                                                                   , fieldSemantics = "the remaining list"
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "0ba85f3f10099c75d4b696d0cf944e09") 
-                                                                                       (BoundVariable First)  
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "0ba85f3f10099c75d4b696d0cf944e09") 
+                                                                                       (Variable First)  
                                                                   }
                                                               ]
                                      } 
@@ -332,23 +332,23 @@ t43       = defaultType' {
              identifier   = "b0221a43-509e-4edd-b062-101bfd794bc4"
            , name         = "StructuredText"
            , semantics    = "A Markup format."
-           , constraints  = S.fromList [Constraint "edba1ef6-3e72-4b61-8256-9040555253a8" [BoundVariable First]]
+           , constraints  = S.fromList [Constraint "edba1ef6-3e72-4b61-8256-9040555253a8" [Variable First]]
            , constructors = Just [ 
                                    defaultConstructor'
                                    { constructorName   = "Paragraph"
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName   = "paragraph"
-                                                           , fieldType   = Reduction
-                                                                             (Reduction
-                                                                               (Reference "43c6cd1333b04fc8a480668ecb24768e")
-                                                                               (Reference "af20e1db8f0d414f90625b1521e41378")
+                                                           , fieldType   = Application
+                                                                             (Application
+                                                                               (DataType "43c6cd1333b04fc8a480668ecb24768e")
+                                                                               (DataType "af20e1db8f0d414f90625b1521e41378")
                                                                              )
-                                                                             (Reduction
-                                                                               (Reference "0ba85f3f10099c75d4b696d0cf944e09")
-                                                                               (Reduction
-                                                                                 (Reference "9592f9fa-4fae-437a-9e8d-0917c14ff068")
-                                                                                 (BoundVariable First)
+                                                                             (Application
+                                                                               (DataType "0ba85f3f10099c75d4b696d0cf944e09")
+                                                                               (Application
+                                                                                 (DataType "9592f9fa-4fae-437a-9e8d-0917c14ff068")
+                                                                                 (Variable First)
                                                                                )
                                                                              )
                                                            }
@@ -359,11 +359,11 @@ t43       = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName   = "indentList"
-                                                           , fieldType   = Reduction
-                                                                            (Reference "0ba85f3f10099c75d4b696d0cf944e09")
-                                                                            (Reduction
-                                                                              (Reference "b0221a43509e4eddb062101bfd794bc4")
-                                                                              (BoundVariable First)
+                                                           , fieldType   = Application
+                                                                            (DataType "0ba85f3f10099c75d4b696d0cf944e09")
+                                                                            (Application
+                                                                              (DataType "b0221a43509e4eddb062101bfd794bc4")
+                                                                              (Variable First)
                                                                             )
                                                            }
                                                          ]
@@ -373,11 +373,11 @@ t43       = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName   = "bulletList"
-                                                           , fieldType   = Reduction
-                                                                            (Reference "0ba85f3f10099c75d4b696d0cf944e09")
-                                                                            (Reduction
-                                                                              (Reference "b0221a43509e4eddb062101bfd794bc4")
-                                                                              (BoundVariable First)
+                                                           , fieldType   = Application
+                                                                            (DataType "0ba85f3f10099c75d4b696d0cf944e09")
+                                                                            (Application
+                                                                              (DataType "b0221a43509e4eddb062101bfd794bc4")
+                                                                              (Variable First)
                                                                             )
                                                            }
                                                          ]
@@ -387,11 +387,11 @@ t43       = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName   = "indexedList"
-                                                           , fieldType   = Reduction
-                                                                            (Reference "0ba85f3f10099c75d4b696d0cf944e09")
-                                                                            (Reduction
-                                                                              (Reference "b0221a43509e4eddb062101bfd794bc4")
-                                                                              (BoundVariable First)
+                                                           , fieldType   = Application
+                                                                            (DataType "0ba85f3f10099c75d4b696d0cf944e09")
+                                                                            (Application
+                                                                              (DataType "b0221a43509e4eddb062101bfd794bc4")
+                                                                              (Variable First)
                                                                             )
                                                            }
                                                          ]
@@ -401,22 +401,22 @@ t43       = defaultType' {
                                    , constructorFields = [
                                                            defaultField'
                                                            { fieldName   = "titledList"
-                                                           , fieldType   = Reduction
-                                                                             (Reference "0ba85f3f10099c75d4b696d0cf944e09") -- List
-                                                                             (Reduction
-                                                                               (Reduction
-                                                                                 (Reference "34c13bdaac7d413ed735e64edcac7ff5") -- Tuple
-                                                                                 (Reduction 
-                                                                                   (Reduction
-                                                                                     (Reference "43c6cd1333b04fc8a480668ecb24768e") -- Map
-                                                                                     (Reference "af20e1db8f0d414f90625b1521e41378") -- Language
+                                                           , fieldType   = Application
+                                                                             (DataType "0ba85f3f10099c75d4b696d0cf944e09") -- List
+                                                                             (Application
+                                                                               (Application
+                                                                                 (DataType "34c13bdaac7d413ed735e64edcac7ff5") -- Tuple
+                                                                                 (Application 
+                                                                                   (Application
+                                                                                     (DataType "43c6cd1333b04fc8a480668ecb24768e") -- Map
+                                                                                     (DataType "af20e1db8f0d414f90625b1521e41378") -- Language
                                                                                    )
-                                                                                   (Reference "4f7db06c439541658a09689d3e7dd909") -- Text
+                                                                                   (DataType "4f7db06c439541658a09689d3e7dd909") -- Text
                                                                                  )
                                                                                )
-                                                                               (Reduction
-                                                                                 (Reference "b0221a43509e4eddb062101bfd794bc4") -- StructuredText
-                                                                                 (BoundVariable First)
+                                                                               (Application
+                                                                                 (DataType "b0221a43509e4eddb062101bfd794bc4") -- StructuredText
+                                                                                 (Variable First)
                                                                                )
                                                                              )
                                                            }
@@ -435,19 +435,19 @@ t44       = defaultType' {
                                                                   defaultField' 
                                                                   { fieldName      = "name"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = Reference "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (BoundVariable First)
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                                       (Variable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "fields"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = list (Reduction (Reference "205895c8-d2df-475b-8d5e-ad5ee33d9f63") (BoundVariable First))
+                                                                  , fieldType      = list (Application (DataType "205895c8-d2df-475b-8d5e-ad5ee33d9f63") (Variable First))
                                                                   }
                                                                ]
                                    }
@@ -464,24 +464,21 @@ t51      = defaultType' {
                                                                   defaultField' 
                                                                   { fieldName      = "name"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = Reference "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (BoundVariable First)
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                                       (Variable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "type"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = Reduction
-                                                                                       (Reduction 
-                                                                                         (Reference "0174bd2264004820bfe34e211cb35a7d") 
-                                                                                         (BoundVariable First)
-                                                                                       )
-                                                                                       (Reference "f47867c11a4d4e30ab652240dd8e72ba")
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "0174bd2264004820bfe34e211cb35a7d") 
+                                                                                       (Variable First)
                                                                   }
                                                                ]
                                    }
@@ -493,81 +490,81 @@ t42      = defaultType' {
              identifier   = "3e815311-18e1-4888-be21-de7921b15bb5"
            , name         = "TypeDefintion"
            , semantics    = "This is the datatype the whole system relies on :-)"
-           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [BoundVariable First]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor' 
                                      { constructorName      = "TypeDefinition"
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "identifier"
                                                                   , fieldSemantics = "This identifier is bound to the structure and semantics, not to an actual version of discription etc."
-                                                                  , fieldType      = Reference "346674042a7248b4a94abff0726d0c43"
+                                                                  , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "antecedent"
                                                                   , fieldSemantics = "Note whether this type is an improved version of another with changes in structure and/or semantics."
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "f8f49ef6bbe874a42926fa23d5b3bc19") 
-                                                                                       (Reference "346674042a7248b4a94abff0726d0c43")  
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "f8f49ef6bbe874a42926fa23d5b3bc19") 
+                                                                                       (DataType "346674042a7248b4a94abff0726d0c43")  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "name"
                                                                   , fieldSemantics = "The type's name. It doesn't need to be unique - this is what the -> UUID is for. In doubt choose a short one that already catches the semantics as good as possible."
-                                                                  , fieldType      = Reference "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = "The type's semantics in general. Details may be described in the constructors or fields."
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (BoundVariable First)
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                                       (Variable First)
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "creation"
                                                                   , fieldSemantics = "The date of creating the type with structure and semantics."
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "606f253533d3420da3465afae341d598")
-                                                                                       (Reference "c1b1f6c7-22c2-436f-ab31-80146520814e")
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "606f253533d3420da3465afae341d598")
+                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "modification"
                                                                   , fieldSemantics = "The date of the last improvement/modification to the description."
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "606f253533d3420da3465afae341d598")
-                                                                                       (Reference "c1b1f6c7-22c2-436f-ab31-80146520814e")
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "606f253533d3420da3465afae341d598")
+                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "authorship"
                                                                   , fieldSemantics = "The original author of the type."
-                                                                  , fieldType      = Reference "38198846-85d3-4bf1-9b34-69304e15983d"  
+                                                                  , fieldType      = DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "maintainer"
                                                                   , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
-                                                                  , fieldType      = Reference "b6831ec0-97f1-4b8e-ba74-b1e486b4175d"  
+                                                                  , fieldType      = DataType "b6831ec0-97f1-4b8e-ba74-b1e486b4175d"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "variables"
                                                                   , fieldSemantics = "Details concerning the type's variables."
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reduction (Reference "43c6cd1333b04fc8a480668ecb24768e") (BoundVariable First)) 
-                                                                                       (Reduction (Reference "b0221a43-509e-4edd-b062-101bfd794bc4") (BoundVariable First)) 
+                                                                  , fieldType      = Application 
+                                                                                       (Application (DataType "43c6cd1333b04fc8a480668ecb24768e") (Variable First)) 
+                                                                                       (Application (DataType "b0221a43-509e-4edd-b062-101bfd794bc4") (Variable First)) 
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "constraints"
                                                                   , fieldSemantics = "Constraints on the type's free variables."
-                                                                  , fieldType      = Reduction
-                                                                                       (Reference "7af30cce93724981a16a80f3f193dc33")
-                                                                                       (Reduction
-                                                                                         (Reference "2a94a7a8-d4e0-4975-9d8d-d546e72293ff")
-                                                                                         (BoundVariable First)
+                                                                  , fieldType      = Application
+                                                                                       (DataType "7af30cce93724981a16a80f3f193dc33")
+                                                                                       (Application
+                                                                                         (DataType "2a94a7a8-d4e0-4975-9d8d-d546e72293ff")
+                                                                                         (Variable First)
                                                                                        )
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "constructors"
                                                                   , fieldSemantics = "The type's value constructors. If it is nothing, this means the type is abstract. Otherwise the constructors are listed whereas the order is relevant. Note the semantic difference between just the empty list and nothing."
-                                                                  , fieldType      = Reduction 
-                                                                                       (Reference "f8f49ef6bbe874a42926fa23d5b3bc19")  
-                                                                                       (list      (Reduction (Reference "37c8a341-f0b3-4cc6-bbbc-9f2403f09be3") (BoundVariable First)))
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "f8f49ef6bbe874a42926fa23d5b3bc19")  
+                                                                                       (list      (Application (DataType "37c8a341-f0b3-4cc6-bbbc-9f2403f09be3") (Variable First)))
                                                                   }
                                                            ]
                                      } 
@@ -575,58 +572,78 @@ t42      = defaultType' {
                        }
 
 
-t41       = defaultType'' {
+t41       = defaultType' {
              identifier   = "0174bd22-6400-4820-bfe3-4e211cb35a7d"
            , name         = "Type"
            , semantics    = ""
            , constructors = Just [
-                                   defaultConstructor'' 
-                                   { constructorName      = "Reference"
-                                   , constructorSemantics = "References another Type by -> UUID."
-                                   , constructorFields    = [ defaultField''
-                                                              { fieldName      = "reference"
-                                                              , fieldType      = Reference "346674042a7248b4a94abff0726d0c43"
+                                   defaultConstructor' 
+                                   { constructorName      = "Type"
+                                   , constructorSemantics = "DataTypes another Datatype by -> UUID."
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "typeRef"
+                                                              , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
                                                               }
                                                             ]
                                    } 
-                                 , defaultConstructor'' 
-                                   { constructorName      = "BoundVariable"
+                                 , defaultConstructor' 
+                                   { constructorName      = "DependentType"
+                                   , constructorSemantics = "DataTypes another Typefamily by -> UUID."
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "depTypeRef"
+                                                              , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
+                                                              }
+                                                            ]
+                                   }
+                                 , defaultConstructor' 
+                                   { constructorName      = "Variable"
                                    , constructorSemantics = "Bound variable. You supply the set of variables manually via $a"
-                                   , constructorFields    = [ defaultField''
-                                                              { fieldName      = "boundVariable"
-                                                              , fieldType      = BoundVariable First
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "variable"
+                                                              , fieldType      = Variable First
                                                               }
                                                             ]
                                    } 
-                                 , defaultConstructor'' 
-                                   { constructorName      = "FreeVariable"
-                                   , constructorSemantics = "Free variable. May be bound by forall. Domain is supplied via $b."
-                                   , constructorFields    = [ defaultField''
-                                                              { fieldName      = "freeVariable"
-                                                              , fieldType      = BoundVariable (Next First)
-                                                              }
-                                                            ]
-                                   } 
-                                 , defaultConstructor'' 
-                                   { constructorName      = "Reduction"
+                                 , defaultConstructor'
+                                   { constructorName      = "Application"
                                    , constructorSemantics = "Apply one type onto another yielding a type of lower kind."
-                                   , constructorFields    = [ defaultField''
-                                                              { fieldName      = "functionType"
-                                                              , fieldType      = Reduction
-                                                                                   (Reduction 
-                                                                                      (Reference "0174bd22-6400-4820-bfe3-4e211cb35a7d")
-                                                                                      (BoundVariable First)
-                                                                                   )
-                                                                                   (BoundVariable (Next First))
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "function"
+                                                              , fieldType      = Application 
+                                                                                   (DataType "0174bd22-6400-4820-bfe3-4e211cb35a7d")
+                                                                                   (Variable First)
                                                               }
-                                                            , defaultField''
-                                                              { fieldName      = "argumentType"
-                                                              , fieldType      = Reduction
-                                                                                   (Reduction 
-                                                                                      (Reference "0174bd22-6400-4820-bfe3-4e211cb35a7d")
-                                                                                      (BoundVariable First)
+                                                            , defaultField'
+                                                              { fieldName      = "argument"
+                                                              , fieldType      = Application
+                                                                                   (DataType "0174bd22-6400-4820-bfe3-4e211cb35a7d")
+                                                                                   (Variable First)
+                                                              }
+                                                            ]
+                                   } 
+                                 , defaultConstructor'
+                                   { constructorName      = "Forall"
+                                   , constructorSemantics = "Existential quantification."
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "constraints"
+                                                              , fieldType      = Application 
+                                                                                   (DataType "7af30cce93724981a16a80f3f193dc33")
+                                                                                   (Application 
+                                                                                     (DataType "2a94a7a8d4e049759d8dd546e72293ff")
+                                                                                     (Application
+                                                                                       (DataType "9e2e1e478e094a8abe5507f8574ac91f")
+                                                                                       (Variable First)
+                                                                                     )
                                                                                    )
-                                                                                   (BoundVariable (Next First))
+                                                              }
+                                                            , defaultField'
+                                                              { fieldName      = "forall"
+                                                              , fieldType      = Application
+                                                                                   (DataType "0174bd22-6400-4820-bfe3-4e211cb35a7d")
+                                                                                   (Application
+                                                                                     (DataType "9e2e1e478e094a8abe5507f8574ac91f")
+                                                                                     (Variable First)
+                                                                                   )
                                                               }
                                                             ]
                                    } 
@@ -831,7 +848,7 @@ t21       = defaultType'' {
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "left"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = (BoundVariable First)
+                                                                  , fieldType      = (Variable First)
                                                                   }
                                                               ]
                                      } 
@@ -841,7 +858,7 @@ t21       = defaultType'' {
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "left"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = (BoundVariable (Next First))
+                                                                  , fieldType      = (Variable (Next First))
                                                                   }
                                                               ]
                                      } 
@@ -864,7 +881,7 @@ t22      = defaultType' {
                                      , constructorSemantics = "This constructor wraps a value "
                                      , constructorFields    = [ defaultField'
                                                                   { fieldName      = "just"
-                                                                  , fieldType      = (BoundVariable First)
+                                                                  , fieldType      = (Variable First)
                                                                   }
                                                               ]
                                      } 
@@ -889,12 +906,12 @@ t24       = defaultType'' {
                                     { constructorName = "Tuple"
                                     , constructorFields = [ defaultField''
                                                               { fieldName = "fst"
-                                                              , fieldType = (BoundVariable First)
+                                                              , fieldType = (Variable First)
                                                               }
                                                               
                                                             , defaultField''
                                                               { fieldName = "snd"
-                                                              ,  fieldType = (BoundVariable (Next First))
+                                                              ,  fieldType = (Variable (Next First))
                                                               }
                                                           ]
                                     
@@ -995,7 +1012,7 @@ t28       = defaultType {
                                      constructorName = "Lower"
                                     ,constructorFields = [ defaultField {
                                                                    fieldName = "lower" 
-                                                                 , fieldType = Reference "6716d098-a587-4337-9e54-c12f249cdc0c"  
+                                                                 , fieldType = DataType "6716d098-a587-4337-9e54-c12f249cdc0c"  
                                                                  }
                                                          ]
                                    }
@@ -1003,7 +1020,7 @@ t28       = defaultType {
                                      constructorName = "Upper"
                                     ,constructorFields = [ defaultField {
                                                                    fieldName = "upper" 
-                                                                 , fieldType = Reference "6716d098-a587-4337-9e54-c12f249cdc0c"  
+                                                                 , fieldType = DataType "6716d098-a587-4337-9e54-c12f249cdc0c"  
                                                                  }
                                                          ]
                                    } 
@@ -1012,7 +1029,7 @@ t28       = defaultType {
                                      constructorName = "Decimal"
                                     ,constructorFields =  [ defaultField {
                                                                    fieldName = "decimal" 
-                                                                ,  fieldType = Reference "ff421b2c-3177-4c37-a733-6c8245a74da9"
+                                                                ,  fieldType = DataType "ff421b2c-3177-4c37-a733-6c8245a74da9"
                                                                  }
                                                           ]
                                    }  
@@ -1033,7 +1050,7 @@ t29       = defaultType {
                                      constructorName = "Designator"
                                     ,constructorFields = [ defaultField {
                                                                    fieldName = "initial" 
-                                                                ,  fieldType = Reference "6716d098-a587-4337-9e54-c12f249cdc0c"  
+                                                                ,  fieldType = DataType "6716d098-a587-4337-9e54-c12f249cdc0c"  
                                                                  }
                                                          , defaultField {
                                                                    fieldName = "rest" 
@@ -1056,7 +1073,7 @@ t30       = defaultType {
                                      constructorName = "Designator"
                                     ,constructorFields = [ defaultField {
                                                                    fieldName = "initial" 
-                                                                ,  fieldType = Reference "6716d098-a587-4337-9e54-c12f249cdc0c"  
+                                                                ,  fieldType = DataType "6716d098-a587-4337-9e54-c12f249cdc0c"  
                                                                  }
                                                          , defaultField {
                                                                    fieldName = "rest" 
@@ -1092,7 +1109,7 @@ t33       = defaultType {
                                     { constructorName = "UUID"
                                     , constructorFields = [ defaultField             
                                                               { fieldName = "uuid"
-                                                              , fieldType = Reference  "bbabbac1510d49aa9da25d8033147c54"
+                                                              , fieldType = DataType  "bbabbac1510d49aa9da25d8033147c54"
                                                               }
                                                           ]
                                     
@@ -1104,13 +1121,13 @@ t40       = defaultType' {
              identifier   = "606f2535-33d3-420d-a346-5afae341d598"
            , name         = "Time"
            , semantics    = "This type is used for noting a point in time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
-           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [BoundVariable First]]
+           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [Variable First]]
            , constructors = Just [
                                   defaultConstructor' 
                                     { constructorName = "Time"
                                     , constructorFields = [ defaultField'             
                                                               { fieldName      = "seconds"
-                                                              , fieldType      = Reference  "c211e54d6eef4234a7b675d5f696efe5"
+                                                              , fieldType      = DataType  "c211e54d6eef4234a7b675d5f696efe5"
                                                               , fieldSemantics = "Seconds relative to January 1st, 1900. What is meant by a second depends on the timescale."
                                                               }
                                                           ]
@@ -1632,17 +1649,17 @@ t59 = defaultType {
 				defaultField {
 					fieldName = "read",
 					fieldSemantics = "Read permission.",
-					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+					fieldType = DataType "0219c59f732a8ef507215fbdb4cceacd"
 				},
 				defaultField {
 					fieldName = "write",
 					fieldSemantics = "Write permission.",
-					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+					fieldType = DataType "0219c59f732a8ef507215fbdb4cceacd"
 				},
 				defaultField {
 					fieldName = "exec",
 					fieldSemantics = "Execute permission.",
-					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+					fieldType = DataType "0219c59f732a8ef507215fbdb4cceacd"
 				}
 			]
 		}
@@ -1660,7 +1677,7 @@ t60 = defaultType {
 				defaultField {
 					fieldName = "nanoSeconds",
 					fieldSemantics = "Nanoseconds since the Epoch, 1970-01-01 00:00 +0000.",
-					fieldType = Reference "ac2e770f2132aced749ec197385ff552"
+					fieldType = DataType "ac2e770f2132aced749ec197385ff552"
 				}
 			]
 		}
@@ -1699,20 +1716,20 @@ t63 = defaultType' {
 				defaultField' {
 					fieldName = "defacl",
 					fieldSemantics = "Default permission mask for access control lists.",
-					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+					fieldType = DataType "90eceef9-1189-4a18-903b-9cf36eb18e97"
 				},
 				defaultField' {
 					fieldName = "entries",
 					fieldSemantics = "Directory entries.",
 					fieldType =
-						(Reduction
-							(Reduction
-								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
-								(Reference "4f7db06c439541658a09689d3e7dd909")
+						(Application
+							(Application
+								(DataType "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(DataType "4f7db06c439541658a09689d3e7dd909")
 							)
-							(Reduction
-								(Reference "4eabdb36-0fbf-4df6-9dcd-33d16dac9516")
-								(BoundVariable First)
+							(Application
+								(DataType "4eabdb36-0fbf-4df6-9dcd-33d16dac9516")
+								(Variable First)
 							)
 						)
 				}
@@ -1725,7 +1742,7 @@ t63 = defaultType' {
 				defaultField' {
 					fieldName = "target",
 					fieldSemantics = "Link target.",
-					fieldType = Reference "5448c6b7-9a08-4b4e-a40d-442c4fd2e125"
+					fieldType = DataType "5448c6b7-9a08-4b4e-a40d-442c4fd2e125"
 				}
 			]
 		},
@@ -1736,17 +1753,17 @@ t63 = defaultType' {
 				defaultField' {
 					fieldName = "specialType",
 					fieldSemantics = "Type of special file.",
-					fieldType = Reference "41f3d3c6-311b-4f18-a600-758219595871"
+					fieldType = DataType "41f3d3c6-311b-4f18-a600-758219595871"
 				},
 				defaultField' {
 					fieldName = "major",
 					fieldSemantics = "Major device number.",
-					fieldType = Reference "62d2d537-1f08-461a-a328-bc06561594f6"
+					fieldType = DataType "62d2d537-1f08-461a-a328-bc06561594f6"
 				},
 				defaultField' {
 					fieldName = "minor",
 					fieldSemantics = "Minor device number.",
-					fieldType = Reference "62d2d537-1f08-461a-a328-bc06561594f6"
+					fieldType = DataType "62d2d537-1f08-461a-a328-bc06561594f6"
 				}
 			]
 		},
@@ -1757,7 +1774,7 @@ t63 = defaultType' {
 				defaultField' {
 					fieldName = "ipcType",
 					fieldSemantics = "Type of IPC object.",
-					fieldType = Reference "fa052506-7ac8-4473-a274-c4bac5ad0cc4"
+					fieldType = DataType "fa052506-7ac8-4473-a274-c4bac5ad0cc4"
 				}
 			]
 		},
@@ -1768,7 +1785,7 @@ t63 = defaultType' {
 				defaultField' {
 					fieldName = "content",
 					fieldSemantics = "File content.",
-					fieldType = Reference "f9f2f27af0f649b4bc8946c467c3b76a"
+					fieldType = DataType "f9f2f27af0f649b4bc8946c467c3b76a"
 				}
 			]
 		}
@@ -1786,101 +1803,101 @@ t64 = defaultType' {
 				defaultField' {
 					fieldName = "owner",
 					fieldSemantics = "File owner.",
-					fieldType = BoundVariable First
+					fieldType = Variable First
 				},
 				defaultField' {
 					fieldName = "group",
 					fieldSemantics = "File owner group.",
-					fieldType = BoundVariable First
+					fieldType = Variable First
 				},
 				defaultField' {
 					fieldName = "setuid",
 					fieldSemantics = "Set user ID flag.",
-					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+					fieldType = DataType "0219c59f732a8ef507215fbdb4cceacd"
 				},
 				defaultField' {
 					fieldName = "setgid",
 					fieldSemantics = "Set group ID flag.",
-					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+					fieldType = DataType "0219c59f732a8ef507215fbdb4cceacd"
 				},
 				defaultField' {
 					fieldName = "sticky",
 					fieldSemantics = "Sticky bit.",
-					fieldType = Reference "0219c59f732a8ef507215fbdb4cceacd"
+					fieldType = DataType "0219c59f732a8ef507215fbdb4cceacd"
 				},
 				defaultField' {
 					fieldName = "uperm",
 					fieldSemantics = "User access permission mask.",
-					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+					fieldType = DataType "90eceef9-1189-4a18-903b-9cf36eb18e97"
 				},
 				defaultField' {
 					fieldName = "gperm",
 					fieldSemantics = "Group access permission mask.",
-					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+					fieldType = DataType "90eceef9-1189-4a18-903b-9cf36eb18e97"
 				},
 				defaultField' {
 					fieldName = "operm",
 					fieldSemantics = "Other access permission mask.",
-					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+					fieldType = DataType "90eceef9-1189-4a18-903b-9cf36eb18e97"
 				},
 				defaultField' {
 					fieldName = "mask",
 					fieldSemantics = "Maximum permissions to be granted via access control lists.",
-					fieldType = Reference "90eceef9-1189-4a18-903b-9cf36eb18e97"
+					fieldType = DataType "90eceef9-1189-4a18-903b-9cf36eb18e97"
 				},
 				defaultField' {
 					fieldName = "usracl",
 					fieldSemantics = "User access control list.",
 					fieldType =
-						(Reduction
-							(Reduction
-								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
-								(BoundVariable First)
+						(Application
+							(Application
+								(DataType "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(Variable First)
 							)
-							(Reference "90eceef9-1189-4a18-903b-9cf36eb18e97")
+							(DataType "90eceef9-1189-4a18-903b-9cf36eb18e97")
 						)
 				},
 				defaultField' {
 					fieldName = "grpacl",
 					fieldSemantics = "Group access control list.",
 					fieldType =
-						(Reduction
-							(Reduction
-								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
-								(BoundVariable First)
+						(Application
+							(Application
+								(DataType "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(Variable First)
 							)
-							(Reference "90eceef9-1189-4a18-903b-9cf36eb18e97")
+							(DataType "90eceef9-1189-4a18-903b-9cf36eb18e97")
 						)
 				},
 				defaultField' {
 					fieldName = "mtime",
 					fieldSemantics = "Time of last modification.",
-					fieldType = Reference "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
+					fieldType = DataType "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
 				},
 				defaultField' {
 					fieldName = "ctime",
 					fieldSemantics = "Time of file creation.",
-					fieldType = Reference "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
+					fieldType = DataType "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
 				},
 				defaultField' {
 					fieldName = "xattr",
 					fieldSemantics = "Extended attributes.",
 					fieldType =
-						(Reduction
-							(Reduction
-								(Reference "43c6cd13-33b0-4fc8-a480-668ecb24768e")
-								(Reference "4f7db06c439541658a09689d3e7dd909")
+						(Application
+							(Application
+								(DataType "43c6cd13-33b0-4fc8-a480-668ecb24768e")
+								(DataType "4f7db06c439541658a09689d3e7dd909")
 							)
-							(Reference "f9f2f27af0f649b4bc8946c467c3b76a")
+							(DataType "f9f2f27af0f649b4bc8946c467c3b76a")
 						)
 				},
 				defaultField' {
 					fieldName = "file",
 					fieldSemantics = "The actual file.",
 					fieldType =
-						(Reduction
-							(Reference "027770dd-5134-4ee0-8cd8-faf29e962167")
-							(BoundVariable First)
+						(Application
+							(DataType "027770dd-5134-4ee0-8cd8-faf29e962167")
+							(Variable First)
 						)
 				}
 			]
@@ -1898,7 +1915,7 @@ t65 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "latin",
-					fieldType = Reference "6716d098a58743379e54c12f249cdc0c"
+					fieldType = DataType "6716d098a58743379e54c12f249cdc0c"
 				}
 			]
 		},
@@ -1907,7 +1924,7 @@ t65 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "decimal",
-					fieldType = Reference "ff421b2c31774c37a7336c8245a74da9"
+					fieldType = DataType "ff421b2c31774c37a7336c8245a74da9"
 				}
 			]
 		},
@@ -1927,14 +1944,14 @@ t66 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "initial",
-					fieldType = Reference "6716d098a58743379e54c12f249cdc0c"
+					fieldType = DataType "6716d098a58743379e54c12f249cdc0c"
 				},
 				defaultField {
 					fieldName = "rest",
 					fieldType =
-						(Reduction
-							(Reference "0ba85f3f10099c75d4b696d0cf944e09")
-							(Reference "f2c4f6dd-d939-444b-a209-fbdf2152eb54")
+						(Application
+							(DataType "0ba85f3f10099c75d4b696d0cf944e09")
+							(DataType "f2c4f6dd-d939-444b-a209-fbdf2152eb54")
 						)
 				}
 			]
@@ -1954,9 +1971,9 @@ t67 = defaultType {
 					fieldName = "segments",
 					fieldSemantics = "Path segments.",
 					fieldType =
-						(Reduction
-							(Reference "0ba85f3f10099c75d4b696d0cf944e09")
-							(Reference "4f7db06c439541658a09689d3e7dd909")
+						(Application
+							(DataType "0ba85f3f10099c75d4b696d0cf944e09")
+							(DataType "4f7db06c439541658a09689d3e7dd909")
 						)
 				}
 			]
@@ -1976,9 +1993,9 @@ t68 = defaultType {
 					fieldName = "segments",
 					fieldSemantics = "Path segments.",
 					fieldType =
-						(Reduction
-							(Reference "0ba85f3f10099c75d4b696d0cf944e09")
-							(Reference "4f7db06c439541658a09689d3e7dd909")
+						(Application
+							(DataType "0ba85f3f10099c75d4b696d0cf944e09")
+							(DataType "4f7db06c439541658a09689d3e7dd909")
 						)
 				}
 			]
@@ -1996,7 +2013,7 @@ t69 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "absolute",
-					fieldType = Reference "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
+					fieldType = DataType "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
 				}
 			]
 		},
@@ -2005,7 +2022,7 @@ t69 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "rootless",
-					fieldType = Reference "a078d512-3ead-415d-8d85-7dc6dc15b475"
+					fieldType = DataType "a078d512-3ead-415d-8d85-7dc6dc15b475"
 				}
 			]
 		}
@@ -2022,11 +2039,11 @@ t70 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "authority",
-					fieldType = Reference "335b7633-0e72-4b64-a525-6190fb579dad"
+					fieldType = DataType "335b7633-0e72-4b64-a525-6190fb579dad"
 				},
 				defaultField {
 					fieldName = "absolute",
-					fieldType = Reference "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
+					fieldType = DataType "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
 				}
 			]
 		},
@@ -2035,7 +2052,7 @@ t70 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "rootless",
-					fieldType = Reference "a078d512-3ead-415d-8d85-7dc6dc15b475"
+					fieldType = DataType "a078d512-3ead-415d-8d85-7dc6dc15b475"
 				}
 			]
 		}
@@ -2052,19 +2069,19 @@ t71 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "scheme",
-					fieldType = Reference "6e2f1233-f1c8-4e6b-9bb3-7c405c666234"
+					fieldType = DataType "6e2f1233-f1c8-4e6b-9bb3-7c405c666234"
 				},
 				defaultField {
 					fieldName = "hierarchy",
-					fieldType = Reference "8068cbda-f35e-4618-a7e7-98c67ff9bee0"
+					fieldType = DataType "8068cbda-f35e-4618-a7e7-98c67ff9bee0"
 				},
 				defaultField {
 					fieldName = "query",
-					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+					fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
 				},
 				defaultField {
 					fieldName = "fragment",
-					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+					fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
 				}
 			]
 		}
@@ -2082,7 +2099,7 @@ t74 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "ipv6",
-					fieldType = Reference "bbabbac1510d49aa9da25d8033147c54"
+					fieldType = DataType "bbabbac1510d49aa9da25d8033147c54"
 				}
 			]
 		},
@@ -2092,7 +2109,7 @@ t74 = defaultType {
 			constructorFields = [
 				defaultField {
 					fieldName = "ipv4",
-					fieldType = Reference "1a55145e5bd21e8adc14067707192552"
+					fieldType = DataType "1a55145e5bd21e8adc14067707192552"
 				}
 			]
 		}
@@ -2109,20 +2126,20 @@ t75 = defaultType {
 				defaultField {
 					fieldName = "userinfo",
 					fieldSemantics = "User information.",
-					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+					fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
 				},
 				defaultField {
 					fieldName = "host",
 					fieldSemantics = "Host",
-					fieldType = Reference "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06"
+					fieldType = DataType "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06"
 				},
 				defaultField {
 					fieldName = "port",
 					fieldSemantics = "Port number",
 					fieldType =
-						(Reduction
-							(Reference "f8f49ef6bbe874a42926fa23d5b3bc19")
-							(Reference "62d2d5371f08461aa328bc06561594f6")
+						(Application
+							(DataType "f8f49ef6bbe874a42926fa23d5b3bc19")
+							(DataType "62d2d5371f08461aa328bc06561594f6")
 						)
 				}
 			]
@@ -2141,7 +2158,7 @@ t76 = defaultType {
 				defaultField {
 					fieldName = "ip",
 					fieldSemantics = "IP address",
-					fieldType = Reference "a9c05900-6c8d-4849-af90-2d3ad12ee3cc"
+					fieldType = DataType "a9c05900-6c8d-4849-af90-2d3ad12ee3cc"
 				}
 			]
 		},
@@ -2151,7 +2168,7 @@ t76 = defaultType {
 				defaultField {
 					fieldName = "regName",
 					fieldSemantics = "Registered name",
-					fieldType = Reference "4f7db06c439541658a09689d3e7dd909"
+					fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
 				}
 			]
 		}

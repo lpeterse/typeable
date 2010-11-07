@@ -5,6 +5,7 @@ module InternalTypeDefs where
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f -- Succ
 
 import Data.Word
 import Data.LargeWord
@@ -48,8 +49,6 @@ instance Show UUID where
 
 type DateTime   = Int     
 
---data PeanoNumberRep = Concrete | Abstraction PeanoNumberRep PeanoNumberRep deriving (Eq, Ord, Show)
-
 data Void
 
 instance Eq Void where
@@ -61,22 +60,21 @@ instance Ord Void where
 instance Show Void where
   show = undefined
 
-data Variable = Variable Word deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Type k = DataType       UUID               -- entweder extern der Ordnung k
+                               | DependentType  UUID               -- oder gebundene Variable
+                               | Variable       k                  -- oder freie Variable der Ordnung k
+                               | Application    (Type k) (Type k)  -- oder Typkonstruktor höherer Ordnung wird angewandt
+                               | Quantification (Set (Constraint (Succ k))) (Type (Succ k))
+                               deriving (Eq, Ord, Show)
 
-data (PeanoNumber k) => Type k v   = Reference     UUID             -- entweder extern der Ordnung k
-                                   | BoundVariable k                      -- oder gebundene Variable
-                                   | FreeVariable  v                      -- oder freie Variable der Ordnung k
-                                   | Reduction     (Type k v) (Type k v)  -- oder Typkonstruktor höherer Ordnung wird angewandt
-                                   deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Constraint k = Constraint
+                                       { constraintClass :: UUID
+                                       , constraintVars  :: [Type k]
+                                       }
+                                       deriving (Eq, Ord, Show)
 
-data (PeanoNumber k) => Constraint k = Constraint {
-                                            constraintClass :: UUID
-                                          , constraintVars  :: [Type k Void]
-                                          }
-                                          deriving (Eq, Ord, Show)
-
-data (PeanoNumber k) => TypeDefinition k = TypeDefinition {
-                          identifier      :: UUID
+data (PeanoNumber k) => TypeDefinition k = TypeDefinition
+                        { identifier      :: UUID
                         , antecedent      :: Maybe UUID
                         , created         :: DateTime
                         , modified        :: DateTime
@@ -88,26 +86,20 @@ data (PeanoNumber k) => TypeDefinition k = TypeDefinition {
                         , constraints     :: Set (Constraint k)
                         , constructors    :: Maybe [Constructor k]
                         }
-              deriving (Eq, Ord, Show)
+                        deriving (Eq, Ord, Show)
 
-data (PeanoNumber k) => ClassDefinition k = ClassDefinition {
-                                       classIdentifier :: UUID
-                                     , classAntecedent :: Maybe UUID
-                                     , className       :: UpperDesignator
-                                     }
-                                     deriving (Eq, Ord, Show)
 
-data (PeanoNumber k) => Constructor k = Constructor {
-                      constructorName      :: UpperDesignator
-                    , constructorSemantics :: Annotation k
-                    , constructorFields    :: [Field k] 
-                    }
-                    deriving (Eq, Ord, Show)
+data (PeanoNumber k) => Constructor k = Constructor
+                        { constructorName      :: UpperDesignator
+                        , constructorSemantics :: Annotation k
+                        , constructorFields    :: [Field k] 
+                        }
+                        deriving (Eq, Ord, Show)
 
-data (PeanoNumber k) => Field k = Field {
-                          fieldName      :: LowerDesignator
+data (PeanoNumber k) => Field k = Field
+                        { fieldName      :: LowerDesignator
                         , fieldSemantics :: Annotation k
-                        , fieldType      :: Type k Void
+                        , fieldType      :: Type k
                         }
                         deriving (Eq, Ord, Show)
 
@@ -130,7 +122,7 @@ data (PeanoNumber k) => Inline k       = Plain          Text
                                        | Monospace      Text
                                        | URL            URL 
                                        | Norm           Norm
-                                       | Type           (Type k Variable)
+                                       | Type           (Type k)
                                        | Class          UUID
                                        deriving (Eq, Ord, Show)
 

@@ -39,11 +39,11 @@ upperDesignator2HsIdent x   = return $ HsIdent (show x)
 lowerDesignator2HsIdent    :: LowerDesignator  -> Context HsName
 lowerDesignator2HsIdent x   = return $ HsIdent (show x)
 
-type2HsUnBangedTy                  :: (PeanoNumber a) => Type a Void -> Context HsType 
-type2HsUnBangedTy (Reference u)     = do x <- humanify u
-                                         return $ HsTyCon $ UnQual $ HsIdent $ x  
-type2HsUnBangedTy (Reduction a b)   = do a' <- type2HsUnBangedTy a
-                                         b' <- type2HsUnBangedTy b
-                                         return $ HsTyApp a' b'  
-type2HsUnBangedTy (BoundVariable v) = return $ HsTyVar $ HsIdent $ var2String v 
+type2HsUnBangedTy                  :: (PeanoNumber a) => Type a -> Context HsType 
+type2HsUnBangedTy (DataType u)     = do x <- humanify u
+                                        return $ HsTyCon $ UnQual $ HsIdent $ x  
+type2HsUnBangedTy (Application a b)   = do a' <- type2HsUnBangedTy a
+                                           b' <- type2HsUnBangedTy b
+                                           return $ HsTyApp a' b'  
+type2HsUnBangedTy (Variable v) = return $ HsTyVar $ HsIdent $ var2String v 
 

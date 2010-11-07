@@ -105,17 +105,16 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
                                                         td ! class_ "annotation"  ! colspan "3" $ s'
                                                 cs'
 
-instance (PeanoNumber k, Htmlize k, Show v) => Htmlize (Type k v) where
-  htmlize (Reference i)     = humanify i >>= return . (a ! href (stringValue $ show i)) . string
-  htmlize (BoundVariable v) = htmlize v
-  htmlize (FreeVariable v)  = return $ string (show v)
-  htmlize (Reduction t1 t2) = do t1' <- htmlize t1
-                                 t2' <- htmlize t2
-                                 return $ do t1'
-                                             preEscapedString "&nbsp;"
-                                             string "("
-                                             t2'
-                                             string ")"
+instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
+  htmlize (DataType i)     = humanify i >>= return . (a ! href (stringValue $ show i)) . string
+  htmlize (Variable v) = htmlize v
+  htmlize (Application t1 t2) = do t1' <- htmlize t1
+                                   t2' <- htmlize t2
+                                   return $ do t1'
+                                               preEscapedString "&nbsp;"
+                                               string "("
+                                               t2'
+                                               string ")"
 
 instance Htmlize Zero where
   htmlize = undefined
@@ -132,7 +131,9 @@ instance Htmlize a => Htmlize [a] where
 
 instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
   htmlize x  = do a  <- htmlize (semantics x)
-                  b  <- htmlize $ S.toList (constraints x)
+                  bs <- mapM htmlize $ S.toList (constraints x)
+                  let bs' = Data.List.intersperse (string " | ") bs 
+                  let b   = mconcat bs'
                   c  <- case constructors x of
                           Nothing -> return $ tr $ td ! colspan "4" $ "This is a primitive type. Its possible values are described above."
                           Just y  -> htmlize y

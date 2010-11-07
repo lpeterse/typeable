@@ -11,8 +11,8 @@ import qualified Data.Set as S
 import qualified Data.Map as M
 
 
-listof x =  Reduction (Reference "0ba85f3f10099c75d4b696d0cf944e09") (Reference x)
-list   x =  Reduction (Reference "0ba85f3f10099c75d4b696d0cf944e09") x
+listof x =  Application (DataType "0ba85f3f10099c75d4b696d0cf944e09") (DataType x)
+list   x =  Application (DataType "0ba85f3f10099c75d4b696d0cf944e09") x
 
 --
 
