@@ -4,7 +4,7 @@ module InternalTypeDefs where
 
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
-import Typeable.Tc1b1f6c722c2436fab3180146520814e
+import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f -- Succ
 
 import Data.Word
@@ -76,8 +76,8 @@ data (PeanoNumber k) => Constraint k = Constraint
 data (PeanoNumber k) => TypeDefinition k = TypeDefinition
                         { identifier      :: UUID
                         , antecedent      :: Maybe UUID
-                        , created         :: DateTime
-                        , modified        :: DateTime
+                        , created         :: Time UTC
+                        , modified        :: Time UTC
                         , author          :: Institution
                         , maintainer      :: Institution
                         , name            :: UpperDesignator

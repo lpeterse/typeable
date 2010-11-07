@@ -156,10 +156,10 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
                                       td ""
                                     tr $ do 
                                       td "Created"
-                                      td ""
+                                      td (string $ show (created x))
                                     tr $ do 
                                       td "Modified"
-                                      td ""
+                                      td (string $ show (modified x))
                                 H.h2 "Description"
                                 H.div ! A.id "description" ! class_ "annotation" $ a
                                 H.h2 "Structure"

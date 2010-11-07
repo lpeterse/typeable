@@ -578,8 +578,8 @@ t41       = defaultType' {
            , semantics    = ""
            , constructors = Just [
                                    defaultConstructor' 
-                                   { constructorName      = "Type"
-                                   , constructorSemantics = "DataTypes another Datatype by -> UUID."
+                                   { constructorName      = "DataType"
+                                   , constructorSemantics = "References another Datatype by -> UUID."
                                    , constructorFields    = [ defaultField'
                                                               { fieldName      = "typeRef"
                                                               , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
@@ -622,7 +622,7 @@ t41       = defaultType' {
                                                             ]
                                    } 
                                  , defaultConstructor'
-                                   { constructorName      = "Forall"
+                                   { constructorName      = "Quantification"
                                    , constructorSemantics = "Existential quantification."
                                    , constructorFields    = [ defaultField'
                                                               { fieldName      = "constraints"

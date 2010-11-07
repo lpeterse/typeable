@@ -24,14 +24,15 @@ Library
                   Crypto >= 4.2.2,
                   mtl,
                   haskell-src,
-                  time,
+                  time, time-extras,
                   process,
                   containers,
                   bytestring,
                   text,
                   blaze-html,
                   url,
-                  happstack-server 
+                  happstack-server, 
+                  old-locale
  hs-source-dirs:  src
  Exposed-Modules: FormatHtml, Types, TypesDefault, InternalTypeDefs, FormatHaskell, Context,
                   Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83,

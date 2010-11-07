@@ -7,8 +7,12 @@ import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.T421496848904471ea3197f25e2a02b72
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
+import Typeable.T606f253533d3420da3465afae341d598
+
 import qualified Data.Set as S
 import qualified Data.Map as M
+
+import Data.Ratio
 
 
 listof x =  Application (DataType "0ba85f3f10099c75d4b696d0cf944e09") (DataType x)
@@ -20,8 +24,8 @@ defaultType_ :: (PeanoNumber a) => TypeDefinition a
 defaultType_  = TypeDefinition {
                  identifier   = undefined
                , antecedent   = Nothing
-               , created      = 0
-               , modified     = 0
+               , created      = Time 384573
+               , modified     = Time 345387
                , author       = Person
                , maintainer   = Person
                , name         = undefined
