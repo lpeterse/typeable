@@ -32,9 +32,10 @@ Library
                   blaze-html,
                   url,
                   happstack-server, 
-                  old-locale
+                  old-locale,     
+                  parsec >= 3.0.0
  hs-source-dirs:  src
- Exposed-Modules: FormatHtml, Types, TypesDefault, InternalTypeDefs, FormatHaskell, Context,
+ Exposed-Modules: FormatHtml, Types, TypesDefault, InternalTypeDefs, FormatHaskell, Context, NamespaceParser,
                   Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83,
                   Typeable.T421496848904471ea3197f25e2a02b72,
                   Typeable.T9e2e1e478e094a8abe5507f8574ac91f,
@@ -44,7 +45,6 @@ Library
                   Typeable.Tc1b1f6c722c2436fab3180146520814e,
                   -- Time
                   Typeable.T606f253533d3420da3465afae341d598
-
 Executable        typeserver 
  hs-source-dirs:  src
  main-is:         typeserver.hs

@@ -15,6 +15,7 @@ import Data.String
 import Data.Text
 import Data.Map
 import Data.Set
+import qualified Data.Set as S
 import Data.ByteString
 import Data.Time.Calendar
 import Network.URL
@@ -195,6 +196,15 @@ show' (Underscore:xs) = '_':(show' xs)
 show' (Lower a   :xs) = (chr $ (fromEnum a)+97):(show' xs)
 show' (Upper a   :xs) = (chr $ (fromEnum a)+65):(show' xs)
 show' (Decimal a :xs) = (chr $ (fromEnum a)+48):(show' xs)
+
+
+
+data Namespace = Namespace {
+                             nstypes      :: S.Set UUID
+                            ,nsclasses    :: S.Set UUID
+                            ,subspaces  :: M.Map UpperDesignator Namespace
+                           } deriving (Eq, Show)
+                           
 
 instance Show LowerDesignator where
   show (LowerDesignator a xs) = (chr $ (fromEnum a)+97):(show' xs)

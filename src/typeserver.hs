@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances -XExistentialQuantification #-}
 module Main where
---vandalismus!
+
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.T421496848904471ea3197f25e2a02b72
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
@@ -13,6 +13,8 @@ import Control.Monad
 import Data.Monoid
 import qualified Data.Map as M
 import Data.String
+import NamespaceParser
+import Text.ParserCombinators.Parsec hiding (string)
 
 import InternalTypeDefs
 import Types
@@ -27,7 +29,16 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
 main :: IO ()
-main  = simpleHTTP nullConf (msum handlers) 
+main  = do 
+          parsens 
+          simpleHTTP nullConf (msum handlers) 
+
+
+parsens :: IO ()
+parsens = do
+            n <- parseFromFile namespaceParser "static/default.namespace"
+	    print $ show n
+
 
 handlers :: [ServerPart Response]
 handlers  = [
@@ -50,7 +61,7 @@ serveClass uuid = let a = uuid :: UUID in notFound $ toResponse ("Classes aren't
 
 serveOverview  = ok $ toResponse $ encapsulate ts
                  where
-                   f (x, WrappedType t) = H.li $ H.a ! A.href (stringValue $ "type/"++(show x)) ! A.class_ "fixedwidth" $ (string $ show (name t))
+                   f (x, WrappedType t) = H.li $ H.a ! A.href (stringValue $ "type/"++(show x)) ! A.class_ "fixedwidth" $ (string $ "t-"++ show(x) ++ " --" ++ show (name t)) 
                    ts  = H.ul $ mconcat (map f types)
 
 --
