@@ -13,15 +13,15 @@ import Control.Monad
 import Data.Monoid
 import qualified Data.Map as M
 import Data.String
-import NamespaceParser
+import TypeableInternal.NamespaceParser
 import Text.ParserCombinators.Parsec hiding (string)
 
-import InternalTypeDefs
-import Types
-import TypesDefault
-import Context
-import FormatHtml
-import FormatHaskell
+import TypeableInternal.InternalTypeDefs
+import TypeableInternal.Types
+import TypeableInternal.TypesDefault
+import TypeableInternal.Context
+import TypeableInternal.FormatHtml
+import TypeableInternal.FormatHaskell
 
 import Language.Haskell.Pretty
 
@@ -31,7 +31,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 main :: IO ()
 main  = do 
           parsens 
-          simpleHTTP nullConf (msum handlers) 
+          simpleHTTP (nullConf {port = 8000}) (msum handlers) 
 
 
 parsens :: IO ()

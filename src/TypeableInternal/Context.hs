@@ -1,6 +1,6 @@
-module Context where
+module TypeableInternal.Context where
 
-import InternalTypeDefs
+import TypeableInternal.InternalTypeDefs
 import qualified Data.Map as M
 import Control.Monad.Reader
 

@@ -1,9 +1,9 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-module FormatHaskell where
+module TypeableInternal.FormatHaskell where
 
 import Language.Haskell.Syntax
-import Context
-import InternalTypeDefs
+import TypeableInternal.Context
+import TypeableInternal.InternalTypeDefs
 
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4

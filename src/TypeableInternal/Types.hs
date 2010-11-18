@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Types where
+module TypeableInternal.Types where
 
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.T421496848904471ea3197f25e2a02b72
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
-import TypesDefault
-import InternalTypeDefs
+import TypeableInternal.TypesDefault
+import TypeableInternal.InternalTypeDefs
 import qualified Data.Set as S
 
 -----

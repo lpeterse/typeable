@@ -1,6 +1,6 @@
 {-# OPTIONS -XEmptyDataDecls -XDeriveDataTypeable -XStandaloneDeriving -XFlexibleInstances -XOverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module InternalTypeDefs where
+module TypeableInternal.InternalTypeDefs where
 
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time

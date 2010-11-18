@@ -1,7 +1,7 @@
 {-# OPTIONS -XFlexibleInstances -XNoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
-module FormatHtml where
+module TypeableInternal.FormatHtml where
 
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
@@ -28,14 +28,14 @@ import qualified Data.ByteString.Lazy as L
 
 import System.Process
 
-import InternalTypeDefs
+import TypeableInternal.InternalTypeDefs
 import qualified Network.URL as U
 import Data.Monoid (mconcat, mempty)
 import qualified Data.List
 import qualified Data.Map as M
 import qualified Data.Set as S
 
-import Context
+import TypeableInternal.Context
 
 encapsulate t = docTypeHtml $ do 
                   H.head $ do
@@ -144,7 +144,7 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
                                   table $ do
                                     tr $ do
                                       td "Name"
-                                      td ! class_ "type" $ (string $ show $ InternalTypeDefs.name x)
+                                      td ! class_ "type" $ (string $ show $ TypeableInternal.InternalTypeDefs.name x)
                                     tr $ do
                                       td "UUID"
                                       td $ string $ show (identifier x)
@@ -165,7 +165,7 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
                                 H.h2 "Structure"
                                 H.div ! A.id "structure" $ do
                                   H.table $ do
-                                    H.tr $ td ! colspan "4" ! class_ "type large" $ do string $ show (InternalTypeDefs.name x)
+                                    H.tr $ td ! colspan "4" ! class_ "type large" $ do string $ show (TypeableInternal.InternalTypeDefs.name x)
                                                                                        preEscapedString "&nbsp;"
                                                                                        mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
                                     H.tr $ td ! colspan "4" ! class_ "constraints" $ b
