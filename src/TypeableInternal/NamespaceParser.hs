@@ -16,6 +16,9 @@ indents = do
 emptyLine :: Perser String
 emptyLine = try $ (char ' ') `manyTill` char '\n'
 
+lineEnd   :: Parser String
+lineEnd    = anyChar `manyTill` (eof <|> (char '\n' >> return ())) 
+
 
 upperDesignator :: Perser UpperDesignator
 upperDesignator = do
@@ -39,21 +42,21 @@ parseType :: Namespace -> Perser Namespace
 parseType n = do
                 string "t-" 
                 uuid <- parseUUID
-                anyChar `manyTill` char '\n'
+                lineEnd
                 return n {nstypes = S.insert uuid (nstypes n)}
               
 parseClass ::  Namespace -> Perser Namespace
 parseClass n = do
                  string "c-" 
                  uuid <- parseUUID
-                 anyChar `manyTill` char '\n'
+                 lineEnd
                  return n {nsclasses = S.insert uuid (nsclasses n)}             
 
 parseSubnamespace   :: Int -> Namespace -> Perser Namespace
-parseSubnamespace i n = do
-                          ud <- upperDesignator
-                          s  <- fillNamespace (i+2) $ Namespace {nstypes = S.empty, nsclasses = S.empty, subspaces = M.empty}
-                          return n {subspaces = M.insert ud s $ subspaces n}
+parseSubnamespace i n = do ud <- upperDesignator
+                           lineEnd
+                           s  <- fillNamespace (i+2) $ Namespace {nstypes = S.empty, nsclasses = S.empty, subspaces = M.empty}
+                           return n {subspaces = M.insert ud s $ subspaces n}
 
       
 namespaceParser :: Perser Namespace
@@ -62,15 +65,12 @@ namespaceParser = fillNamespace 0 $ Namespace {nstypes = S.empty, nsclasses = S.
       
               
 fillNamespace :: Int -> Namespace -> Perser Namespace
-fillNamespace currentlv n = do 
-                            inds <- lookAhead indents
-                            (eof >> return n) <|> case compare inds currentlv of
-                                                     EQ -> do
-                                                            indents
-                                                            n' <- choice [parseType n, parseClass n, parseSubnamespace inds n]
-                                                            anyChar `manyTill` char '\n'
-                                                            many emptyLine
-                                                            fillNamespace currentlv n'                                        
-                                                     LT -> return n
-                                                     GT -> fail "check your indentation"
+fillNamespace i n = do many emptyLine
+                       (eof >> return n) <|> do i' <- lookAhead indents
+                                                case i' `compare` i of
+                                                  EQ -> do indents
+                                                           n' <- choice [parseType n, parseClass n, parseSubnamespace i n]
+                                                           fillNamespace i n'                                        
+                                                  LT -> return n
+                                                  GT -> fail "check your indentation"
                            
