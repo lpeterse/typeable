@@ -11,6 +11,7 @@ import Text.Blaze
 import Text.Blaze.Renderer.Utf8
 import Control.Monad
 import Data.Monoid
+import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.String
 import TypeableInternal.NamespaceParser
@@ -22,6 +23,7 @@ import TypeableInternal.TypesDefault
 import TypeableInternal.Context
 import TypeableInternal.FormatHtml
 import TypeableInternal.FormatHaskell
+import System.IO.Unsafe
 
 import Language.Haskell.Pretty
 
@@ -29,16 +31,14 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
 main :: IO ()
-main  = do 
-          parsens 
-          simpleHTTP (nullConf {port = 8000}) (msum handlers) 
+main  = simpleHTTP (nullConf {port = 8000}) (msum handlers) 
 
 
-parsens :: IO ()
-parsens = do
-            n <- parseFromFile namespaceParser "static/default.namespace"
-	    print $ show n
-
+namespace :: Namespace
+namespace  = unsafePerformIO $ do n <- parseFromFile namespaceParser "static/default.namespace"
+                                  case n of
+                                    Left e -> error $ show e
+                                    Right e -> return e
 
 handlers :: [ServerPart Response]
 handlers  = [
@@ -59,12 +59,24 @@ serveType uuid = case M.lookup uuid typemap of
 serveClass uuid = let a = uuid :: UUID in notFound $ toResponse ("Classes aren't yet implemented." :: String)
 
 
-serveOverview  = ok $ toResponse $ encapsulate ts
-                 where
-                   f (x, WrappedType t) = H.li $ H.a ! A.href (stringValue $ "type/"++(show x)) ! A.class_ "fixedwidth" $ (string $ "t-"++ show(x) ++ " --" ++ show (name t)) 
-                   ts  = H.ul $ mconcat (map f types)
+serveOverview :: ServerPartT IO Response
+serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
 
---
+instance Htmlize Namespace where
+  htmlize x = do zs  <- mapM (htmlize . snd) ns
+                 ts' <- mapM humanify ts
+                 cs' <- mapM humanify cs
+                 let ts'' = zip ts ts'
+                 let cs'' = zip cs cs'
+                 let ns' = zip (map fst ns) zs
+                 return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show u)) $ string n) ts''
+                                    mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show u)) $ string n) cs''
+                                    mconcat $ map (\(f,s)-> H.li (string (show f) >> s)) ns' 
+    where
+      ts = S.toList (nstypes   x)
+      cs = S.toList (nsclasses x)
+      ns = M.toList (subspaces x)
+
 
 
 data WrappedType = forall a. (Htmlize a, PeanoNumber a) => WrappedType { unwrap :: (TypeDefinition a) }
