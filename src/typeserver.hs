@@ -62,22 +62,6 @@ serveClass uuid = let a = uuid :: UUID in notFound $ toResponse ("Classes aren't
 serveOverview :: ServerPartT IO Response
 serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
 
-instance Htmlize Namespace where
-  htmlize x = do zs  <- mapM (htmlize . snd) ns
-                 ts' <- mapM humanify ts
-                 cs' <- mapM humanify cs
-                 let ts'' = zip ts ts'
-                 let cs'' = zip cs cs'
-                 let ns' = zip (map fst ns) zs
-                 return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show u)) $ string n) ts''
-                                    mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show u)) $ string n) cs''
-                                    mconcat $ map (\(f,s)-> H.li (string (show f) >> s)) ns' 
-    where
-      ts = S.toList (nstypes   x)
-      cs = S.toList (nsclasses x)
-      ns = M.toList (subspaces x)
-
-
 
 data WrappedType = forall a. (Htmlize a, PeanoNumber a) => WrappedType { unwrap :: (TypeDefinition a) }
 

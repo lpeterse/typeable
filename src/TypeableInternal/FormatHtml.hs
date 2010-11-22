@@ -19,7 +19,7 @@ import Text.Blaze.Html5
 import Text.Blaze.Html5.Attributes
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
-import Data.Text
+import qualified Data.Text as T
 import Data.Time.Calendar
 
 import Text.Blaze.Renderer.Utf8
@@ -27,6 +27,7 @@ import Text.Blaze.Renderer.Utf8
 import qualified Data.ByteString.Lazy as L
 
 import System.Process
+import Data.Function
 
 import TypeableInternal.InternalTypeDefs
 import qualified Network.URL as U
@@ -47,8 +48,20 @@ encapsulate t = docTypeHtml $ do
 class Htmlize a where
   htmlize :: a -> (Context Html)
 
-show' :: (Show a) => a -> Text
-show'  = pack . show
+show' :: (Show a) => a -> T.Text
+show'  = T.pack . show
+
+instance Htmlize Namespace where
+  htmlize x = do ns' <- mapM (htmlize . snd) ns >>= return . zip (Data.List.map fst ns)
+                 ts' <- mapM humanify ts        >>= return . sortBy (compare `on` snd) . zip ts
+                 cs' <- mapM humanify cs        >>= return . sortBy (compare `on` snd) . zip cs
+                 return $ H.ul $ do mconcat $ Data.List.map (\(f,s)-> H.li (string (show f) >> s)) ns' 
+                                    mconcat $ Data.List.map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show u)) $ string n) ts'
+                                    mconcat $ Data.List.map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show u)) $ string n) cs'
+    where
+      ts = S.toList (nstypes   x)
+      cs = S.toList (nsclasses x)
+      ns = M.toList (subspaces x)
 
 instance Htmlize Norm where
   htmlize x@(RFC n)  = return $ a (string $ show x) ! href (stringValue $ "http://tools.ietf.org/html/rfc" ++ show n)
