@@ -15,19 +15,27 @@ import qualified Data.Map as M
 import Data.Ratio
 
 
-listof x =  Application (DataType "0ba85f3f10099c75d4b696d0cf944e09") (DataType x)
+--listof x =  Application (DataType "0ba85f3f10099c75d4b696d0cf944e09") (DataType x)
 list   x =  Application (DataType "0ba85f3f10099c75d4b696d0cf944e09") x
+set    x =  Application (DataType "7af30cce93724981a16a80f3f193dc33") x
+maybe  x =  Application (DataType "f8f49ef6bbe874a42926fa23d5b3bc19") x
 
 --
+defaultPerson = Person { personName = "typeable.org" }
+
+personLars     = defaultPerson { personName = "Lars Petersen" }
+personMikael   = defaultPerson { personName = "Mikael Voss" }
+personClemens  = defaultPerson { personName = "Clemens Kornd\x00F6rfer" }
+personStefan   = defaultPerson { personName = "Prof. Dr. Stefan Evert" }
 
 defaultType_ :: (PeanoNumber a) => TypeDefinition a
 defaultType_  = TypeDefinition {
                  identifier   = undefined
                , antecedent   = Nothing
-               , created      = Time 384573
-               , modified     = Time 345387
-               , author       = Person
-               , maintainer   = Person
+               , created      = Time 3499718400
+               , modified     = Time 3499718400
+               , author       = Nothing
+               , maintainer   = defaultPerson
                , name         = undefined
                , semantics    = ""
                , variables    = M.empty
@@ -37,7 +45,6 @@ defaultType_  = TypeDefinition {
 
 defaultType :: TypeDefinition Zero
 defaultType = defaultType_
- 
                
 defaultType' :: TypeDefinition (Succ Zero)    
 defaultType' = defaultType_

@@ -119,15 +119,25 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
                                                 cs'
 
 instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
-  htmlize (DataType i)     = humanify i >>= return . (a ! href (stringValue $ show i)) . string
-  htmlize (Variable v) = htmlize v
-  htmlize (Application t1 t2) = do t1' <- htmlize t1
-                                   t2' <- htmlize t2
-                                   return $ do t1'
-                                               preEscapedString "&nbsp;"
-                                               string "("
-                                               t2'
-                                               string ")"
+  htmlize x = htmlize' x False
+    where 
+      htmlize' (DataType i) _ = humanify i >>= return . (a ! href (stringValue $ show i)) . string
+      htmlize' (Variable v) _ = htmlize v
+      htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
+                                                                                              return $ do a ! href (stringValue $ show $ typeRef t1) $ "["
+                                                                                                          t2'
+                                                                                                          a ! href (stringValue $ show $ typeRef t1) $ "]"
+                                     | t1 == DataType "7af30cce93724981a16a80f3f193dc33" = do t2' <- htmlize t2
+                                                                                              return $ do a ! href (stringValue $ show $ typeRef t1) $ "{"
+                                                                                                          t2'
+                                                                                                          a ! href (stringValue $ show $ typeRef t1) $ "}"
+                                     | otherwise = do t1' <- htmlize' t1 True
+                                                      t2' <- htmlize' t2 True
+                                                      return $ do if w then string "(" else mempty
+                                                                  t1'
+                                                                  preEscapedString "&nbsp;"
+                                                                  t2'
+                                                                  if w then string ")" else mempty
 
 instance Htmlize Zero where
   htmlize = undefined
@@ -142,8 +152,15 @@ instance Htmlize a => Htmlize [a] where
   htmlize xs = do xs' <- mapM htmlize xs
                   return $ mconcat xs'
 
+instance Htmlize Person where
+  htmlize x  = return $ string $ personName x
+
 instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
   htmlize x  = do a  <- htmlize (semantics x)
+                  author' <- case author x of
+                               Nothing -> return "PublicDomain"
+                               Just a  -> htmlize a
+                  maintainer' <- htmlize (maintainer x)
                   bs <- mapM htmlize $ S.toList (constraints x)
                   let bs' = Data.List.intersperse (string " | ") bs 
                   let b   = mconcat bs'
@@ -163,10 +180,10 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
                                       td $ string $ show (identifier x)
                                     tr $ do
                                       td "Author"
-                                      td ""
+                                      td author'
                                     tr $ do
                                       td "Maintainer"
-                                      td ""
+                                      td maintainer' 
                                     tr $ do 
                                       td "Created"
                                       td (string $ show (created x))

@@ -52,6 +52,9 @@ type DateTime   = Int
 
 data Void
 
+data Person = Person { personName :: String
+                     } deriving (Eq, Ord, Show)
+
 instance Eq Void where
   (==) = undefined
 
@@ -61,7 +64,7 @@ instance Ord Void where
 instance Show Void where
   show = undefined
 
-data (PeanoNumber k) => Type k = DataType       UUID               -- entweder extern der Ordnung k
+data (PeanoNumber k) => Type k = DataType      { typeRef ::  UUID }               -- entweder extern der Ordnung k
                                | DependentType  UUID               -- oder gebundene Variable
                                | Variable       k                  -- oder freie Variable der Ordnung k
                                | Application    (Type k) (Type k)  -- oder Typkonstruktor höherer Ordnung wird angewandt
@@ -79,8 +82,8 @@ data (PeanoNumber k) => TypeDefinition k = TypeDefinition
                         , antecedent      :: Maybe UUID
                         , created         :: Time UTC
                         , modified        :: Time UTC
-                        , author          :: Institution
-                        , maintainer      :: Institution
+                        , author          :: Maybe Person
+                        , maintainer      :: Person
                         , name            :: UpperDesignator
                         , semantics       :: Annotation k
                         , variables       :: Map k (Annotation k)
@@ -126,12 +129,6 @@ data (PeanoNumber k) => Inline k       = Plain          Text
                                        | Type           (Type k)
                                        | Class          UUID
                                        deriving (Eq, Ord, Show)
-
-data Institution = Person      {}
-                 | University  {}
-                 | Company     {}
-                 | Community   {}
-                 deriving (Eq, Ord, Show)
 
 data Norm        = RFC  Word
                  | ISO  Word

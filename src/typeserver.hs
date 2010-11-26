@@ -24,6 +24,7 @@ import TypeableInternal.Context
 import TypeableInternal.FormatHtml
 import TypeableInternal.FormatHaskell
 import System.IO.Unsafe
+import System (getArgs)
 
 import Language.Haskell.Pretty
 
@@ -31,7 +32,9 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
 main :: IO ()
-main  = simpleHTTP (nullConf {port = 8000}) (msum handlers) 
+main  = do args <- getArgs
+           let p = if null args then 8000 else read (args !! 0)
+           simpleHTTP (nullConf {port = p}) (msum handlers) 
 
 
 namespace :: Namespace
@@ -174,6 +177,8 @@ types   = [  wrap t1
            , wrap t74
            , wrap t75
            , wrap t76
+           , wrap t78
+           , wrap t79
         ]
 
 

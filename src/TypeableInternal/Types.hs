@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module TypeableInternal.Types where
 
+import Prelude hiding (maybe)
+
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.T421496848904471ea3197f25e2a02b72
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
@@ -27,6 +29,7 @@ t1       = defaultType {
 
 t56      = defaultType {
              identifier   = "42149684-8904-471e-a319-7f25e2a02b72"
+           , author       = Just personLars
            , name         = "Zero"
            , semantics    = "The typelevel number zero. Interpreted as a set it is the empty set. It therefore has no instances."
            , constructors = Just []
@@ -35,6 +38,7 @@ t56      = defaultType {
 t57 :: TypeDefinition (Succ Zero) 
 t57      = defaultType' {
              identifier   = "9e2e1e47-8e09-4a8a-be55-07f8574ac91f"
+           , author       = Just personLars
            , name         = "Succ"
            , semantics    = "Counting in the peano sense. Interpreted as a set it is the set that contains n ordinal numbers."
            , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
@@ -52,6 +56,7 @@ t57      = defaultType' {
 
 t58      = defaultType'' {
              identifier   = "9035333f-c91c-42f8-ab8f-ba4c3f256a7b"
+           , author       = Just personLars
            , name         = "FOL"
            , semantics    = "Formulas of the first order predicate logic. The structure is limited to the necessary: NAND. Other conjunctors are seen as a shorthand notation for: ..."
            , constraints  = S.fromList [ Constraint "0d864b18-19bd-4230-905b-bad04a4c195e" [Variable First]
@@ -123,6 +128,7 @@ t58      = defaultType'' {
 
 t52      = defaultType {
              identifier   = "2dbb6df8-73ad-4e4b-aeb8-2172074ed042"
+           , author       = Just personLars
            , name         = "Gender"
            , semantics    = ""
            , constructors = Just [
@@ -133,6 +139,7 @@ t52      = defaultType {
 
 t53      = defaultType {
              identifier   = "a0bbed72-1166-4a31-9e09-dc1c0f97bbd6"
+           , author       = Just personLars
            , name         = "Casus"
            , semantics    = ""
            , constructors = Just [
@@ -147,6 +154,7 @@ t53      = defaultType {
 
 t54      = defaultType {
              identifier   = "a384955f-99d4-401c-a54a-3f9c62b78d0a"
+           , author       = Just personLars
            , name         = "Numerus"
            , semantics    = ""
            , constructors = Just [
@@ -157,6 +165,7 @@ t54      = defaultType {
  
 t55      = defaultType {
              identifier   = "ce462e9d-f114-4a16-8188-6cd2619b5d1a"
+           , author       = Just personLars
            , name         = "Genus"
            , semantics    = ""
            , constructors = Just [
@@ -168,45 +177,123 @@ t55      = defaultType {
           
 t49      = defaultType {
              identifier   = "3819884685d34bf19b3469304e15983d"
-           , name         = "Authorship"
-           , semantics    = ""
+           , author       = Just personLars
+           , name         = "Person"
+           , semantics    = "A record of information for identifying someone."
            , constructors = Just [
                                    defaultConstructor
-                                   { constructorName    = "PublicDomain"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Author"
+                                   { constructorName    = "Person"
                                    , constructorFields  = [
                                                             defaultField
-                                                            { fieldName     = "properName"
-                                                            , fieldType     = DataType "543df2bd-0c7c-4819-b9bb-4b94b326fce7"
+                                                            { fieldName     = "name"
+                                                            , fieldType     = DataType "4f7db06c439541658a09689d3e7dd909"
                                                             }
                                                           , defaultField
-                                                            { fieldName     = "contactInformation"
-                                                            , fieldType     = DataType "53e0d483-a641-4425-9dce-752799d64305"
+                                                            { fieldName     = "birthday"
+                                                            , fieldType     = maybe $ DataType "b6831ec097f14b8eba74b1e486b4175d"
                                                             }
                                                           , defaultField
-                                                            { fieldName     = "licenses"
-                                                            , fieldType     = Application
-                                                                                (DataType "7af30cce93724981a16a80f3f193dc33")
-                                                                                (DataType "2afd6f4f-357f-47e5-97d3-1c5e3f44c5cd")
+                                                            { fieldName     = "contacts"
+                                                            , fieldType     = set $ DataType "53e0d483-a641-4425-9dce-752799d64305"
                                                             }
                                                           ]
                                    }
                                  ]
           }
 
-t50      = defaultType {
-             identifier   = "b6831ec097f14b8eba74b1e486b4175d"
-           , name         = "Maintainer"
-           , semantics    = ""
+t79      = defaultType {
+             identifier   = "b586fd6a-e075-49c4-b641-465feb232a00"
+           , author       = Just (defaultPerson { personName = "John McFarlane" })
+           , name         = "TeXMath"
+           , semantics    = "According to John McFarlane's definition at https://github.com/jgm/texmath/blob/master/Text/TeXMath/Parser.hs."
            , constructors = Just [
+                                   defaultConstructor
+                                   { constructorName    = "Number"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Grouped"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Identifier"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "MathOperator"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Symbol"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Space"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Sub"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Super"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Subsup"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Over"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Under"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Underover"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Up"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Down"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Downup"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Unary"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Scaled"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Stretchy"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Array"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Text"
+                                   , constructorFields  = []
+                                   }
                                  ]
-          }
+                                }
+ 
 
 t48      = defaultType' {
              identifier   = "9592f9fa4fae437a9e8d0917c14ff068"
+           , author       = Just personLars
            , name         = "TextElement"
            , semantics    = "Used by -> StructuredText."
            , constructors = Just [
@@ -218,9 +305,9 @@ t48      = defaultType' {
                                                             , fieldType      = DataType "4f7db06c439541658a09689d3e7dd909"
                                                             }
                                                           , defaultField'
-                                                            { fieldName      = "weight"
-                                                            , fieldSemantics = "States how bold the text is."
-                                                            , fieldType      = DataType "314bc0db-ad9b-4a13-9e30-24da394ecf6f"
+                                                            { fieldName      = "bold"
+                                                            , fieldSemantics = "States whether the text is to be printed bold."
+                                                            , fieldType      = DataType "0219c59f732a8ef507215fbdb4cceacd"
                                                             }
                                                           , defaultField'
                                                             { fieldName      = "italic"
@@ -249,11 +336,11 @@ t48      = defaultType' {
                                                          ]
                                    }
                                  , defaultConstructor' 
-                                   { constructorName   = "Hyperlink"
+                                   { constructorName   = "Resource"
                                    , constructorFields = [
                                                            defaultField'
-                                                           { fieldName = "url"
-                                                           , fieldType = DataType "ac64dc3f-cc3b-4ad9-b23f-576b794ac36c"
+                                                           { fieldName = "uri"
+                                                           , fieldType = DataType "e393b15b944c4b3597cd02b1be6d693b"
                                                            }
                                                          ]
                                    }
@@ -272,6 +359,7 @@ t48      = defaultType' {
 t45     :: TypeDefinition Zero
 t45      = defaultType {
              identifier   = "c1b1f6c7-22c2-436f-ab31-80146520814e"
+           , author       = Just personMikael
            , name         = "UTC"
            , semantics    = "The UTC time standard."
            , constructors = Just [] 
@@ -280,6 +368,7 @@ t45      = defaultType {
 t46     :: TypeDefinition Zero
 t46      = defaultType {
              identifier   = "aaaa6ecd-826d-4604-801c-4fa962cc1446"
+           , author       = Just personMikael
            , name         = "TAI"
            , semantics    = "The TAI time standard."
            , constructors = Just [] 
@@ -304,7 +393,11 @@ t2       = defaultType' {
            , name         = "List"
            , semantics    = "This is the default type for listing something. The order of elements matters and elements may occur more than once."
            , constructors = Just [
-                                   defaultConstructor' 
+                                   defaultConstructor'
+                                     { constructorName      = "Nil"
+                                     , constructorSemantics = "The empty list. Terminates recursion."
+                                     } 
+                                 , defaultConstructor' 
                                      { constructorName      = "Cons"
                                      , constructorSemantics = "This constructor prepends an element to a remaining list."
                                      , constructorFields    = [ defaultField'
@@ -321,15 +414,12 @@ t2       = defaultType' {
                                                                   }
                                                               ]
                                      } 
-                                 , defaultConstructor'
-                                     { constructorName      = "Empty"
-                                     , constructorSemantics = "The empty list. Terminates recursion."
-                                     } 
                                  ]
                        }
 
 t43       = defaultType' {
              identifier   = "b0221a43-509e-4edd-b062-101bfd794bc4"
+           , author       = Just personLars
            , name         = "StructuredText"
            , semantics    = "A Markup format."
            , constraints  = S.fromList [Constraint "edba1ef6-3e72-4b61-8256-9040555253a8" [Variable First]]
@@ -427,6 +517,7 @@ t43       = defaultType' {
 
 t44       = defaultType' {
              identifier   = "37c8a341f0b34cc6bbbc9f2403f09be3"
+           , author       = Just personLars
            , name         = "Constructor"
            , semantics    = "A value constructor."
            , constructors = Just [ defaultConstructor' 
@@ -456,6 +547,7 @@ t44       = defaultType' {
 
 t51      = defaultType' {
              identifier   = "205895c8-d2df-475b-8d5e-ad5ee33d9f63"
+           , author       = Just personLars
            , name         = "Field"
            , semantics    = ""
            , constructors = Just [ defaultConstructor' 
@@ -477,7 +569,7 @@ t51      = defaultType' {
                                                                   { fieldName      = "type"
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Application 
-                                                                                       (DataType "0174bd2264004820bfe34e211cb35a7d") 
+                                                                                       (DataType "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f") 
                                                                                        (Variable First)
                                                                   }
                                                                ]
@@ -488,6 +580,7 @@ t51      = defaultType' {
 t42     :: TypeDefinition (Succ Zero)
 t42      = defaultType' {
              identifier   = "3e815311-18e1-4888-be21-de7921b15bb5"
+           , author       = Just personLars
            , name         = "TypeDefintion"
            , semantics    = "This is the datatype the whole system relies on :-)"
            , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
@@ -533,14 +626,14 @@ t42      = defaultType' {
                                                                                        (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
                                                                   }
                                                                ,  defaultField' 
-                                                                  { fieldName      = "authorship"
+                                                                  { fieldName      = "author"
                                                                   , fieldSemantics = "The original author of the type."
-                                                                  , fieldType      = DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
+                                                                  , fieldType      = maybe $ DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "maintainer"
                                                                   , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
-                                                                  , fieldType      = DataType "b6831ec0-97f1-4b8e-ba74-b1e486b4175d"  
+                                                                  , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "variables"
@@ -571,9 +664,54 @@ t42      = defaultType' {
                                  ]
                        }
 
+t78       = defaultType' {
+             identifier   = "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f"
+           , author       = Just personLars
+           , name         = "TypeHM"
+           , semantics    = "A Hindley-Milner type."
+           , constructors = Just [
+                                   defaultConstructor' 
+                                   { constructorName      = "DataType"
+                                   , constructorSemantics = "References another Datatype by -> UUID."
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "typeRef"
+                                                              , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
+                                                              }
+                                                            ]
+                                   } 
+                                 , defaultConstructor' 
+                                   { constructorName      = "Variable"
+                                   , constructorSemantics = "Bound variable. You supply the set of variables manually via $a"
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "variable"
+                                                              , fieldType      = Variable First
+                                                              }
+                                                            ]
+                                   } 
+                                 , defaultConstructor'
+                                   { constructorName      = "Application"
+                                   , constructorSemantics = "Apply one type onto another yielding a type of lower kind."
+                                   , constructorFields    = [ defaultField'
+                                                              { fieldName      = "function"
+                                                              , fieldType      = Application 
+                                                                                   (DataType "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f")
+                                                                                   (Variable First)
+                                                              }
+                                                            , defaultField'
+                                                              { fieldName      = "argument"
+                                                              , fieldType      = Application
+                                                                                   (DataType "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f")
+                                                                                   (Variable First)
+                                                              }
+                                                            ]
+                                   } 
+                                ]
+                       }
+ 
 
 t41       = defaultType' {
              identifier   = "0174bd22-6400-4820-bfe3-4e211cb35a7d"
+           , author       = Just personLars
            , name         = "Type"
            , semantics    = ""
            , constructors = Just [
@@ -923,6 +1061,7 @@ t24       = defaultType'' {
 
 t25       = defaultType {
              identifier   = "ff421b2c-3177-4c37-a733-6c8245a74da9"
+           , author       = Just personClemens
            , name         = "DecimalAlphabet"
            , semantics    = "The 10 ciphers of the decimal system"
            , constructors = Just [
@@ -943,6 +1082,7 @@ t25       = defaultType {
 
 t26       = defaultType {
              identifier   = "45cc309e-ec2d-47f3-a7ed-3af50c84a392"
+           , author       = Just personClemens
            , name         = "HexadecimalAlphabet"
            , semantics    = "The 10 ciphers of the hexadecimal system"
            , constructors = Just [
@@ -969,6 +1109,7 @@ t26       = defaultType {
  
 t27       = defaultType {
              identifier   = "6716d098-a587-4337-9e54-c12f249cdc0c"
+           , author       = Just personClemens
            , name         = "LatinAlphabet"
            , semantics    = "The 26 letters of the latin alphabet"
            , constructors = Just [
@@ -1005,6 +1146,7 @@ t27       = defaultType {
 
 t28       = defaultType {
              identifier   = "1566edb1-a4de-4aab-8106-e63293e9bfcf"
+           , author       = Just personClemens
            , name         = "Symbol"
            , semantics    = "the choice of symbols available in a -> Designator: Lower and Uppercase Latin Characters, decimal ciphers and the underscore"
            , constructors = Just [
@@ -1043,6 +1185,7 @@ t28       = defaultType {
           
 t29       = defaultType {
              identifier   = "9790ade9-814a-4aac-a5ea-a80c3e47685d"
+           , author       = Just personClemens
            , name         = "LowerDesignator"
            , semantics    = "This type represents valid designators. These contain at least one -> latin character that is lowercase, and a list of -> Symbols (lower/upper character, decimal character, underscore) of arbitrary length. Also look how the type itself determines the semantics of the single LatinAlphabet character: It itself does not have any case but the context induces one."
            , constructors = Just [
@@ -1054,7 +1197,7 @@ t29       = defaultType {
                                                                  }
                                                          , defaultField {
                                                                    fieldName = "rest" 
-                                                                ,  fieldType = listof "1566edb1-a4de-4aab-8106-e63293e9bfcf"
+                                                                ,  fieldType = list $ DataType "1566edb1-a4de-4aab-8106-e63293e9bfcf"
                                                                  }
                                                          ]
                                    }           
@@ -1066,6 +1209,7 @@ t29       = defaultType {
           
 t30       = defaultType {
              identifier   = "44d86fd3-a506-477a-b886-83d796e0d18b"
+           , author       = Just personClemens
            , name         = "UpperDesignator"
            , semantics    = "This type represents valid designators. These contain at least one -> latin character that is uppercase, a list of -> Symbol (lower/upper character, decimal character, underscore) of arbitrary length. Also look how the type itself determines the semantics of the single LatinAlphabet character: It itself does not have any case but the context induces one."
            , constructors = Just [
@@ -1077,7 +1221,7 @@ t30       = defaultType {
                                                                  }
                                                          , defaultField {
                                                                    fieldName = "rest" 
-                                                                ,  fieldType = listof "1566edb1-a4de-4aab-8106-e63293e9bfcf"
+                                                                ,  fieldType = list $ DataType "1566edb1-a4de-4aab-8106-e63293e9bfcf"
                                                                  }
                                                          ]
                                    }           
@@ -1119,6 +1263,7 @@ t33       = defaultType {
 
 t40       = defaultType' {
              identifier   = "606f2535-33d3-420d-a346-5afae341d598"
+           , author       = Just personMikael
            , name         = "Time"
            , semantics    = "This type is used for noting a point in time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
            , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [Variable First]]
@@ -1135,6 +1280,28 @@ t40       = defaultType' {
                                     }
                                  ]
           }
+
+
+t50       = defaultType' {
+             identifier   = "b6831ec097f14b8eba74b1e486b4175d"
+           , author       = Just personLars
+           , name         = "Date"
+           , semantics    = "This type is used for noting a day time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
+           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [Variable First]]
+           , constructors = Just [
+                                  defaultConstructor' 
+                                    { constructorName = "Time"
+                                    , constructorFields = [ defaultField'             
+                                                              { fieldName      = "days"
+                                                              , fieldType      = DataType "ac2e770f2132aced749ec197385ff552"
+                                                              , fieldSemantics = "Days relative to January 1st, 1900. What is meant by a day depends on the timescale."
+                                                              }
+                                                          ]
+                                    
+                                    }
+                                 ]
+          }
+
 
 
 t34       = defaultType {
@@ -1640,6 +1807,7 @@ t35       = defaultType {
 
 t59 = defaultType {
 	identifier = "90eceef9-1189-4a18-903b-9cf36eb18e97",
+  author       = Just personMikael,
 	name = "Permission",
 	semantics = "File access permission mask.",
 	constructors = Just [
@@ -1668,6 +1836,7 @@ t59 = defaultType {
 
 t60 = defaultType {
 	identifier = "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8",
+  author       = Just personMikael,
 	name = "UnixTime",
 	semantics = "UNIX time stamp.",
 	constructors = Just [
@@ -1686,6 +1855,7 @@ t60 = defaultType {
 
 t61 = defaultType {
 	identifier = "41f3d3c6-311b-4f18-a600-758219595871",
+  author       = Just personMikael,
 	name = "SpecialType",
 	semantics = "Special file type.",
 	constructors = Just [
@@ -1696,6 +1866,7 @@ t61 = defaultType {
 
 t62 = defaultType {
 	identifier = "fa052506-7ac8-4473-a274-c4bac5ad0cc4",
+  author       = Just personMikael,
 	name = "IPCType",
 	semantics = "IPC object type.",
 	constructors = Just [
@@ -1706,6 +1877,7 @@ t62 = defaultType {
 
 t63 = defaultType' {
 	identifier = "027770dd-5134-4ee0-8cd8-faf29e962167",
+  author       = Just personMikael,
 	name = "File",
 	semantics = "File system file.",
 	constructors = Just [
@@ -1794,6 +1966,7 @@ t63 = defaultType' {
 
 t64 = defaultType' {
 	identifier = "4eabdb36-0fbf-4df6-9dcd-33d16dac9516",
+  author       = Just personMikael,
 	name = "Inode",
 	semantics = "File system inode.",
 	constructors = Just [
@@ -1907,6 +2080,7 @@ t64 = defaultType' {
 
 t65 = defaultType {
 	identifier = "f2c4f6dd-d939-444b-a209-fbdf2152eb54",
+  author       = Just personMikael,
 	name = "SchemeSymbol",
 	semantics = "URI scheme symbol.",
 	constructors = Just [
@@ -1936,6 +2110,7 @@ t65 = defaultType {
 
 t66 = defaultType {
 	identifier = "6e2f1233-f1c8-4e6b-9bb3-7c405c666234",
+  author       = Just personMikael,
 	name = "SchemeName",
 	semantics = "URI scheme.",
 	constructors = Just [
@@ -1961,6 +2136,7 @@ t66 = defaultType {
 
 t67 = defaultType {
 	identifier = "a078d512-3ead-415d-8d85-7dc6dc15b475",
+  author       = Just personMikael,
 	name = "RootlessPath",
 	semantics = "Root-less path name.",
 	constructors = Just [
@@ -1983,6 +2159,7 @@ t67 = defaultType {
 
 t68 = defaultType {
 	identifier = "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a",
+  author       = Just personMikael,
 	name = "AbsolutePath",
 	semantics = "Absolute path name.",
 	constructors = Just [
@@ -2005,6 +2182,7 @@ t68 = defaultType {
 
 t69 = defaultType {
 	identifier = "5448c6b7-9a08-4b4e-a40d-442c4fd2e125",
+  author       = Just personMikael,
 	name = "Path",
 	semantics = "Path name.",
 	constructors = Just [
@@ -2031,6 +2209,7 @@ t69 = defaultType {
 
 t70 = defaultType {
 	identifier = "8068cbda-f35e-4618-a7e7-98c67ff9bee0",
+  author       = Just personMikael,
 	name = "Hierarchy",
 	semantics = "URI hierarchy",
 	constructors = Just [
@@ -2061,6 +2240,7 @@ t70 = defaultType {
 
 t71 = defaultType {
 	identifier = "e393b15b-944c-4b35-97cd-02b1be6d693b",
+  author       = Just personMikael,
 	name = "URI",
 	semantics = "Uniform Resource Identifier",
 	constructors = Just [
@@ -2090,6 +2270,7 @@ t71 = defaultType {
 
 t74 = defaultType {
 	identifier = "a9c05900-6c8d-4849-af90-2d3ad12ee3cc",
+  author       = Just personMikael,
 	name = "IP",
 	semantics = "Internet Protocol address.",
 	constructors = Just [
@@ -2118,6 +2299,7 @@ t74 = defaultType {
 
 t75 = defaultType {
 	identifier = "335b7633-0e72-4b64-a525-6190fb579dad",
+  author       = Just personMikael,
 	name = "Authority",
 	constructors = Just [
 		defaultConstructor {
@@ -2149,6 +2331,7 @@ t75 = defaultType {
 
 t76 = defaultType {
 	identifier = "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06",
+  author       = Just personMikael,
 	name = "Host",
 	semantics = "URI host",
 	constructors = Just [

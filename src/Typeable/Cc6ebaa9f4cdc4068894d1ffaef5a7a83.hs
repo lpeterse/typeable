@@ -5,7 +5,7 @@ import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
 
 
-class Finite a => PeanoNumber a
+class (Finite a) => PeanoNumber a
 
 instance PeanoNumber Zero
 instance PeanoNumber a => PeanoNumber (Succ a)

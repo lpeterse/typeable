@@ -28,6 +28,7 @@ Basic
     t-7af30cce93724981a16a80f3f193dc33 --Set
     t-43c6cd1333b04fc8a480668ecb24768e --Map
   Time
+    t-b6831ec097f14b8eba74b1e486b4175d --Date
     t-606f253533d3420da3465afae341d598 --Time
     t-c1b1f6c722c2436fab3180146520814e --UTC
     t-aaaa6ecd826d4604801c4fa962cc1446 --TAI
@@ -68,6 +69,7 @@ Language
 
 Internal
   t-0174bd2264004820bfe34e211cb35a7d --Type
+  t-49dcb902e92a4fcbb16ab1a3cff5f68f -- TypeHM
   t-3e81531118e14888be21de7921b15bb5 --TypeDefintion
   t-37c8a341f0b34cc6bbbc9f2403f09be3 --Constructor
   t-205895c8d2df475b8d5ead5ee33d9f63 --Field
@@ -80,7 +82,7 @@ Unassigned
   t-b0221a43509e4eddb062101bfd794bc4 --StructuredText
   t-9592f9fa4fae437a9e8d0917c14ff068 --TextElement
   t-3819884685d34bf19b3469304e15983d --Authorship
-  t-b6831ec097f14b8eba74b1e486b4175d --Maintainer
+  t-b586fd6ae07549c4b641465feb232a00 -- TeXMath
 
 FileSystem
   t-90eceef911894a18903b9cf36eb18e97 --Permission
