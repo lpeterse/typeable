@@ -32,7 +32,7 @@ Library
                   text,
                   blaze-html,
                   url,
-                  happstack-server, 
+                  happstack-server >= 0.5.0.4, 
                   old-locale,     
                   parsec >= 3.0.0
  hs-source-dirs:  src

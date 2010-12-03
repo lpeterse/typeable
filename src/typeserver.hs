@@ -179,6 +179,12 @@ types   = [  wrap t1
            , wrap t76
            , wrap t78
            , wrap t79
+           , wrap t80
+           , wrap t81
+           , wrap t82
+           , wrap t83
+           , wrap t84
+           , wrap t85
         ]
 
 

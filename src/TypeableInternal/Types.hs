@@ -664,6 +664,69 @@ t42      = defaultType' {
                                  ]
                        }
 
+t80     :: TypeDefinition (Succ Zero)
+t80      = defaultType' {
+             identifier   = "4e0b8f8e-a2b1-4522-8fa4-ec74b559bf6a"
+           , author       = Just personLars
+           , name         = "ClassDefintion"
+           , semantics    = ""
+           , constructors = Just [
+                                   defaultConstructor' 
+                                     { constructorName      = "ClassDefinition"
+                                     , constructorFields    = [ defaultField'
+                                                                  { fieldName      = "identifier"
+                                                                  , fieldSemantics = "This identifier is bound to the structure and semantics, not to an actual version of discription etc."
+                                                                  , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "antecedent"
+                                                                  , fieldSemantics = "Note whether this class is an improved version of another with changes in structure and/or semantics."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "f8f49ef6bbe874a42926fa23d5b3bc19") 
+                                                                                       (DataType "346674042a7248b4a94abff0726d0c43")  
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "name"
+                                                                  , fieldSemantics = "The classes' name. It doesn't need to be unique - this is what the -> UUID is for. In doubt choose a short one that already catches the semantics as good as possible."
+                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "semantics"
+                                                                  , fieldSemantics = "The classes' semantics in general."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                                       (Variable First)
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "creation"
+                                                                  , fieldSemantics = "The date of creating the class with structure and semantics."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "606f253533d3420da3465afae341d598")
+                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "modification"
+                                                                  , fieldSemantics = "The date of the last improvement/modification to the description."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "606f253533d3420da3465afae341d598")
+                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "author"
+                                                                  , fieldSemantics = "The original author of the type."
+                                                                  , fieldType      = maybe $ DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "maintainer"
+                                                                  , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
+                                                                  , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
+                                                                  }
+                                                           ]
+                                     } 
+                                 ]
+                       }
+
+
 t78       = defaultType' {
              identifier   = "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f"
            , author       = Just personLars
@@ -709,6 +772,109 @@ t78       = defaultType' {
                        }
  
 
+t85       = defaultType {
+              identifier   = "53e0d483a64144259dce752799d64305"
+            , author       = Just personLars
+            , name         = "ContactInformation"
+            , semantics    = ""
+            , constructors = Just [
+                                    defaultConstructor
+                                    { constructorName      = "Email"
+                                    , constructorSemantics = ""
+                                    , constructorFields    = [
+                                                               defaultField
+                                                               { fieldName      = "email"
+                                                               , fieldType      = Application
+                                                                                    (DataType "1ea5eae4-7028-44f7-acbc-3c65b2a40093")
+                                                                                    (DataType "ed098cc9-75df-4cd0-adb9-9a5b7dc48600")
+                                                               }                                                               
+                                                             ]
+                                    }
+                                  , defaultConstructor
+                                    { constructorName      = "Phone"
+                                    , constructorSemantics = ""
+                                    , constructorFields    = [
+                                                               defaultField
+                                                               { fieldName      = "phone"
+                                                               , fieldType      = Application
+                                                                                    (DataType "1ea5eae4-7028-44f7-acbc-3c65b2a40093")
+                                                                                    (DataType "f18ae792-e532-4a68-a16f-11ea5c61442a")
+                                                               }                                                               
+                                                             ]
+                                    }
+                                  , defaultConstructor
+                                    { constructorName      = "Website"
+                                    , constructorSemantics = ""
+                                    , constructorFields    = [
+                                                               defaultField
+                                                               { fieldName      = "website"
+                                                               , fieldType      = Application
+                                                                                    (DataType "1ea5eae4-7028-44f7-acbc-3c65b2a40093")
+                                                                                    (DataType "d847a61a-1a94-4723-ab4b-fcfb214bd8aa")
+                                                               }                                                               
+                                                             ]
+                                    }
+                                  ]
+            }
+
+t81       = defaultType {
+              identifier   = "ed098cc9-75df-4cd0-adb9-9a5b7dc48600"
+            , author       = Just personLars
+            , name         = "Mailto"
+            , semantics    = "The URI scheme 'mailto' according to RFC 2368."
+            , constructors = Just []
+            }
+ 
+t82       = defaultType {
+              identifier   = "f18ae792-e532-4a68-a16f-11ea5c61442a"
+            , author       = Just personLars
+            , name         = "Tel"
+            , semantics    = "The URI scheme 'tel' according to RFC 3966."
+            , constructors = Just []
+            }
+ 
+t83       = defaultType {
+              identifier   = "d847a61a-1a94-4723-ab4b-fcfb214bd8aa"
+            , author       = Just personLars
+            , name         = "Http"
+            , semantics    = "The URI scheme 'http' according to RFC 1738, RFC 2068, RFC 2616."
+            , constructors = Just []
+            }
+ 
+t84       = defaultType'
+            { identifier   = "1ea5eae4-7028-44f7-acbc-3c65b2a40093"
+            , antecedent   = Just  "e393b15b-944c-4b35-97cd-02b1be6d693b"
+            , author       = Just personLars
+            , name         = "URI"
+            , semantics    = "Uniform Resource Identifier variable in the scheme."
+            , constructors = Just [
+                                   defaultConstructor' 
+                                    { constructorName = "URI"
+                                    , constructorFields = [
+                                                            defaultField'
+                                                            { fieldName = "scheme"
+				                                                    ,	fieldType = Variable First
+			                                                     	}
+                                                          ,
+                                                            defaultField' 
+                                                            { fieldName = "hierarchy"
+                                                            , fieldType = DataType "8068cbda-f35e-4618-a7e7-98c67ff9bee0"
+                                                            }
+                                                          , 
+                                                            defaultField' 
+                                                            { fieldName = "query"
+				  				  				  				  				  				  , fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
+			    			    			    			    			    			    }
+                                                          , 
+                                                            defaultField'
+                                                            { fieldName = "fragment"
+                                                            , fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
+                                                            }
+                                                          ]
+                                    }
+                                  ]
+				  	} 			    			    			    			    			    
+                                                            
 t41       = defaultType' {
              identifier   = "0174bd22-6400-4820-bfe3-4e211cb35a7d"
            , author       = Just personLars

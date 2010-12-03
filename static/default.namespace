@@ -69,12 +69,19 @@ Language
 
 Internal
   t-0174bd2264004820bfe34e211cb35a7d --Type
-  t-49dcb902e92a4fcbb16ab1a3cff5f68f -- TypeHM
+  t-49dcb902e92a4fcbb16ab1a3cff5f68f --TypeHM
+  t-4e0b8f8ea2b145228fa4ec74b559bf6a --ClassDefintion
   t-3e81531118e14888be21de7921b15bb5 --TypeDefintion
   t-37c8a341f0b34cc6bbbc9f2403f09be3 --Constructor
   t-205895c8d2df475b8d5ead5ee33d9f63 --Field
   t-2a94a7a8d4e049759d8dd546e72293ff --Constraint
-
+  Meta
+    t-3819884685d34bf19b3469304e15983d --Person
+    t-53e0d483a64144259dce752799d64305 --ContactInformation
+    t-1ea5eae4702844f7acbc3c65b2a40093 --URI
+    t-ed098cc975df4cd0adb99a5b7dc48600 --Mailto
+    t-f18ae792e5324a68a16f11ea5c61442a --Tel
+    t-d847a61a1a944723ab4bfcfb214bd8aa --Http
    
 
 
