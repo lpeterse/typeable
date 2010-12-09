@@ -40,7 +40,8 @@ import TypeableInternal.Context
 
 encapsulate t = docTypeHtml $ do 
                   H.head $ do
-                    H.title "typedoc"
+                    H.title "typeable.org"
+                    H.meta ! http_equiv "Content-Type" ! content "text/html; charset=utf-8"
                     H.link ! href (textValue "../static/style.css") ! rel (textValue "stylesheet") ! type_ (textValue "text/css")
                     H.link ! href (textValue "http://fonts.googleapis.com/css?family=Vollkorn") ! rel (textValue "stylesheet") ! type_ (textValue "text/css")
                   body t

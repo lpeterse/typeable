@@ -203,7 +203,7 @@ t49      = defaultType {
 
 t79      = defaultType {
              identifier   = "b586fd6a-e075-49c4-b641-465feb232a00"
-           , author       = Just (defaultPerson { personName = "John McFarlane" })
+           , author       = Just personLars
            , name         = "TeXMath"
            , semantics    = "According to John McFarlane's definition at https://github.com/jgm/texmath/blob/master/Text/TeXMath/Parser.hs."
            , constructors = Just [
