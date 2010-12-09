@@ -38,6 +38,7 @@ Library
  hs-source-dirs:  src
  Exposed-Modules: TypeableInternal.FormatHtml, 
                   TypeableInternal.Types, 
+                  TypeableInternal.Classes, 
                   TypeableInternal.TypesDefault, 
                   TypeableInternal.InternalTypeDefs, 
                   TypeableInternal.FormatHaskell, 

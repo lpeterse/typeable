@@ -92,6 +92,26 @@ data (PeanoNumber k) => TypeDefinition k = TypeDefinition
                         }
                         deriving (Eq, Ord, Show)
 
+data (PeanoNumber k) => ClassDefinition k = ClassDefinition
+                        { classIdentifier      :: UUID
+                        , classAntecedent      :: Maybe UUID
+                        , classCreated         :: Time UTC
+                        , classModified        :: Time UTC
+                        , classAuthor          :: Maybe Person
+                        , classMaintainer      :: Person
+                        , className            :: UpperDesignator
+                        , classSemantics       :: Annotation k
+                        , classVariables       :: Map k (Annotation k)
+                        , classConstraints     :: Set (Constraint k)
+                        , classMethods         :: Map LowerDesignator (Method k)
+                        }
+                        deriving (Eq, Ord, Show)
+
+data (PeanoNumber k) => Method k = Method
+                        { methodSignature :: Type k
+                        , mehtodSemantics :: Annotation k
+                        }
+                        deriving (Eq, Ord, Show)
 
 data (PeanoNumber k) => Constructor k = Constructor
                         { constructorName      :: UpperDesignator

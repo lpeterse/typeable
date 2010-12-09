@@ -125,6 +125,37 @@ t58      = defaultType'' {
           }
 
 
+t86      = defaultType'' {
+             identifier   = "50eae3e8-5d2d-42c8-8754-b026cc360981"
+           , author       = Nothing
+           , name         = "Function"
+           , semantics    = "A function: a total mapping from the domain $a to the domain $b."
+           , constructors = Nothing
+          }
+
+t87      = defaultType' {
+             identifier   = "e590e9ce-9cea-4dfe-86a4-13e9270dd1c2"
+           , author       = Nothing
+           , name         = "Method"
+           , semantics    = "A class method's signature and semantic."
+           , constructors = Just [
+                                   defaultConstructor'
+                                   { constructorName   = "Method"
+                                   , constructorFields = [
+                                                           defaultField'
+                                                           { fieldName = "signature"
+                                                           , fieldType = Application (DataType "49dcb902e92a4fcbb16ab1a3cff5f68f") (Variable First)
+                                                           }
+                                                         , defaultField'
+                                                           { fieldName = "semantics"
+                                                           , fieldType = Application (DataType "b0221a43509e4eddb062101bfd794bc4") (Variable First)
+                                                           }
+                                                         ]
+                                   }
+                                 ]
+          }
+
+
 
 t52      = defaultType {
              identifier   = "2dbb6df8-73ad-4e4b-aeb8-2172074ed042"
@@ -556,7 +587,7 @@ t51      = defaultType' {
                                                                   defaultField' 
                                                                   { fieldName      = "name"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  , fieldType      = DataType "9790ade9814a4aaca5eaa80c3e47685d"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "semantics"
@@ -720,6 +751,29 @@ t80      = defaultType' {
                                                                   { fieldName      = "maintainer"
                                                                   , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
                                                                   , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
+                                                                  }
+                                                               ,  defaultField' 
+                                                                  { fieldName      = "constraints"
+                                                                  , fieldSemantics = "Constraints on the type's free variables."
+                                                                  , fieldType      = Application
+                                                                                       (DataType "7af30cce93724981a16a80f3f193dc33")
+                                                                                       (Application
+                                                                                         (DataType "2a94a7a8-d4e0-4975-9d8d-d546e72293ff")
+                                                                                         (Variable First)
+                                                                                       )
+                                                                  }
+                                                              ,   defaultField
+                                                                  { fieldName      = "methods"
+                                                                  , fieldSemantics = ""
+                                                                  , fieldType      = Application
+                                                                                       (Application
+                                                                                         (DataType "43c6cd1333b04fc8a480668ecb24768e")
+                                                                                         (DataType "9790ade9814a4aaca5eaa80c3e47685d")
+                                                                                       )
+                                                                                       (Application
+                                                                                         (DataType "e590e9ce9cea4dfe86a413e9270dd1c2")
+                                                                                         (Variable First)
+                                                                                       )
                                                                   }
                                                            ]
                                      } 

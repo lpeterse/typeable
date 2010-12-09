@@ -15,8 +15,7 @@ instance HumanReadable UUID where
   humanify x = do m <- ask 
                   return $ case M.lookup x m of
                              Nothing -> show x
-                             Just y  -> y
+                             Just a  -> a
 
---
 
 

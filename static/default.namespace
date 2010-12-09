@@ -1,4 +1,6 @@
 Basic
+  Classes
+    c-8658bc798a8742189aa7c70e2f9d0fe2 --Eq
   Numeric
     t-c74c35ddb3ef689646c50be868d11bdf --Float
     t-4b19d19d959322ac0ccd319a4d275bd0 --Double
@@ -42,6 +44,7 @@ Basic
   t-10f280df659654becb6e08122e846284 --Nil
   t-346674042a7248b4a94abff0726d0c43 --UUID
   t-f47867c11a4d4e30ab652240dd8e72ba --Void
+  t-50eae3e85d2d42c88754b026cc360981 --Function
 
 Typelevel
   PeanoNumbers
@@ -75,6 +78,7 @@ Internal
   t-37c8a341f0b34cc6bbbc9f2403f09be3 --Constructor
   t-205895c8d2df475b8d5ead5ee33d9f63 --Field
   t-2a94a7a8d4e049759d8dd546e72293ff --Constraint
+  t-e590e9ce9cea4dfe86a413e9270dd1c2 --Method
   Meta
     t-3819884685d34bf19b3469304e15983d --Person
     t-53e0d483a64144259dce752799d64305 --ContactInformation

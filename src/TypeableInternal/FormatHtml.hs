@@ -112,6 +112,12 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Field k) where
                                               td ! class_ "type"       $ t'
                                               td ! class_ "annotation" $ s'
 
+instance (PeanoNumber k, Htmlize k) => Htmlize (Method k) where
+  htmlize (Method t s) = do t' <- htmlize t
+                            s' <- htmlize s
+                            return $ do td ! class_ "type"       $ t'
+                                        td ! class_ "annotation" $ s'
+
 instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
   htmlize (Constructor n s cs) = do s'  <- htmlize s
                                     cs' <- htmlize cs
@@ -124,6 +130,13 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
     where 
       htmlize' (DataType i) _ = humanify i >>= return . (a ! href (stringValue $ show i)) . string
       htmlize' (Variable v) _ = htmlize v
+      htmlize' (Application (Application (DataType (UUID 107557859644440974686449305308309621121)) t1) t2) w = do t1' <- htmlize t1
+                                                                                                                  t2' <- htmlize t2
+                                                                                                                  return $ do if w then "(" else ""
+                                                                                                                              t1'
+                                                                                                                              preEscapedString "&nbsp;-&gt;&nbsp;"
+                                                                                                                              t2'
+                                                                                                                              if w then ")" else ""
       htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
                                                                                               return $ do a ! href (stringValue $ show $ typeRef t1) $ "["
                                                                                                           t2'
@@ -132,7 +145,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
                                                                                               return $ do a ! href (stringValue $ show $ typeRef t1) $ "{"
                                                                                                           t2'
                                                                                                           a ! href (stringValue $ show $ typeRef t1) $ "}"
-                                     | otherwise = do t1' <- htmlize' t1 True
+                                     | otherwise = do t1' <- htmlize' t1 False
                                                       t2' <- htmlize' t2 True
                                                       return $ do if w then string "(" else mempty
                                                                   t1'
@@ -201,6 +214,53 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
                                                                                        mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
                                     H.tr $ td ! colspan "4" ! class_ "constraints" $ b
                                     c
+
+instance (Htmlize k, PeanoNumber k) => Htmlize (ClassDefinition k) where
+  htmlize x  = do a  <- htmlize (classSemantics x)
+                  author' <- case classAuthor x of
+                               Nothing -> return "PublicDomain"
+                               Just a  -> htmlize a
+                  maintainer' <- htmlize (classMaintainer x)
+                  bs <- mapM htmlize $ S.toList (classConstraints x)
+                  let bs' = Data.List.intersperse (string " | ") bs 
+                  let b   = mconcat bs'
+                  let vars = domain :: [k]
+                  bv <- mapM htmlize vars
+                  let f (u, mt) = do mt' <- htmlize mt 
+                                     return $ tr $ do td ! class_ "function" $ string (show u)
+                                                      mt'
+                  ms <- mapM f $ M.toList (classMethods x)
+                  return $   do H.h2 "Meta"
+                                H.div ! A.id "meta" $ do
+                                  table $ do
+                                    tr $ do
+                                      td "Name"
+                                      td ! class_ "type" $ (string $ show $ className x)
+                                    tr $ do
+                                      td "UUID"
+                                      td $ string $ show (classIdentifier x)
+                                    tr $ do
+                                      td "Author"
+                                      td author'
+                                    tr $ do
+                                      td "Maintainer"
+                                      td maintainer' 
+                                    tr $ do 
+                                      td "Created"
+                                      td (string $ show (classCreated x))
+                                    tr $ do 
+                                      td "Modified"
+                                      td (string $ show (classModified x))
+                                H.h2 "Description"
+                                H.div ! A.id "description" ! class_ "annotation" $ a
+                                H.h2 "Structure"
+                                H.div ! A.id "structure" $ do
+                                  H.table $ do
+                                    H.tr $ td ! colspan "3" ! class_ "type large" $ do string $ show (className x)
+                                                                                       preEscapedString "&nbsp;"
+                                                                                       mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
+                                    H.tr $ td ! colspan "3" ! class_ "constraints" $ b
+                                    mconcat ms
 
 
 ---
