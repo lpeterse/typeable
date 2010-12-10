@@ -27,6 +27,7 @@ Basic
   Container
     t-0ba85f3f10099c75d4b696d0cf944e09 --List
     t-34c13bdaac7d413ed735e64edcac7ff5 --Tuple
+    t-5cae969a657448ebbc2eaf7f31d7340f --Triple
     t-7af30cce93724981a16a80f3f193dc33 --Set
     t-43c6cd1333b04fc8a480668ecb24768e --Map
   Time
@@ -50,6 +51,10 @@ Typelevel
   PeanoNumbers
     t-421496848904471ea3197f25e2a02b72 --Zero
     t-9e2e1e478e094a8abe5507f8574ac91f --Succ
+  Kind
+    c-2980bc10f5f246058ab35dbaaa4e1663 --Kind
+    t-606d6a2553714be6b0467d2eb2c0708e --Concrete
+    t-be46fbdd746743fe9ef39717c30b21fb --Application
 
 Logic
   t-9035333fc91c42f8ab8fba4c3f256a7b --FOL

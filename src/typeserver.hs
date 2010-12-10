@@ -2,9 +2,9 @@
 {-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances -XExistentialQuantification #-}
 module Main where
 
-import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+--import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.T421496848904471ea3197f25e2a02b72
-import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
+--import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
 import Happstack.Server
 import Text.Blaze
@@ -73,13 +73,13 @@ serveClass = serveType
 
 
 -----------------
-data Wrapped = forall a. (Htmlize a, PeanoNumber a) => WrappedType   { unwrapType  :: (TypeDefinition  a) }
-             | forall a. (Htmlize a, PeanoNumber a) => WrappedClass  { unwrapClass :: (ClassDefinition a) }
+data Wrapped = forall a. (Htmlize a, Kind a) => WrappedType   { unwrapType  :: (TypeDefinition  a) }
+             | forall a. (Htmlize a, Kind a) => WrappedClass  { unwrapClass :: (ClassDefinition a) }
 
-wrapType   :: (Htmlize a, PeanoNumber a) => TypeDefinition a -> (UUID, Wrapped)
+wrapType   :: (Htmlize a, Kind a) => TypeDefinition a -> (UUID, Wrapped)
 wrapType  x = (identifier x, WrappedType x)
 
-wrapClass  :: (Htmlize a, PeanoNumber a) => ClassDefinition a -> (UUID, Wrapped)
+wrapClass  :: (Htmlize a, Kind a) => ClassDefinition a -> (UUID, Wrapped)
 wrapClass x = (classIdentifier x , WrappedClass x)
 
 records :: M.Map UUID Wrapped 
@@ -108,8 +108,9 @@ instance ToMessage (Context Html) where
 
 classes :: [(UUID, Wrapped)]
 classes = [
-            wrapClass c1  --    ("8658bc79-8a87-4218-9aa7-c70e2f9d0fe2", "Eq")
-        --  , ("c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83", "PeanoNumber")
+            wrapClass c1  -- Eq
+          , wrapClass c2  -- Kind
+        --  , ("c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83", "Kind")
         --  , ("0d864b18-19bd-4230-905b-bad04a4c195e", "Predicate")
         --  , ("882f4a6a-ffa2-4579-830e-0a850acad145", "TimeStandard")
         --  , ("edba1ef6-3e72-4b61-8256-9040555253a8", "AnnotationExtension")
@@ -200,6 +201,9 @@ types   = [  wrapType t1
            , wrapType t85
            , wrapType t86
            , wrapType t87
+           , wrapType t90
+           , wrapType t91
+           , wrapType t92
         ]
 
 

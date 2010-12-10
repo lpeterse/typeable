@@ -4,7 +4,6 @@
 module TypeableInternal.FormatHtml where
 
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
-import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 import Typeable.T421496848904471ea3197f25e2a02b72
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
@@ -74,7 +73,7 @@ instance Htmlize Norm where
 instance Htmlize U.URL where
   htmlize x = return $ a (string $ show x) ! href (stringValue $ show x)
 
-instance PeanoNumber k => Htmlize (Inline k) where
+instance Kind k => Htmlize (Inline k) where
   htmlize (Plain t)       = return $         text t
   htmlize (Emph  t)       = return $ em     (text t) 
   htmlize (Strong t)      = return $ strong (text t)
@@ -86,14 +85,14 @@ instance PeanoNumber k => Htmlize (Inline k) where
   htmlize (Type t)        = undefined
   htmlize (Class i)       = undefined
 
-instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
+instance (Htmlize k, Kind k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
                                  i'  <- humanify i
                                  return $ do H.a ! href (stringValue $ "../class/"++(show i)) $ H.span ! class_ "class" $ string i'
                                              preEscapedText "&nbsp;"
                                              ts'
 
-instance PeanoNumber k => Htmlize (Annotation k) where
+instance Kind k => Htmlize (Annotation k) where
   htmlize (Block m)   | M.null m    = return mempty
                       | otherwise   = let f (l,c) = htmlize c >>= return . (H.div ! lang (stringValue (show l))) 
                                       in  mapM f (M.toList m) >>= return . mconcat
@@ -105,27 +104,27 @@ instance PeanoNumber k => Htmlize (Annotation k) where
                                          return $ ol $ mconcat $ P.map li xs'
   htmlize (TitledList xs)           = undefined
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Field k) where
+instance (Kind k, Htmlize k) => Htmlize (Field k) where
   htmlize (Field n s t) = do t' <- htmlize t
                              s' <- htmlize s
                              return $ tr $ do td ! class_ "function"   $ string (show n)
                                               td ! class_ "type"       $ t'
                                               td ! class_ "annotation" $ s'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Method k) where
+instance (Kind k, Htmlize k) => Htmlize (Method k) where
   htmlize (Method t s) = do t' <- htmlize t
                             s' <- htmlize s
                             return $ do td ! class_ "type"       $ t'
                                         td ! class_ "annotation" $ s'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
+instance (Kind k, Htmlize k) => Htmlize (Constructor k) where
   htmlize (Constructor n s cs) = do s'  <- htmlize s
                                     cs' <- htmlize cs
                                     return $ do tr $ do td ! class_ "constructor" ! rowspan (stringValue $ show (P.length cs + 1)) $ string (show n)
                                                         td ! class_ "annotation"  ! colspan "3" $ s'
                                                 cs'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
+instance (Kind k, Htmlize k) => Htmlize (Type k) where
   htmlize x = htmlize' x False
     where 
       htmlize' (DataType i) _ = humanify i >>= return . (a ! href (stringValue $ show i)) . string
@@ -153,10 +152,10 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
                                                                   t2'
                                                                   if w then string ")" else mempty
 
-instance Htmlize Zero where
+instance Htmlize Concrete where
   htmlize = undefined
 
-instance (PeanoNumber k) => Htmlize (Succ k) where
+instance (Kind a, Kind b) => Htmlize (Application a b) where
   htmlize x = return $ H.span ! class_ "variable bound" $ string $ return (toEnum (97 + fromEnum x) :: Char)
 
 instance Htmlize UUID where
@@ -169,7 +168,7 @@ instance Htmlize a => Htmlize [a] where
 instance Htmlize Person where
   htmlize x  = return $ string $ personName x
 
-instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
+instance forall k. (Htmlize k, Kind k) => Htmlize (TypeDefinition k) where
   htmlize x  = do a  <- htmlize (semantics x)
                   author' <- case author x of
                                Nothing -> return "PublicDomain"
@@ -212,10 +211,12 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (TypeDefinition k) where
                                     H.tr $ td ! colspan "4" ! class_ "type large" $ do string $ show (TypeableInternal.InternalTypeDefs.name x)
                                                                                        preEscapedString "&nbsp;"
                                                                                        mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
+                                                                                       let (_::k,x) = kind
+                                                                                       string $ " :: " ++ (show x)
                                     H.tr $ td ! colspan "4" ! class_ "constraints" $ b
                                     c
 
-instance (Htmlize k, PeanoNumber k) => Htmlize (ClassDefinition k) where
+instance (Htmlize k, Kind k) => Htmlize (ClassDefinition k) where
   htmlize x  = do a  <- htmlize (classSemantics x)
                   author' <- case classAuthor x of
                                Nothing -> return "PublicDomain"
