@@ -63,16 +63,6 @@ instance Htmlize Namespace where
       cs = S.toList (nsclasses x)
       ns = M.toList (subspaces x)
 
-instance Htmlize Norm where
-  htmlize x@(RFC n)  = return $ a (string $ show x) ! href (stringValue $ "http://tools.ietf.org/html/rfc" ++ show n)
-  htmlize x@(ISO n)  = return $ a (string $ show x)
-  htmlize x@(IEC n)  = return $ a (string $ show x)
-  htmlize x@(DIN n)  = return $ a (string $ show x)
-  htmlize x@(ECMA n) = return $ a (string $ show x)
-
-instance Htmlize U.URL where
-  htmlize x = return $ a (string $ show x) ! href (stringValue $ show x)
-
 instance Kind k => Htmlize (Inline k) where
   htmlize (Plain t)       = return $         text t
   htmlize (Emph  t)       = return $ em     (text t) 
@@ -80,8 +70,6 @@ instance Kind k => Htmlize (Inline k) where
   htmlize (Subscript t)   = return $ sub    (text t)
   htmlize (Superscript t) = return $ sup    (text t)
   htmlize (Monospace t)   = return $ code   (text t)
-  htmlize (URL u)         = htmlize u
-  htmlize (Norm n)        = htmlize n
   htmlize (Type t)        = undefined
   htmlize (Class i)       = undefined
 
@@ -129,13 +117,19 @@ instance (Kind k, Htmlize k) => Htmlize (Type k) where
     where 
       htmlize' (DataType i) _ = humanify i >>= return . (a ! href (stringValue $ show i)) . string
       htmlize' (Variable v) _ = htmlize v
-      htmlize' (Application (Application (DataType (UUID 107557859644440974686449305308309621121)) t1) t2) w = do t1' <- htmlize t1
-                                                                                                                  t2' <- htmlize t2
-                                                                                                                  return $ do if w then "(" else ""
-                                                                                                                              t1'
-                                                                                                                              preEscapedString "&nbsp;-&gt;&nbsp;"
-                                                                                                                              t2'
-                                                                                                                              if w then ")" else ""
+      htmlize' (Application
+                 (Application 
+                   (DataType (UUID 107557859644440974686449305308309621121)) 
+                   t1
+                 ) 
+                 t2
+               )            w = do t1' <- htmlize t1
+                                   t2' <- htmlize t2
+                                   return $ do if w then "(" else ""
+                                               t1'
+                                               preEscapedString "&nbsp;-&gt;&nbsp;"
+                                               t2'
+                                               if w then ")" else ""
       htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
                                                                                               return $ do a ! href (stringValue $ show $ typeRef t1) $ "["
                                                                                                           t2'
@@ -178,35 +172,33 @@ instance forall k. (Htmlize k, Kind k) => Htmlize (TypeDefinition k) where
                   let bs' = Data.List.intersperse (string " | ") bs 
                   let b   = mconcat bs'
                   c  <- case constructors x of
-                          Nothing -> return $ tr $ td ! colspan "4" $ "This is a primitive type. Its possible values are described above."
+                          Nothing -> return $ tr $ td ! colspan "4" $ "This is an abstract type. Its possible values are described above."
                           Just y  -> htmlize y
                   let vars = domain :: [k]
                   bv <- mapM htmlize vars
-                  return $   do H.h2 "Meta"
-                                H.div ! A.id "meta" $ do
-                                  table $ do
-                                    tr $ do
-                                      td "Name"
-                                      td ! class_ "type" $ (string $ show $ TypeableInternal.InternalTypeDefs.name x)
-                                    tr $ do
-                                      td "UUID"
-                                      td $ string $ show (identifier x)
-                                    tr $ do
-                                      td "Author"
-                                      td author'
-                                    tr $ do
-                                      td "Maintainer"
-                                      td maintainer' 
-                                    tr $ do 
-                                      td "Created"
-                                      td (string $ show (created x))
-                                    tr $ do 
-                                      td "Modified"
-                                      td (string $ show (modified x))
-                                H.h2 "Description"
-                                H.div ! A.id "description" ! class_ "annotation" $ a
-                                H.h2 "Structure"
+                  return $   do H.div ! A.id "meta" $ do
+                                  H.h1 "Meta"
+                                  table $ do tr $ do td "Name"
+                                                     td ! class_ "type" $ (string $ show $ TypeableInternal.InternalTypeDefs.name x)
+                                             tr $ do td "UUID"
+                                                     td $ string $ show (identifier x)
+                                             tr $ do td "Author"
+                                                     td author'
+                                             tr $ do td "Maintainer"
+                                                     td maintainer' 
+                                             tr $ do td "Created"
+                                                     td (string $ show (created x))
+                                             tr $ do td "Modified"
+                                                     td (string $ show (modified x))
+                                H.div ! A.id "exports" $ do
+                                  H.h1 "Export"
+                                  H.ul $ do H.li $ H.a ! A.href (stringValue ((show (identifier x)) ++ "?format=haskell")) $ "Haskell" 
+                                            H.li $ H.a ! A.href (stringValue ((show (identifier x)) ++ "?format=haskell-boot")) $ "Haskell-Boot" 
+                                H.div ! A.id "description" $ do
+                                  H.h1 "Description"
+                                  H.div ! class_ "annotation" $ a
                                 H.div ! A.id "structure" $ do
+                                  H.h1 "Structure"
                                   H.table $ do
                                     H.tr $ td ! colspan "4" ! class_ "type large" $ do string $ show (TypeableInternal.InternalTypeDefs.name x)
                                                                                        preEscapedString "&nbsp;"
