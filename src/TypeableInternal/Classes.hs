@@ -20,8 +20,8 @@ c1  = defaultClass
       { classIdentifier   = "8658bc79-8a87-4218-9aa7-c70e2f9d0fe2"
       , className         = "Eq"
       , classSemantics    = ""
-      , classMethods      = M.fromList [ ("equal",   Method (function (Variable First) (Variable First)) "") 
-                                       , ("unequal", Method (function (Variable First) (Variable First)) "")
+      , classMethods      = M.fromList [ ("equal",   Method (function (Variable First) (function (Variable First) (DataType "0219c59f732a8ef507215fbdb4cceacd"))) "") 
+                                       , ("unequal", Method (function (Variable First) (function (Variable First) (DataType "0219c59f732a8ef507215fbdb4cceacd"))) "")
                                        ]
       }
 
