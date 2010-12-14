@@ -187,12 +187,16 @@ t87      = defaultType {
              identifier   = "e590e9ce-9cea-4dfe-86a4-13e9270dd1c2"
            , author       = Nothing
            , name         = "Method"
-           , semantics    = "A class method's signature and semantic."
+           , semantics    = "A class method's name, signature and semantic."
            , constructors = Just [
                                    defaultConstructor
                                    { constructorName   = "Method"
                                    , constructorFields = [
                                                            defaultField
+                                                           { fieldName = "name"
+                                                           , fieldType = DataType "9790ade9814a4aaca5eaa80c3e47685d"
+                                                           }
+                                                         , defaultField
                                                            { fieldName = "signature"
                                                            , fieldType = Application (DataType "49dcb902e92a4fcbb16ab1a3cff5f68f") (Variable First)
                                                            }
@@ -795,7 +799,7 @@ t80      = defaultType {
                                                                   }
                                                                ,  (defaultField :: Field (Application Concrete Concrete))
                                                                   { fieldName      = "author"
-                                                                  , fieldSemantics = "The original author of the type."
+                                                                  , fieldSemantics = "The original author of the class."
                                                                   , fieldType      = maybe $ DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
                                                                   }
                                                                ,  (defaultField ::  Field (Application Concrete Concrete))
@@ -816,12 +820,7 @@ t80      = defaultType {
                                                               ,   (defaultField :: Field  (Application Concrete Concrete))
                                                                   { fieldName      = "methods"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = Application
-                                                                                       (Application
-                                                                                         (DataType "43c6cd1333b04fc8a480668ecb24768e")
-                                                                                         (DataType "9790ade9814a4aaca5eaa80c3e47685d")
-                                                                                       )
-                                                                                       (Application
+                                                                  , fieldType      = list (Application
                                                                                          (DataType "e590e9ce9cea4dfe86a413e9270dd1c2")
                                                                                          (Variable First)
                                                                                        )
