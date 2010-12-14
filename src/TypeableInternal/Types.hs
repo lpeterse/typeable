@@ -100,6 +100,25 @@ t93      = defaultType {
                                  ]
            }
 
+t94 :: TypeDefinition (Application Concrete Concrete) 
+t94      = defaultType {
+             identifier   = "2c62454c586f4bdea5e2b17e432db245"
+           , author       = Just personLars
+           , name         = "Extension"
+           , semantics    = "An extension for making it possible to reference types, classes and functions within structured text."
+           , constructors = Just [
+                                   defaultConstructor { constructorName   = "Type"                 }
+                                 , defaultConstructor { constructorName   = "TypeConstructor"      }
+                                 , defaultConstructor { constructorName   = "TypeConstructorField" }
+                                 , defaultConstructor { constructorName   = "Class"                }
+                                 , defaultConstructor { constructorName   = "ClassMethod"          }
+                                 , defaultConstructor { constructorName   = "Function"             }
+                                 , defaultConstructor { constructorName   = "Constraint"           }
+                                 , defaultConstructor { constructorName   = "Expression"           }
+                                 ]
+           }
+
+
 
 t58     :: TypeDefinition (Application (Application Concrete Concrete) (Application Concrete Concrete))
 t58      = defaultType {
@@ -202,7 +221,12 @@ t87      = defaultType {
                                                            }
                                                          , defaultField
                                                            { fieldName = "semantics"
-                                                           , fieldType = Application (DataType "b0221a43509e4eddb062101bfd794bc4") (Variable First)
+                                                           , fieldType = Application
+                                                                           (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                           (Application
+                                                                              (DataType "2c62454c586f4bdea5e2b17e432db245")
+                                                                              (Variable First)
+                                                                           )
                                                            }
                                                          ]
                                    }
@@ -415,7 +439,11 @@ t48      = defaultType {
                                                             { fieldName      = "cancelled"
                                                             , fieldSemantics = "States whether the text is stroked out."
                                                             , fieldType      = DataType "0219c59f732a8ef507215fbdb4cceacd"
-                                                            } 
+                                                            }
+                                                          , (defaultField :: Field (Application Concrete Concrete))
+                                                            { fieldName      = "reference"
+                                                            , fieldType      = maybe $ DataType "e393b15b944c4b3597cd02b1be6d693b"
+                                                            }
                                                          ]
                                    }
                                  , defaultConstructor 
@@ -424,15 +452,6 @@ t48      = defaultType {
                                                            defaultField
                                                            { fieldName = "tex"
                                                            , fieldType = DataType "b586fd6a-e075-49c4-b641-465feb232a00"
-                                                           }
-                                                         ]
-                                   }
-                                 , defaultConstructor 
-                                   { constructorName   = "Resource"
-                                   , constructorFields = [
-                                                           defaultField
-                                                           { fieldName = "uri"
-                                                           , fieldType = DataType "e393b15b944c4b3597cd02b1be6d693b"
                                                            }
                                                          ]
                                    }
@@ -624,7 +643,10 @@ t44       = defaultType {
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Application 
                                                                                        (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (Variable First)
+                                                                                       (Application
+                                                                                         (DataType "2c62454c586f4bdea5e2b17e432db245")
+                                                                                         (Variable First)
+                                                                                       )
                                                                   }
                                                                ,  (defaultField :: Field  (Application Concrete Concrete)) 
                                                                   { fieldName      = "fields"
@@ -656,7 +678,10 @@ t51      = defaultType {
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Application 
                                                                                        (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (Variable First)
+                                                                                       (Application
+                                                                                         (DataType "2c62454c586f4bdea5e2b17e432db245")
+                                                                                         (Variable First)
+                                                                                       )
                                                                   }
                                                                ,  (defaultField :: Field (Application Concrete Concrete))
                                                                   { fieldName      = "type"
@@ -701,8 +726,11 @@ t42      = defaultType {
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = "The type's semantics in general. Details may be described in the constructors or fields."
                                                                   , fieldType      = Application 
-                                                                                       (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (Variable First)
+                                                                                      (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                                      (Application
+                                                                                        (DataType "2c62454c586f4bdea5e2b17e432db245")
+                                                                                        (Variable First)
+                                                                                      )
                                                                   }
                                                                ,  (defaultField :: Field  (Application Concrete Concrete)) 
                                                                   { fieldName      = "creation"
@@ -780,8 +808,11 @@ t80      = defaultType {
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = "The classes' semantics in general."
                                                                   , fieldType      = Application 
-                                                                                       (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
-                                                                                       (Variable First)
+                                                                                      (DataType "b0221a43-509e-4edd-b062-101bfd794bc4")
+                                                                                      (Application
+                                                                                        (DataType "2c62454c586f4bdea5e2b17e432db245")
+                                                                                        (Variable First)
+                                                                                      )
                                                                   }
                                                                ,  (defaultField :: Field  (Application Concrete Concrete))
                                                                   { fieldName      = "creation"

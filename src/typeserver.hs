@@ -209,6 +209,7 @@ types   = [  wrapType t1
            , wrapType t91
            , wrapType t92
            , wrapType t93 -- Ordering
+           , wrapType t94 -- Extension
         ]
 
 
