@@ -100,10 +100,11 @@ instance (Kind k, Htmlize k) => Htmlize (Field k) where
                                               td ! class_ "annotation" $ s'
 
 instance (Kind k, Htmlize k) => Htmlize (Method k) where
-  htmlize (Method t s) = do t' <- htmlize t
-                            s' <- htmlize s
-                            return $ do td ! class_ "type"       $ t'
-                                        td ! class_ "annotation" $ s'
+  htmlize (Method n t s) = do t' <- htmlize t
+                              s' <- htmlize s
+                              return $ tr $ do td ! class_ "function" $ string (show n)
+                                               td ! class_ "type"       $ t'
+                                               td ! class_ "annotation" $ s'
 
 instance (Kind k, Htmlize k) => Htmlize (Constructor k) where
   htmlize (Constructor n s cs) = do s'  <- htmlize s
@@ -219,42 +220,35 @@ instance (Htmlize k, Kind k) => Htmlize (ClassDefinition k) where
                   let b   = mconcat bs'
                   let vars = domain :: [k]
                   bv <- mapM htmlize vars
-                  let f (u, mt) = do mt' <- htmlize mt 
-                                     return $ tr $ do td ! class_ "function" $ string (show u)
-                                                      mt'
-                  ms <- mapM f $ M.toList (classMethods x)
-                  return $   do H.h2 "Meta"
-                                H.div ! A.id "meta" $ do
+                  ms <- mapM htmlize (classMethods x)
+                  return $   do H.div ! A.id "meta" $ do
+                                  H.h1 "Meta"
                                   table $ do
-                                    tr $ do
-                                      td "Name"
-                                      td ! class_ "type" $ (string $ show $ className x)
-                                    tr $ do
-                                      td "UUID"
-                                      td $ string $ show (classIdentifier x)
-                                    tr $ do
-                                      td "Author"
-                                      td author'
-                                    tr $ do
-                                      td "Maintainer"
-                                      td maintainer' 
-                                    tr $ do 
-                                      td "Created"
-                                      td (string $ show (classCreated x))
-                                    tr $ do 
-                                      td "Modified"
-                                      td (string $ show (classModified x))
-                                H.h2 "Description"
-                                H.div ! A.id "description" ! class_ "annotation" $ a
-                                H.h2 "Structure"
+                                    tr $ do td "Name"
+                                            td ! class_ "type" $ (string $ show $ className x)
+                                    tr $ do td "UUID"
+                                            td $ string $ show (classIdentifier x)
+                                    tr $ do td "Author"
+                                            td author'
+                                    tr $ do td "Maintainer"
+                                            td maintainer' 
+                                    tr $ do td "Created"
+                                            td (string $ show (classCreated x))
+                                    tr $ do td "Modified"
+                                            td (string $ show (classModified x))
+                                H.div ! A.id "exports" $ do
+                                  H.h1 "Export"
+                                  H.ul $ do H.li $ H.a ! A.href (stringValue ((show (classIdentifier x)) ++ "?format=haskell")) $ "Haskell" 
+                                            H.li $ H.a ! A.href (stringValue ((show (classIdentifier x)) ++ "?format=haskell-boot")) $ "Haskell-Boot" 
+                                H.div ! A.id "description" $ do
+                                  H.h1 "Description"
+                                  H.div ! class_ "annotation" $ a
                                 H.div ! A.id "structure" $ do
+                                  H.h1 "Structure"
                                   H.table $ do
                                     H.tr $ td ! colspan "3" ! class_ "type large" $ do string $ show (className x)
                                                                                        preEscapedString "&nbsp;"
                                                                                        mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
                                     H.tr $ td ! colspan "3" ! class_ "constraints" $ b
                                     mconcat ms
-
-
----
 

@@ -1,6 +1,9 @@
 Basic
   Classes
     c-8658bc798a8742189aa7c70e2f9d0fe2 --Eq
+    c-96d7607db4b84dc29a37313009d5924b --Ord
+    c-34375052153345b09a1349a77ea57ee1 --Enum
+    c-d4bb0916fb934233b4458ffcc69e5bd3 --Bounded
   Numeric
     t-c74c35ddb3ef689646c50be868d11bdf --Float
     t-4b19d19d959322ac0ccd319a4d275bd0 --Double
@@ -41,6 +44,7 @@ Basic
   t-0219c59f732a8ef507215fbdb4cceacd --Bool
   t-16f4245df3cc0b534f028235ff8aae16 --Char
   t-d9eef038b47d0820c160ceb8b6a89943 --Either
+  t-f4b6d72c609d4003ba98917f8c56a678 --Ordering
   t-f8f49ef6bbe874a42926fa23d5b3bc19 --Maybe
   t-10f280df659654becb6e08122e846284 --Nil
   t-346674042a7248b4a94abff0726d0c43 --UUID

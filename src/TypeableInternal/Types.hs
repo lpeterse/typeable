@@ -87,6 +87,20 @@ t57      = defaultType {
                                  ]
            }
 
+t93 :: TypeDefinition Concrete 
+t93      = defaultType {
+             identifier   = "f4b6d72c609d4003ba98917f8c56a678"
+           , author       = Nothing
+           , name         = "Ordering"
+           , semantics    = ""
+           , constructors = Just [
+                                   defaultConstructor { constructorName   = "LT", constructorSemantics = "Less"}
+                                 , defaultConstructor { constructorName   = "EQ", constructorSemantics = "Equal"}
+                                 , defaultConstructor { constructorName   = "GT", constructorSemantics = "Greater"}
+                                 ]
+           }
+
+
 t58     :: TypeDefinition (Application (Application Concrete Concrete) (Application Concrete Concrete))
 t58      = defaultType {
              identifier   = "9035333f-c91c-42f8-ab8f-ba4c3f256a7b"

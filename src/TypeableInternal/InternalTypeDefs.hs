@@ -110,10 +110,10 @@ instance Ord Void where
 instance Show Void where
   show = undefined
 
-data (Kind k)        => Type k = DataType      { typeRef ::  UUID }               -- entweder extern der Ordnung k
-                               | DependentType  UUID               -- oder gebundene Variable
-                               | Variable       k                  -- oder freie Variable der Ordnung k
-                               | Application    (Type k) (Type k)  -- oder Typkonstruktor höherer Ordnung wird angewandt
+data (Kind k)        => Type k = DataType      { typeRef ::  UUID }  -- entweder extern der Ordnung k
+                               | DependentType  UUID                 -- oder gebundene Variable
+                               | Variable       k                    -- oder freie Variable der Ordnung k
+                               | Application    (Type k) (Type k)    -- oder Typkonstruktor höherer Ordnung wird angewandt
                                deriving (Eq, Ord, Show)
 
 data (Kind k)        => Constraint k = Constraint
@@ -148,12 +148,13 @@ data (Kind k)        => ClassDefinition k = ClassDefinition
                         , classSemantics       :: Annotation k
                         , classVariables       :: Map k (Annotation k)
                         , classConstraints     :: Set (Constraint k)
-                        , classMethods         :: Map LowerDesignator (Method k)
+                        , classMethods         :: [Method k]
                         }
                         deriving (Eq, Ord, Show)
 
 data (Kind        k) => Method k = Method
-                        { methodSignature :: Type k
+                        { methodName      :: LowerDesignator
+                        , methodSignature :: Type k
                         , mehtodSemantics :: Annotation k
                         }
                         deriving (Eq, Ord, Show)

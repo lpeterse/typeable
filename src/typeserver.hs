@@ -110,6 +110,10 @@ classes :: [(UUID, Wrapped)]
 classes = [
             wrapClass c1  -- Eq
           , wrapClass c2  -- Kind
+          , wrapClass c3  -- Ord
+          , wrapClass c4  -- Enum
+          , wrapClass c5  -- Bounded
+
         --  , ("c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83", "Kind")
         --  , ("0d864b18-19bd-4230-905b-bad04a4c195e", "Predicate")
         --  , ("882f4a6a-ffa2-4579-830e-0a850acad145", "TimeStandard")
@@ -204,6 +208,7 @@ types   = [  wrapType t1
            , wrapType t90
            , wrapType t91
            , wrapType t92
+           , wrapType t93 -- Ordering
         ]
 
 

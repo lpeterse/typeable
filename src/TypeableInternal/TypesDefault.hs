@@ -37,7 +37,7 @@ defaultClass  = ClassDefinition
                 , classSemantics     = ""
                 , classVariables     = M.empty
                 , classConstraints   = S.empty
-                , classMethods       = M.empty
+                , classMethods       = []
                 }
 
 
