@@ -55,9 +55,10 @@ instance Htmlize Namespace where
   htmlize x = do ns' <- mapM (htmlize . snd) ns >>= return . zip (Data.List.map fst ns)
                  ts' <- mapM humanify ts        >>= return . sortBy (compare `on` snd) . zip ts
                  cs' <- mapM humanify cs        >>= return . sortBy (compare `on` snd) . zip cs
-                 return $ H.ul $ do mconcat $ Data.List.map (\(f,s)-> H.li (string (show f) >> s)) ns' 
-                                    mconcat $ Data.List.map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show u)) $ string n) ts'
-                                    mconcat $ Data.List.map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show u)) $ string n) cs'
+                 return $ H.ul $ do mconcat $ Data.List.map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show u)) $ H.span ! A.class_ "class" $ string n) cs'
+                                    mconcat $ Data.List.map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show u))  $ H.span ! A.class_ "type"  $ string n) ts'
+                                    mconcat $ Data.List.map (\(f,s)-> H.li (string (show f) >> s)) ns' 
+
     where
       ts = S.toList (nstypes   x)
       cs = S.toList (nsclasses x)
