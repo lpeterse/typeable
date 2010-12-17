@@ -115,6 +115,11 @@ classes = [
           , wrapClass c5  -- Bounded
           , wrapClass c6  -- PeanoNumber
           , wrapClass c7  -- TimeStandard
+          , wrapClass c8  -- Functor
+          , wrapClass c9  -- Applicative
+          , wrapClass c10 -- Monad
+          , wrapClass c11 -- Read
+          , wrapClass c12 -- Show
           ]
 
 types  :: [(UUID, Wrapped)]
@@ -207,6 +212,7 @@ types   = [  wrapType t1
            , wrapType t92
            , wrapType t93 -- Ordering
            , wrapType t94 -- Extension
+           , wrapType t95 -- Extension
         ]
 
 

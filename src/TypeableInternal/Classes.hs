@@ -141,3 +141,40 @@ c7  = defaultClass
       , classMethods      = []
       }
 
+c8  = defaultClass
+      { classIdentifier   = "584d85dcf5a144bebf0da92b7a5977a3"
+      , className         = "Functor_TODO"
+      , classSemantics    = ""
+      , classMethods      = []
+      }
+
+
+c9  = defaultClass
+      { classIdentifier   = "30c5342d3f7243d29b04c5f9abb72405"
+      , className         = "Applicative_TODO"
+      , classSemantics    = ""
+      , classMethods      = [] 
+      }
+
+c10  = defaultClass
+      { classIdentifier   = "d1c2d3e54e6f4910b9c83bd3c35617c6"
+      , className         = "Monad_TODO"
+      , classSemantics    = ""
+      , classMethods      = [] 
+      }
+
+c11  = defaultClass
+      { classIdentifier   = "8cbc0d8529974ffc838ea3225176feb4"
+      , className         = "Show_TODO"
+      , classSemantics    = ""
+      , classMethods      = [] 
+      }
+
+c12  = defaultClass
+      { classIdentifier   = "56b4f8a2d8b34e138a8349ad7e3de441"
+      , className         = "Read_TODO"
+      , classSemantics    = ""
+      , classMethods      = [] 
+      }
+
+

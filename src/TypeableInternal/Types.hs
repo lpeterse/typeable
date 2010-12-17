@@ -694,7 +694,73 @@ t51      = defaultType {
                                    }
                                  ]
           }
- 
+
+t95     :: TypeDefinition Concrete
+t95      = defaultType {
+             identifier   = "451f847e1cb642d0b7c5dbdfa03f41b5"
+           , author       = Just personLars
+           , name         = "Definition"
+           , semantics    = ""
+           , constructors = Just [
+                                   defaultConstructor 
+                                     { constructorName      = "Definition"
+                                     , constructorFields    = [   (defaultField  :: Field Concrete)
+                                                                  { fieldName      = "identifier"
+                                                                  , fieldSemantics = "This identifier is bound to the structure and semantics, not to an actual version of discription etc."
+                                                                  , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
+                                                                  }
+                                                               ,  (defaultField  :: Field Concrete)
+                                                                  { fieldName      = "antecedent"
+                                                                  , fieldSemantics = "Note whether this is an improved version with changes to structure and/or semantics."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "f8f49ef6bbe874a42926fa23d5b3bc19") 
+                                                                                       (DataType "346674042a7248b4a94abff0726d0c43")  
+                                                                  }
+                                                               ,  (defaultField  :: Field Concrete)
+                                                                  { fieldName      = "name"
+                                                                  , fieldSemantics = "A human readable designation. It doesn't need to be unique. In doubt choose a short one that already catches the semantics as good as possible."
+                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  }
+                                                               ,  (defaultField  :: Field Concrete)
+                                                                  { fieldName      = "creationTime"
+                                                                  , fieldSemantics = "The date of creating structure and semantics."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "606f253533d3420da3465afae341d598")
+                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
+                                                                  }
+                                                               ,  (defaultField :: Field Concrete)
+                                                                  { fieldName      = "modificationTime"
+                                                                  , fieldSemantics = "The date of the last improvement/modification to the description."
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "606f253533d3420da3465afae341d598")
+                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
+                                                                  }
+                                                               ,  (defaultField :: Field Concrete)
+                                                                  { fieldName      = "author"
+                                                                  , fieldSemantics = "The original author. Nothing denotes that it belongs to the public domain."
+                                                                  , fieldType      = maybe $ DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
+                                                                  }
+                                                               ,  (defaultField :: Field Concrete)
+                                                                  { fieldName      = "maintainer"
+                                                                  , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
+                                                                  , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
+                                                                  }
+                                                               ,  (defaultField :: Field Concrete)
+                                                                  { fieldName      = "content"
+                                                                  , fieldSemantics = ""
+                                                                  , fieldType      = Application
+                                                                                       (Application
+                                                                                         (DataType "ce4219d1-8285-469a-be0b-8a07bb2a1742")
+                                                                                         (DataType "1660b01f-08dc-4aed-be4c-0941584541cb")
+                                                                                       )
+                                                                                     (DataType "fcc1a817-ac5f-4ff5-b339-82a44250ab07")
+                                                                  }
+                                                           ]
+                                     } 
+                   ]
+               }
+
+
 t42     :: TypeDefinition (Application Concrete Concrete)
 t42      = defaultType {
              identifier   = "3e815311-18e1-4888-be21-de7921b15bb5"
@@ -775,7 +841,7 @@ t42      = defaultType {
                                                                   }
                                                            ]
                                      } 
-                                 ]
+                   ]
                        }
 
 t80     :: TypeDefinition (Application Concrete Concrete)
@@ -987,17 +1053,12 @@ t84       = defaultType
             { identifier   = "1ea5eae4-7028-44f7-acbc-3c65b2a40093"
             , antecedent   = Just  "e393b15b-944c-4b35-97cd-02b1be6d693b"
             , author       = Just personLars
-            , name         = "URI"
+            , name         = "UriByScheme"
             , semantics    = "Uniform Resource Identifier variable in the scheme."
             , constructors = Just [
                                    defaultConstructor 
-                                    { constructorName = "URI"
+                                    { constructorName = "Uri"
                                     , constructorFields = [
-                                                            defaultField
-                                                            { fieldName = "scheme"
-				                                                    ,	fieldType = Variable First
-			                                                     	}
-                                                          ,
                                                             defaultField 
                                                             { fieldName = "hierarchy"
                                                             , fieldType = DataType "8068cbda-f35e-4618-a7e7-98c67ff9bee0"
@@ -1343,9 +1404,9 @@ t22      = defaultType {
 t23     :: TypeDefinition Concrete 
 t23       = defaultType {
              identifier   = "10f280df659654becb6e08122e846284"
-           , name         = "Nil"
+           , name         = "Unit"
            , semantics    = "The empty tuple. () in Haskell syntax."
-           , constructors = Just [defaultConstructor {constructorName = "Nil"}]
+           , constructors = Just [defaultConstructor {constructorName = "Unit"}]
           }
 
 t24     :: TypeDefinition (Application Concrete (Application Concrete Concrete)) 
