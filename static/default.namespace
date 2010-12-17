@@ -33,6 +33,7 @@ Basic
     t-7af30cce93724981a16a80f3f193dc33 --Set
     t-43c6cd1333b04fc8a480668ecb24768e --Map
   Time
+    c-882f4a6affa24579830e0a850acad145 --TimeStandard
     t-b6831ec097f14b8eba74b1e486b4175d --Date
     t-606f253533d3420da3465afae341d598 --Time
     t-c1b1f6c722c2436fab3180146520814e --UTC
@@ -52,6 +53,7 @@ Basic
 
 Typelevel
   PeanoNumbers
+    c-c6ebaa9f4cdc4068894d1ffaef5a7a83 --PeanoNumber
     t-421496848904471ea3197f25e2a02b72 --Zero
     t-9e2e1e478e094a8abe5507f8574ac91f --Succ
   Kind

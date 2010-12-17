@@ -113,11 +113,8 @@ classes = [
           , wrapClass c3  -- Ord
           , wrapClass c4  -- Enum
           , wrapClass c5  -- Bounded
-
-        --  , ("c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83", "Kind")
-        --  , ("0d864b18-19bd-4230-905b-bad04a4c195e", "Predicate")
-        --  , ("882f4a6a-ffa2-4579-830e-0a850acad145", "TimeStandard")
-        --  , ("edba1ef6-3e72-4b61-8256-9040555253a8", "AnnotationExtension")
+          , wrapClass c6  -- PeanoNumber
+          , wrapClass c7  -- TimeStandard
           ]
 
 types  :: [(UUID, Wrapped)]

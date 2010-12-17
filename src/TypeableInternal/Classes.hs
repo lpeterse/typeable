@@ -127,3 +127,17 @@ c5  = defaultClass
                                        ]
       }
 
+c6  = defaultClass
+      { classIdentifier   = "c6ebaa9f4cdc4068894d1ffaef5a7a83"
+      , className         = "PeanoNumber"
+      , classSemantics    = "Typelevel natural numbers. The only instance of this type should be ->Zero and ->Succ."
+      , classMethods      = [] 
+      }
+
+c7  = defaultClass
+      { classIdentifier   = "882f4a6affa24579830e0a850acad145"
+      , className         = "TimeStandard"
+      , classSemantics    = ""
+      , classMethods      = []
+      }
+
