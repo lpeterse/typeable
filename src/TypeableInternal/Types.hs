@@ -217,7 +217,7 @@ t87      = defaultType {
                                                            }
                                                          , defaultField
                                                            { fieldName = "signature"
-                                                           , fieldType = Application (DataType "49dcb902e92a4fcbb16ab1a3cff5f68f") (Variable First)
+                                                           , fieldType = Application (DataType "0174bd2264004820bfe34e211cb35a7d") (Variable First)
                                                            }
                                                          , defaultField
                                                            { fieldName = "semantics"
@@ -730,7 +730,7 @@ t44       = defaultType {
            , author       = Just personLars
            , name         = "Constructor"
            , semantics    = "A value constructor."
-           , constraints  = S.fromList [Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable First]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , constructors = Just [ defaultConstructor 
                                    { constructorName      = "Constructor"
                                    , constructorFields    = [
@@ -764,7 +764,7 @@ t51      = defaultType {
              identifier   = "205895c8-d2df-475b-8d5e-ad5ee33d9f63"
            , author       = Just personLars
            , name         = "Field"
-           , constraints  = S.fromList [Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable First]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , semantics    = ""
            , constructors = Just [ defaultConstructor 
                                    { constructorName      = "Field"
@@ -788,7 +788,7 @@ t51      = defaultType {
                                                                   { fieldName      = "type"
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Application 
-                                                                                       (DataType "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f") 
+                                                                                       (DataType "0174bd2264004820bfe34e211cb35a7d") 
                                                                                        (Variable First)
                                                                   }
                                                                ]
@@ -872,30 +872,14 @@ t42     :: TypeDefinition (Application Concrete Concrete)
 t42      = defaultType {
              identifier   = "3e815311-18e1-4888-be21-de7921b15bb5"
            , author       = Just personLars
-           , name         = "TypeDefinition"
+           , name         = "Type"
            , semantics    = "This is the datatype the whole system relies on :-)"
-           , constraints  = S.fromList [Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable First]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor 
-                                     { constructorName      = "TypeDefinition"
-                                     , constructorFields    = [ (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "identifier"
-                                                                  , fieldSemantics = "This identifier is bound to the structure and semantics, not to an actual version of discription etc."
-                                                                  , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "antecedent"
-                                                                  , fieldSemantics = "Note whether this type is an improved version of another with changes in structure and/or semantics."
-                                                                  , fieldType      = Application 
-                                                                                       (DataType "f8f49ef6bbe874a42926fa23d5b3bc19") 
-                                                                                       (DataType "346674042a7248b4a94abff0726d0c43")  
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete)) 
-                                                                  { fieldName      = "name"
-                                                                  , fieldSemantics = "The type's name. It doesn't need to be unique - this is what the -> UUID is for. In doubt choose a short one that already catches the semantics as good as possible."
-                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
+                                     { constructorName      = "Type"
+                                     , constructorFields    = [
+                                                                  (defaultField :: Field  (Application Concrete Concrete))
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = "The type's semantics in general. Details may be described in the constructors or fields."
                                                                   , fieldType      = Application 
@@ -904,30 +888,6 @@ t42      = defaultType {
                                                                                         (DataType "2c62454c586f4bdea5e2b17e432db245")
                                                                                         (Variable First)
                                                                                       )
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete)) 
-                                                                  { fieldName      = "creation"
-                                                                  , fieldSemantics = "The date of creating the type with structure and semantics."
-                                                                  , fieldType      = Application 
-                                                                                       (DataType "606f253533d3420da3465afae341d598")
-                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "modification"
-                                                                  , fieldSemantics = "The date of the last improvement/modification to the description."
-                                                                  , fieldType      = Application 
-                                                                                       (DataType "606f253533d3420da3465afae341d598")
-                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "author"
-                                                                  , fieldSemantics = "The original author of the type."
-                                                                  , fieldType      = maybe $ DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "maintainer"
-                                                                  , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
-                                                                  , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
                                                                   }
                                                                ,  (defaultField :: Field  (Application Concrete Concrete))
                                                                   { fieldName      = "constraints"
@@ -955,29 +915,12 @@ t80     :: TypeDefinition (Application Concrete Concrete)
 t80      = defaultType {
              identifier   = "4e0b8f8e-a2b1-4522-8fa4-ec74b559bf6a"
            , author       = Just personLars
-           , name         = "ClassDefintion"
+           , name         = "Class"
            , semantics    = ""
            , constructors = Just [
                                    defaultConstructor 
-                                     { constructorName      = "ClassDefinition"
-                                     , constructorFields    = [ (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "identifier"
-                                                                  , fieldSemantics = "This identifier is bound to the structure and semantics, not to an actual version of discription etc."
-                                                                  , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
-                                                                  }
-                                                               ,  (defaultField  :: Field (Application Concrete Concrete))
-                                                                  { fieldName      = "antecedent"
-                                                                  , fieldSemantics = "Note whether this class is an improved version of another with changes in structure and/or semantics."
-                                                                  , fieldType      = Application 
-                                                                                       (DataType "f8f49ef6bbe874a42926fa23d5b3bc19") 
-                                                                                       (DataType "346674042a7248b4a94abff0726d0c43")  
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "name"
-                                                                  , fieldSemantics = "The classes' name. It doesn't need to be unique - this is what the -> UUID is for. In doubt choose a short one that already catches the semantics as good as possible."
-                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
-                                                                  }
-                                                               ,  (defaultField ::  Field (Application Concrete Concrete))
+                                     { constructorName      = "Class"
+                                     , constructorFields    = [   (defaultField ::  Field (Application Concrete Concrete))
                                                                   { fieldName      = "semantics"
                                                                   , fieldSemantics = "The classes' semantics in general."
                                                                   , fieldType      = Application 
@@ -986,30 +929,6 @@ t80      = defaultType {
                                                                                         (DataType "2c62454c586f4bdea5e2b17e432db245")
                                                                                         (Variable First)
                                                                                       )
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "creation"
-                                                                  , fieldSemantics = "The date of creating the class with structure and semantics."
-                                                                  , fieldType      = Application 
-                                                                                       (DataType "606f253533d3420da3465afae341d598")
-                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
-                                                                  }
-                                                               ,  (defaultField :: Field  (Application Concrete Concrete))
-                                                                  { fieldName      = "modification"
-                                                                  , fieldSemantics = "The date of the last improvement/modification to the description."
-                                                                  , fieldType      = Application 
-                                                                                       (DataType "606f253533d3420da3465afae341d598")
-                                                                                       (DataType "c1b1f6c7-22c2-436f-ab31-80146520814e")
-                                                                  }
-                                                               ,  (defaultField :: Field (Application Concrete Concrete))
-                                                                  { fieldName      = "author"
-                                                                  , fieldSemantics = "The original author of the class."
-                                                                  , fieldType      = maybe $ DataType "38198846-85d3-4bf1-9b34-69304e15983d"  
-                                                                  }
-                                                               ,  (defaultField ::  Field (Application Concrete Concrete))
-                                                                  { fieldName      = "maintainer"
-                                                                  , fieldSemantics = "Who is responsible for changes/additions to the description etc.?"
-                                                                  , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
                                                                   }
                                                                ,  (defaultField :: Field  (Application Concrete Concrete))
                                                                   { fieldName      = "constraints"
@@ -1034,53 +953,6 @@ t80      = defaultType {
                                  ]
                        }
 
-
-t78     :: TypeDefinition (Application Concrete Concrete) 
-t78       = defaultType {
-             identifier   = "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f"
-           , author       = Just personLars
-           , name         = "TypeHM"
-           , semantics    = "A Hindley-Milner type."
-           , constraints  = S.fromList [Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable First]]
-           , constructors = Just [
-                                   (defaultConstructor  :: Constructor (Application Concrete Concrete) )
-                                   { constructorName      = "DataType"
-                                   , constructorSemantics = "References another Datatype by -> UUID."
-                                   , constructorFields    = [ (defaultField :: Field (Application Concrete Concrete))
-                                                              { fieldName      = "typeRef"
-                                                              , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
-                                                              }
-                                                            ]
-                                   } 
-                                 , (defaultConstructor :: Constructor (Application Concrete Concrete) ) 
-                                   { constructorName      = "Variable"
-                                   , constructorSemantics = "Bound variable. You supply the set of variables manually via $a"
-                                   , constructorFields    = [ (defaultField :: Field (Application Concrete Concrete))
-                                                              { fieldName      = "variable"
-                                                              , fieldType      = Variable First
-                                                              }
-                                                            ]
-                                   } 
-                                 , (defaultConstructor :: Constructor (Application Concrete Concrete) )
-                                   { constructorName      = "Application"
-                                   , constructorSemantics = "Apply one type onto another yielding a type of lower kind."
-                                   , constructorFields    = [ (defaultField :: Field (Application Concrete Concrete))
-                                                              { fieldName      = "function"
-                                                              , fieldType      = Application 
-                                                                                   (DataType "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f")
-                                                                                   (Variable First)
-                                                              }
-                                                            , (defaultField :: Field (Application Concrete Concrete))
-                                                              { fieldName      = "argument"
-                                                              , fieldType      = Application
-                                                                                   (DataType "49dcb902-e92a-4fcb-b16a-b1a3cff5f68f")
-                                                                                   (Variable First)
-                                                              }
-                                                            ]
-                                   } 
-                                ]
-                       }
- 
 
 t85     :: TypeDefinition Concrete 
 t85       = defaultType {
@@ -1189,9 +1061,9 @@ t41     :: TypeDefinition (Application Concrete Concrete)
 t41       = defaultType {
              identifier   = "0174bd22-6400-4820-bfe3-4e211cb35a7d"
            , author       = Just personLars
-           , name         = "Type"
+           , name         = "DataType"
            , semantics    = ""
-           , constraints  = S.fromList [Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable First]]
+           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    (defaultConstructor  :: Constructor  (Application Concrete Concrete) )
                                    { constructorName      = "DataType"
@@ -1202,15 +1074,6 @@ t41       = defaultType {
                                                               }
                                                             ]
                                    } 
-                                 , (defaultConstructor  :: Constructor  (Application Concrete Concrete) )
-                                   { constructorName      = "DependentType"
-                                   , constructorSemantics = "DataTypes another Typefamily by -> UUID."
-                                   , constructorFields    = [ (defaultField :: Field (Application Concrete Concrete))
-                                                              { fieldName      = "depTypeRef"
-                                                              , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
-                                                              }
-                                                            ]
-                                   }
                                  , (defaultConstructor  :: Constructor  (Application Concrete Concrete) )
                                    { constructorName      = "Variable"
                                    , constructorSemantics = "Bound variable. You supply the set of variables manually via $a"
@@ -1555,7 +1418,7 @@ t92       = defaultType
             , name          = "Application"
             , author        = Just personLars
             , semantics     = "The concrete kind."
-            , constraints   = S.fromList [Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable First], Constraint "2980bc10f5f246058ab35dbaaa4e1663" [Variable (Next First)]]
+            , constraints   = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First], Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable (Next First)]]
             , constructors  = Just [ 
                                      defaultConstructor
                                      { constructorName      = "First"

@@ -197,7 +197,6 @@ types   = [  wrapType t1
            , wrapType t74
            , wrapType t75
            , wrapType t76
-           , wrapType t78
            , wrapType t79
            , wrapType t80
            , wrapType t81
