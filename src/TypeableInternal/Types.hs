@@ -315,6 +315,107 @@ t49      = defaultType {
                                  ]
           }
 
+type T96 = (Application Concrete (Application (Application Concrete Concrete) (Application (Application Concrete Concrete) Concrete)))
+
+
+t96     :: TypeDefinition T96
+t96      = defaultType {
+             identifier   = "ce4219d18285469abe0b8a07bb2a1742"
+           , author       = Just personLars
+           , name         = "Quantification"
+           , semantics    = "'Generates' a finite domain of variables that get associated with values of $b and passed over to $c. $a is the current domain."
+           , constructors = Just [
+                                   (defaultConstructor :: Constructor T96)
+                                   { constructorName    = "AddVariable"
+                                   , constructorFields  = [
+                                                            (defaultField :: Field T96)
+                                                            { fieldName = "associated"
+                                                            , fieldSemantics = "A value associated with the bound variable. It can make use of former bound variables."
+                                                            , fieldType = Application (Variable (Next First)) (Variable First)
+                                                            }
+                                                          , (defaultField :: Field T96)
+                                                            { fieldName = "quantified"
+                                                            , fieldSemantics = "Recursive nesting."
+                                                            , fieldType = Application
+                                                                            (Application
+                                                                              (Application
+                                                                                (DataType "ce4219d18285469abe0b8a07bb2a1742")
+                                                                                (Application
+                                                                                  (DataType "9e2e1e478e094a8abe5507f8574ac91f")
+                                                                                  (Variable First)
+                                                                                )
+                                                                              )
+                                                                              (Variable (Next First))
+                                                                            )
+                                                                            (Variable (Next (Next First)))
+                                                            }
+                                                          ]
+                                   }
+                                 , (defaultConstructor :: Constructor T96)
+                                   { constructorName    = "Expression"
+                                   , constructorSemantics = "The expression whose variables got bound."
+                                   , constructorFields  = [
+                                                            (defaultField :: Field T96)
+                                                            { fieldName = "expression"
+                                                            , fieldType = Application
+                                                                            (Variable (Next (Next First)))
+                                                                            (Variable First)
+                                                            }
+                                                          ]
+                                   }
+                                 ]
+          }
+
+
+
+
+t97     :: TypeDefinition Concrete 
+t97      = defaultType {
+             identifier   = "1660b01f08dc4aedbe4c0941584541cb"
+           , author       = Just personLars
+           , name         = "Kind"
+           , semantics    = "Representation of a type's kind."
+           , constructors = Just [
+                                   defaultConstructor
+                                   { constructorName    = "Type"
+                                   , constructorFields  = []
+                                   }
+                                 , defaultConstructor
+                                   { constructorName    = "Application"
+                                   , constructorFields  = [
+                                                            defaultField
+                                                            { fieldName = "function"
+                                                            , fieldType = DataType "1660b01f08dc4aedbe4c0941584541cb"
+                                                            }
+                                                          , defaultField
+                                                            { fieldName = "argument"
+                                                            , fieldType = DataType "1660b01f08dc4aedbe4c0941584541cb"
+                                                            }
+                                                          ]
+                                   }
+                                 ]
+          }
+
+t98     :: TypeDefinition (Application Concrete (Application Concrete Concrete)) 
+t98      = defaultType {
+             identifier   = "0c6cffdb-eb90-4da7-b054-b96e2529237c"
+           , author       = Just personLars
+           , name         = "Const"
+           , semantics    = "The type-level equivalent to ->const."
+           , constructors = Just [
+                                   (defaultConstructor ::  Constructor (Application Concrete (Application Concrete Concrete))) 
+                                   { constructorName    = "Const"
+                                   , constructorFields  = [
+                                                            (defaultField :: Field  (Application Concrete (Application Concrete Concrete))) 
+                                                            { fieldName = "const"
+                                                            , fieldType = Variable First
+                                                            }
+                                                          ]
+                                   }
+                                 ]
+          }
+
+
 t79     :: TypeDefinition Concrete 
 t79      = defaultType {
              identifier   = "b586fd6a-e075-49c4-b641-465feb232a00"
@@ -695,7 +796,7 @@ t51      = defaultType {
                                  ]
           }
 
-t95     :: TypeDefinition Concrete
+t95     :: TypeDefinition (Application (Application Concrete Concrete) Concrete)
 t95      = defaultType {
              identifier   = "451f847e1cb642d0b7c5dbdfa03f41b5"
            , author       = Just personLars
@@ -746,14 +847,20 @@ t95      = defaultType {
                                                                   , fieldType      =  DataType "38198846-85d3-4bf1-9b34-69304e15983d"   
                                                                   }
                                                                ,  (defaultField :: Field Concrete)
-                                                                  { fieldName      = "content"
+                                                                  { fieldName      = "structure"
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Application
                                                                                        (Application
-                                                                                         (DataType "ce4219d1-8285-469a-be0b-8a07bb2a1742")
-                                                                                         (DataType "1660b01f-08dc-4aed-be4c-0941584541cb")
+                                                                                         (Application
+                                                                                           (DataType "ce4219d1-8285-469a-be0b-8a07bb2a1742") --Quantification
+                                                                                           (DataType "421496848904471ea3197f25e2a02b72")     --Zero
+                                                                                         )
+                                                                                         (Application 
+                                                                                           (DataType "0c6cffdb-eb90-4da7-b054-b96e2529237c")
+                                                                                           (DataType "1660b01f-08dc-4aed-be4c-0941584541cb")
+                                                                                         )
                                                                                        )
-                                                                                     (DataType "fcc1a817-ac5f-4ff5-b339-82a44250ab07")
+                                                                                       (Variable First)
                                                                   }
                                                            ]
                                      } 
