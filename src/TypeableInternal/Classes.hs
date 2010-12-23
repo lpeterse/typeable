@@ -143,38 +143,127 @@ c7  = defaultClass
 
 c8  = defaultClass
       { classIdentifier   = "584d85dcf5a144bebf0da92b7a5977a3"
-      , className         = "Functor_TODO"
+      , className         = "Functor"
       , classSemantics    = ""
-      , classMethods      = []
+      , classMethods      =            [ Method
+                                           "fmap" 
+                                           (Forall $
+                                             Forall $   
+                                               function
+                                                 (function (Variable (Next First)) (Variable (Next (Next First))))
+                                                 (function
+                                                   (Application (Variable First) (Variable (Next First)))
+                                                   (Application (Variable First) (Variable (Next (Next First))))
+                                                 )
+                                           )
+                                           "Takes a function from $b to $c and returns a functor."
+                                       ]
+
       }
 
 
 c9  = defaultClass
       { classIdentifier   = "30c5342d3f7243d29b04c5f9abb72405"
-      , className         = "Applicative_TODO"
+      , className         = "Applicative"
       , classSemantics    = ""
-      , classMethods      = [] 
+      , classConstraints  = S.fromList [Constraint  "584d85dcf5a144bebf0da92b7a5977a3" [Variable First]]
+      , classMethods      = [ Method
+                                "pure"
+                                (Forall $
+                                  function (Variable (Next First)) (Application (Variable First) (Variable (Next First)))
+                                )
+                                ""
+                            , Method
+                                "sequence"
+                                (Forall $ Forall $
+                                  function 
+                                    (Application
+                                      (Variable First)
+                                      (function (Variable (Next First)) (Variable (Next (Next First))))
+                                    )
+                                    (function
+                                      (Application (Variable First) (Variable (Next First)))
+                                      (Application (Variable First) (Variable (Next (Next First))))
+                                    )
+                                )
+                                "<*>"
+                            ] 
       }
 
 c10  = defaultClass
       { classIdentifier   = "d1c2d3e54e6f4910b9c83bd3c35617c6"
-      , className         = "Monad_TODO"
+      , className         = "Monad"
       , classSemantics    = ""
-      , classMethods      = [] 
+      , classMethods      = [ Method
+                                "bind"
+                                (Forall $ Forall $
+                                  function
+                                    (Application (Variable First) (Variable (Next First)))
+                                    (function 
+                                      (function
+                                        (Variable (Next First)) 
+                                        (Application (Variable First) (Variable (Next (Next First))))
+                                      )
+                                      (Application (Variable First) (Variable (Next (Next First))))
+                                    )
+                                )
+                                ""
+                            , Method
+                                "bind'"
+                                (Forall $ Forall $
+                                  function
+                                    (Application (Variable First) (Variable (Next First)))
+                                    (function 
+                                      (Application (Variable First) (Variable (Next (Next First))))
+                                      (Application (Variable First) (Variable (Next (Next First))))
+                                    )
+                                )
+                                ""
+                            , Method
+                                "return"
+                                (Forall $ 
+                                  function
+                                    (Variable (Next First))
+                                    (Application (Variable First) (Variable (Next First)))
+                                )
+                                ""
+                            , Method
+                                "fail"
+                                (Forall $ 
+                                  function
+                                    (list (DataType "16f4245df3cc0b534f028235ff8aae16"))
+                                    (Application (Variable First) (Variable (Next First)))
+                                )
+                                ""
+                            ] 
       }
 
 c11  = defaultClass
       { classIdentifier   = "8cbc0d8529974ffc838ea3225176feb4"
-      , className         = "Show_TODO"
+      , className         = "Show"
       , classSemantics    = ""
-      , classMethods      = [] 
+      , classMethods      = [ Method
+                                "show"
+                                (function
+                                  (Variable First) 
+                                  (list (DataType "16f4245df3cc0b534f028235ff8aae16"))
+                                )
+                                ""
+                            ] 
       }
 
 c12  = defaultClass
       { classIdentifier   = "56b4f8a2d8b34e138a8349ad7e3de441"
-      , className         = "Read_TODO"
+      , className         = "Read"
       , classSemantics    = ""
-      , classMethods      = [] 
+      , classMethods      = [ Method
+                                "read"
+                                (function
+                                  (list (DataType "16f4245df3cc0b534f028235ff8aae16"))
+                                  (Variable First) 
+                                )
+                                ""
+                            ] 
       }
 
 

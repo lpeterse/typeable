@@ -5,7 +5,7 @@ module TypeableInternal.FormatHtml where
 
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
 import Typeable.T421496848904471ea3197f25e2a02b72
-import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
+--import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
 import Prelude
 import Data.String
@@ -119,17 +119,24 @@ instance (Kind k, Htmlize k) => Htmlize (Type k) where
     where 
       htmlize' (DataType i) _ = humanify i >>= return . (a ! href (stringValue $ show i)) . string
       htmlize' (Variable v) _ = htmlize v
+      htmlize' (Forall t)   _ = do let vs = domain :: [k] 
+                                   t' <- htmlize t 
+                                   v' <- htmlize (Next $ last vs :: (Application Concrete k))
+                                   return $ do "\x2200"
+                                               v'
+                                               preEscapedString ":&nbsp;"
+                                               t'
       htmlize' (Application
                  (Application 
                    (DataType (UUID 107557859644440974686449305308309621121)) 
                    t1
                  ) 
                  t2
-               )            w = do t1' <- htmlize t1
-                                   t2' <- htmlize t2
+               )            w = do t1' <- htmlize' t1 True 
+                                   t2' <- htmlize  t2
                                    return $ do if w then "(" else ""
                                                t1'
-                                               preEscapedString "&nbsp;-&gt;&nbsp;"
+                                               a ! href "/type/50eae3e85d2d42c88754b026cc360981" $ preEscapedString "&#x202F;\x2192&#x202F;"
                                                t2'
                                                if w then ")" else ""
       htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
@@ -181,7 +188,7 @@ instance forall k. (Htmlize k, Kind k) => Htmlize (TypeDefinition k) where
                   return $   do H.div ! A.id "meta" $ do
                                   H.h1 "Meta"
                                   table $ do tr $ do td "Name"
-                                                     td ! class_ "type" $ (string $ show $ TypeableInternal.InternalTypeDefs.name x)
+                                                     td ! class_ "type" $ H.a ! A.href "" $ (string $ show $ TypeableInternal.InternalTypeDefs.name x)
                                              tr $ do td "UUID"
                                                      td $ string $ show (identifier x)
                                              tr $ do td "Author"
@@ -202,7 +209,7 @@ instance forall k. (Htmlize k, Kind k) => Htmlize (TypeDefinition k) where
                                 H.div ! A.id "structure" $ do
                                   H.h1 "Structure"
                                   H.table $ do
-                                    H.tr $ td ! colspan "4" ! class_ "type large" $ do string $ show (TypeableInternal.InternalTypeDefs.name x)
+                                    H.tr $ td ! colspan "4" ! class_ "type large" $ do H.a ! A.href "" $ string $ show (TypeableInternal.InternalTypeDefs.name x)
                                                                                        preEscapedString "&nbsp;"
                                                                                        mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
                                                                                        let (_::k,x) = kind
@@ -226,7 +233,7 @@ instance (Htmlize k, Kind k) => Htmlize (ClassDefinition k) where
                                   H.h1 "Meta"
                                   table $ do
                                     tr $ do td "Name"
-                                            td ! class_ "type" $ (string $ show $ className x)
+                                            td ! class_ "type" $ H.a ! A.href "" $ (string $ show $ className x)
                                     tr $ do td "UUID"
                                             td $ string $ show (classIdentifier x)
                                     tr $ do td "Author"
@@ -247,7 +254,7 @@ instance (Htmlize k, Kind k) => Htmlize (ClassDefinition k) where
                                 H.div ! A.id "structure" $ do
                                   H.h1 "Structure"
                                   H.table $ do
-                                    H.tr $ td ! colspan "3" ! class_ "type large" $ do string $ show (className x)
+                                    H.tr $ td ! colspan "3" ! class_ "type large" $ do H.a ! A.href "" $ string $ show (className x)
                                                                                        preEscapedString "&nbsp;"
                                                                                        mconcat (Data.List.intersperse (preEscapedString "&nbsp;") bv)
                                     H.tr $ td ! colspan "3" ! class_ "constraints" $ b

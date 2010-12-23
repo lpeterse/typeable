@@ -1592,6 +1592,10 @@ t28       = defaultType {
                                      constructorName = "Underscore"
                                     ,constructorFields = []
                                    }    
+                                 , defaultConstructor { 
+                                     constructorName = "Prime"
+                                    ,constructorFields = []
+                                   }
                                  ]
           }
           

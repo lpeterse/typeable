@@ -7,7 +7,7 @@ body {
   font-size:13px;
 }
 
-a               { text-decoration: none;     }
+a               { text-decoration: none; font-weight: bold; }
 a[href]:link    { color: rgb(196,69,29);     }
 a[href]:visited { color: rgb(171,105,84);    }
 a[href]:hover   { text-decoration:underline; }
@@ -77,8 +77,7 @@ td.function {
 
 .type {
   font-family: monospace;
-  font-weight: bold;
-  color:       #C75D00;
+  color: rgb(196,69,29); 
 }
 
 .class {

@@ -5,7 +5,7 @@ module TypeableInternal.InternalTypeDefs where
 --import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
---import Typeable.T9e2e1e478e094a8abe5507f8574ac91f -- Succ
+import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f as Succ -- Succ
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4 -- Finite
 
 import Data.Word
@@ -111,9 +111,9 @@ instance Show Void where
   show = undefined
 
 data (Kind k)        => Type k = DataType      { typeRef ::  UUID }  -- entweder extern der Ordnung k
-                               | DependentType  UUID                 -- oder gebundene Variable
                                | Variable       k                    -- oder freie Variable der Ordnung k
                                | Application    (Type k) (Type k)    -- oder Typkonstruktor höherer Ordnung wird angewandt
+                               | Forall        { quantified :: (Type (Application Concrete k)) }
                                deriving (Eq, Ord, Show)
 
 data (Kind k)        => Constraint k = Constraint
@@ -248,6 +248,7 @@ data Symbol = Lower   LatinAlphabet
             | Upper   LatinAlphabet
             | Decimal DecimalAlphabet
             | Underscore
+            | Prime
             deriving (Eq, Ord, Show)
 
 data LowerDesignator = LowerDesignator LatinAlphabet [Symbol] deriving (Eq, Ord)
@@ -256,6 +257,7 @@ data UpperDesignator = UpperDesignator LatinAlphabet [Symbol] deriving (Eq, Ord)
 show' :: [Symbol] -> String
 show' []              = []
 show' (Underscore:xs) = '_':(show' xs)
+show' (Prime     :xs) = '\'':(show' xs)
 show' (Lower a   :xs) = (chr $ (fromEnum a)+97):(show' xs)
 show' (Upper a   :xs) = (chr $ (fromEnum a)+65):(show' xs)
 show' (Decimal a :xs) = (chr $ (fromEnum a)+48):(show' xs)
@@ -293,6 +295,7 @@ instance IsString UpperDesignator where
 instance IsString [Symbol] where
   fromString []       = []
   fromString ('_':xs) = Underscore:(fromString xs) 
+  fromString ('\'':xs) = Prime:(fromString xs)
   fromString (x  :xs) | i >= 48 && i <= 57  = (Decimal $ toEnum $ i-48):(fromString xs)
                       | i >= 65 && i <= 90  = (Upper   $ toEnum $ i-65):(fromString xs)
                       | i >= 97 && i <= 122 = (Lower   $ toEnum $ i-97):(fromString xs)
