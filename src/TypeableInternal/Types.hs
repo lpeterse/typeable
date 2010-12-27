@@ -315,14 +315,14 @@ t49      = defaultType {
                                  ]
           }
 
-type T96 = (Application Concrete (Application (Application Concrete Concrete) (Application (Application Concrete Concrete) Concrete)))
+type T96 = (Application Concrete (Application Concrete (Application (Application Concrete Concrete) Concrete)))
 
 
 t96     :: TypeDefinition T96
 t96      = defaultType {
              identifier   = "ce4219d18285469abe0b8a07bb2a1742"
            , author       = Just personLars
-           , name         = "Quantification"
+           , name         = "Binding"
            , semantics    = "'Generates' a finite domain of variables that get associated with values of $b and passed over to $c. $a is the current domain."
            , constructors = Just [
                                    (defaultConstructor :: Constructor T96)
@@ -395,26 +395,6 @@ t97      = defaultType {
                                    }
                                  ]
           }
-
-t98     :: TypeDefinition (Application Concrete (Application Concrete Concrete)) 
-t98      = defaultType {
-             identifier   = "0c6cffdb-eb90-4da7-b054-b96e2529237c"
-           , author       = Just personLars
-           , name         = "Const"
-           , semantics    = "The type-level equivalent to ->const."
-           , constructors = Just [
-                                   (defaultConstructor ::  Constructor (Application Concrete (Application Concrete Concrete))) 
-                                   { constructorName    = "Const"
-                                   , constructorFields  = [
-                                                            (defaultField :: Field  (Application Concrete (Application Concrete Concrete))) 
-                                                            { fieldName = "const"
-                                                            , fieldType = Variable First
-                                                            }
-                                                          ]
-                                   }
-                                 ]
-          }
-
 
 t79     :: TypeDefinition Concrete 
 t79      = defaultType {
@@ -855,10 +835,7 @@ t95      = defaultType {
                                                                                            (DataType "ce4219d1-8285-469a-be0b-8a07bb2a1742") --Quantification
                                                                                            (DataType "421496848904471ea3197f25e2a02b72")     --Zero
                                                                                          )
-                                                                                         (Application 
-                                                                                           (DataType "0c6cffdb-eb90-4da7-b054-b96e2529237c")
-                                                                                           (DataType "1660b01f-08dc-4aed-be4c-0941584541cb")
-                                                                                         )
+                                                                                         (DataType "1660b01f-08dc-4aed-be4c-0941584541cb")
                                                                                        )
                                                                                        (Variable First)
                                                                   }

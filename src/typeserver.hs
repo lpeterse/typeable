@@ -214,7 +214,6 @@ types   = [  wrapType t1
            , wrapType t95 -- Extension
            , wrapType t96 -- Quantification
            , wrapType t97 -- Kind
-           , wrapType t98 -- Const
         ]
 
 

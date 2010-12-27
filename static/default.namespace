@@ -57,7 +57,6 @@ Basic
   t-50eae3e85d2d42c88754b026cc360981 --Function
 
 Typelevel
-  t-0c6cffdbeb904da7b054b96e2529237c --Const
   PeanoNumbers
     c-c6ebaa9f4cdc4068894d1ffaef5a7a83 --PeanoNumber
     t-421496848904471ea3197f25e2a02b72 --Zero
