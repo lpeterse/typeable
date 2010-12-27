@@ -83,8 +83,8 @@ instance IsString UUID where
 
 -- Wunderfein. Hierein könnte man sogar noch automatische Ersetzung von URLs etc. machen
 instance Kind k => IsString (Annotation k) where
-  fromString [] = Block M.empty
-  fromString xs = Block (M.singleton ENG [Plain (fromString xs)])
+  fromString [] = Plain ""
+  fromString xs = Plain (fromString xs)
 
 data UUID       = UUID Word128 deriving (Eq, Ord)
 
@@ -173,35 +173,8 @@ data (Kind        k) => Field k = Field
                         }
                         deriving (Eq, Ord, Show)
 
-data ISO_639_2B = ENG deriving (Eq, Ord, Show)
-
-type Language a   = Map ISO_639_2B a 
-
-data (Kind        k) => Annotation k   = Block          (Language [Inline k])
-                                       | IndentList     [Annotation k]
-                                       | BulletList     [Annotation k]
-                                       | IndexedList    [Annotation k]
-                                       | TitledList     [(Language Text, Annotation k)]
-                                       deriving (Eq, Ord, Show)
-
-data (Kind        k) => Inline k       = Plain          Text
-                                       | Emph           Text
-                                       | Strong         Text
-                                       | Subscript      Text
-                                       | Superscript    Text
-                                       | Monospace      Text
-                                       | URL            URL 
-                                       | Norm           Norm
-                                       | Type           (Type k)
-                                       | Class          UUID
-                                       deriving (Eq, Ord, Show)
-
-data Norm        = RFC  Word
-                 | ISO  Word
-                 | IEC  Word
-                 | DIN  Word
-                 | ECMA Word
-                 deriving (Eq, Ord, Show)
+data (Kind        k) => Annotation k = Plain Text
+                        deriving (Eq, Ord, Show)
  
 data LatinAlphabet = A
                    | B
@@ -287,7 +260,7 @@ instance IsString LowerDesignator where
 
 instance IsString UpperDesignator where
   fromString []     = error "UpperDesignator must consist of at least one upper letter."
-  fromString (x:xs) | i < 65 || i > 90  = error $ "Character '"++(show x)++"' is not a upperrcase letter."
+  fromString (x:xs) | i < 65 || i > 90  = error $ "Character '"++(show x)++"' is not an upperrcase letter."
                     | otherwise         = UpperDesignator (toEnum $ i-65) (fromString xs)  
                     where 
                       i = fromEnum x

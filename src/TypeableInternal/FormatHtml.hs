@@ -64,15 +64,8 @@ instance Htmlize Namespace where
       cs = S.toList (nsclasses x)
       ns = M.toList (subspaces x)
 
-instance Kind k => Htmlize (Inline k) where
+instance Kind k => Htmlize (Annotation k) where
   htmlize (Plain t)       = return $         text t
-  htmlize (Emph  t)       = return $ em     (text t) 
-  htmlize (Strong t)      = return $ strong (text t)
-  htmlize (Subscript t)   = return $ sub    (text t)
-  htmlize (Superscript t) = return $ sup    (text t)
-  htmlize (Monospace t)   = return $ code   (text t)
-  htmlize (Type t)        = undefined
-  htmlize (Class i)       = undefined
 
 instance (Htmlize k, Kind k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
@@ -80,18 +73,6 @@ instance (Htmlize k, Kind k) => Htmlize (Constraint k) where
                                  return $ do H.a ! href (stringValue $ "../class/"++(show i)) $ H.span ! class_ "class" $ string i'
                                              preEscapedText "&nbsp;"
                                              ts'
-
-instance Kind k => Htmlize (Annotation k) where
-  htmlize (Block m)   | M.null m    = return mempty
-                      | otherwise   = let f (l,c) = htmlize c >>= return . (H.div ! lang (stringValue (show l))) 
-                                      in  mapM f (M.toList m) >>= return . mconcat
-  htmlize (IndentList xs)           = do xs' <- mapM htmlize xs
-                                         return $ H.div ! class_ "indent" $ mconcat $ xs'
-  htmlize (BulletList xs)           = do xs' <- mapM htmlize xs
-                                         return $ ul $ mconcat $ P.map li xs'
-  htmlize (IndexedList xs)          = do xs' <- mapM htmlize xs
-                                         return $ ol $ mconcat $ P.map li xs'
-  htmlize (TitledList xs)           = undefined
 
 instance (Kind k, Htmlize k) => Htmlize (Field k) where
   htmlize (Field n s t) = do t' <- htmlize t
