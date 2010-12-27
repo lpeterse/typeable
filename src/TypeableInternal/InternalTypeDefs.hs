@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module TypeableInternal.InternalTypeDefs where
 
---import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
+import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
 import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f as Succ -- Succ
@@ -94,25 +94,10 @@ instance Show UUID where
                     f xs | P.length xs < 32 = f ('0':xs)
                          | otherwise        = xs
 
-type DateTime   = Int     
 
-data Void
-
-data Person = Person { personName :: String
-                     } deriving (Eq, Ord, Show)
-
-instance Eq Void where
-  (==) = undefined
-
-instance Ord Void where
-  compare = undefined
-
-instance Show Void where
-  show = undefined
-
-data (Kind k)        => Type k = DataType      { typeRef ::  UUID }  -- entweder extern der Ordnung k
-                               | Variable       k                    -- oder freie Variable der Ordnung k
-                               | Application    (Type k) (Type k)    -- oder Typkonstruktor höherer Ordnung wird angewandt
+data (Kind k)        => Type k = DataType      { typeRef ::  UUID } -- entweder extern der Ordnung k
+                               | Variable      k                    -- oder freie Variable der Ordnung k
+                               | Application   (Type k) (Type k)    -- oder Typkonstruktor höherer Ordnung wird angewandt
                                | Forall        { quantified :: (Type (Application Concrete k)) }
                                deriving (Eq, Ord, Show)
 
@@ -121,6 +106,9 @@ data (Kind k)        => Constraint k = Constraint
                                        , constraintVars  :: [Type k]
                                        }
                                        deriving (Eq, Ord, Show)
+
+data Person = Person { personName :: String
+                     } deriving (Eq, Ord, Show)
 
 data (Kind        k) => TypeDefinition k = TypeDefinition
                         { identifier      :: UUID
@@ -216,6 +204,8 @@ data DecimalAlphabet = Zero
                      | Nine
                      deriving (Eq, Ord, Enum, Show)
 
+data (PeanoNumber b) => Binding a b c = Bind b (Binding (Succ.Succ a) b c)
+                                      | Expression (c a)
 
 data Symbol = Lower   LatinAlphabet
             | Upper   LatinAlphabet
@@ -235,12 +225,10 @@ show' (Lower a   :xs) = (chr $ (fromEnum a)+97):(show' xs)
 show' (Upper a   :xs) = (chr $ (fromEnum a)+65):(show' xs)
 show' (Decimal a :xs) = (chr $ (fromEnum a)+48):(show' xs)
 
-
-
 data Namespace = Namespace {
                              nstypes      :: S.Set UUID
                             ,nsclasses    :: S.Set UUID
-                            ,subspaces  :: M.Map UpperDesignator Namespace
+                            ,subspaces    :: M.Map UpperDesignator Namespace
                            } deriving (Eq, Show)
                            
 
@@ -266,12 +254,12 @@ instance IsString UpperDesignator where
                       i = fromEnum x
 
 instance IsString [Symbol] where
-  fromString []       = []
-  fromString ('_':xs) = Underscore:(fromString xs) 
+  fromString []        = []
+  fromString ('_':xs)  = Underscore:(fromString xs) 
   fromString ('\'':xs) = Prime:(fromString xs)
-  fromString (x  :xs) | i >= 48 && i <= 57  = (Decimal $ toEnum $ i-48):(fromString xs)
-                      | i >= 65 && i <= 90  = (Upper   $ toEnum $ i-65):(fromString xs)
-                      | i >= 97 && i <= 122 = (Lower   $ toEnum $ i-97):(fromString xs)
-                      | otherwise           = error $ "Character '"++(show x)++"' is not allowed here.'"
-                      where i = fromEnum x
+  fromString (x  :xs)  | i >= 48 && i <= 57  = (Decimal $ toEnum $ i-48):(fromString xs)
+                       | i >= 65 && i <= 90  = (Upper   $ toEnum $ i-65):(fromString xs)
+                       | i >= 97 && i <= 122 = (Lower   $ toEnum $ i-97):(fromString xs)
+                       | otherwise           = error $ "Character '"++(show x)++"' is not allowed here.'"
+                       where i = fromEnum x
 

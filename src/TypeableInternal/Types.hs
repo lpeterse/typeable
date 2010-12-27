@@ -324,14 +324,15 @@ t96      = defaultType {
            , author       = Just personLars
            , name         = "Binding"
            , semantics    = "'Generates' a finite domain of variables that get associated with values of $b and passed over to $c. $a is the current domain."
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    (defaultConstructor :: Constructor T96)
-                                   { constructorName    = "AddVariable"
+                                   { constructorName    = "Bind"
                                    , constructorFields  = [
                                                             (defaultField :: Field T96)
                                                             { fieldName = "associated"
                                                             , fieldSemantics = "A value associated with the bound variable. It can make use of former bound variables."
-                                                            , fieldType = Application (Variable (Next First)) (Variable First)
+                                                            , fieldType = Variable (Next First)
                                                             }
                                                           , (defaultField :: Field T96)
                                                             { fieldName = "quantified"
@@ -782,6 +783,7 @@ t95      = defaultType {
            , author       = Just personLars
            , name         = "Definition"
            , semantics    = ""
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Definition"
@@ -894,6 +896,7 @@ t80      = defaultType {
            , author       = Just personLars
            , name         = "Class"
            , semantics    = ""
+           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Class"
