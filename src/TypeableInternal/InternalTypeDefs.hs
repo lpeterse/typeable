@@ -5,6 +5,7 @@ module TypeableInternal.InternalTypeDefs where
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
+import Typeable.T421496848904471ea3197f25e2a02b72 -- Zero
 import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f as Succ -- Succ
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4 -- Finite
 
@@ -107,8 +108,21 @@ data (Kind k)        => Constraint k = Constraint
                                        }
                                        deriving (Eq, Ord, Show)
 
-data Person = Person { personName :: String
-                     } deriving (Eq, Ord, Show)
+data Person = Person    { personName :: String
+                        } 
+                        deriving (Eq, Ord, Show)
+
+
+data Definition a = Definition
+                    { identifier'       :: UUID
+                    , antecedent'       :: Maybe UUID
+                    , name'             :: UpperDesignator
+                    , creationTime'     :: Time UTC 
+                    , modificationTime' :: Time UTC
+                    , author'           :: Maybe Person
+                    , maintainer'       :: Person
+                    , structure'        :: Binding Zero Kind' a
+                    }
 
 data (Kind        k) => TypeDefinition k = TypeDefinition
                         { identifier      :: UUID
