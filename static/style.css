@@ -41,8 +41,10 @@ td.function {
  color: #A38A26;
 }
 
-.type.large {
+.caption {
   font-size: 120%;
+  background-color: #FFE5CF;
+  color: rgb(196,69,29); 
 }
 
 .variable {

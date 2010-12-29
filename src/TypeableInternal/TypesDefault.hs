@@ -29,6 +29,14 @@ v2 x = Bind Concrete' (Bind Concrete' (Expression x))
 v3  :: a (Succ (Succ (Succ Zero))) -> Binding Zero Kind' a
 v3 x = Bind Concrete' (Bind Concrete' (Bind Concrete' (Expression x))) 
 
+v1'  :: Kind' -> a (Succ Zero) -> Binding Zero Kind' a
+v1' a x = Bind a (Expression x) 
+
+v2'  :: Kind' -> Kind' -> a (Succ (Succ Zero)) -> Binding Zero Kind' a
+v2' a b x = Bind a (Bind b (Expression x)) 
+
+v3'  :: Kind' -> Kind' -> Kind' -> a (Succ (Succ (Succ Zero))) -> Binding Zero Kind' a
+v3' a b c x = Bind a (Bind b (Bind c (Expression x))) 
 
 defaultPerson = Person { personName = "typeable.org" }
 
