@@ -6,7 +6,7 @@ import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
 import Typeable.T421496848904471ea3197f25e2a02b72 -- Zero
-import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f as Succ -- Succ
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f -- Succ
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4 -- Finite
 
 import Data.Word
@@ -32,38 +32,6 @@ import qualified Data.Map as M
 type List a = [a]
 
 
-data            Concrete
-instance Eq     Concrete where
-  (==)     = undefined
-instance Ord    Concrete where
-  compare  = undefined
-instance Show   Concrete where
-  show     = undefined
-instance Enum   Concrete where
-  fromEnum = undefined
-  toEnum   = undefined
-instance Finite Concrete where
-  domain   = []
-
-data (Kind a, Kind b) => Application a b = First | Next b deriving (Eq, Ord, Show)
-instance (Kind a, Kind b) => Enum (Application a b) where
-  fromEnum First = 0
-  fromEnum (Next x) = 1 + (fromEnum x)
-  toEnum 0 = First
-  toEnum n = Next (toEnum (n-1))
-
-instance (Kind a, Kind b) => Finite (Application a b) where
-  domain = case domain :: [b] of
-    [] -> [First]
-    xs -> First:(P.map Next xs)
-
-class (Finite a) => Kind a where
-  kind :: (a,Kind')
-instance Kind Concrete where
-  kind = (undefined, Concrete')
-instance forall a b. (Kind a, Kind b) => Kind (Application a b) where
-  kind = let (_::a, x) = kind in (let (_::b, y) = kind in  (undefined, Application' x y))
-
 data Kind' = Concrete'
            | Application' Kind' Kind'
            deriving (Eq, Ord)
@@ -75,15 +43,13 @@ instance Show Kind' where
       show' z@(Application' _ _) True = "("++(show' z False)++")" 
       show' (Application' a b) False = (show' a True) ++ " -> " ++ (show' b False)
 
-
-var2String :: (Kind k) => k -> String
+var2String :: (PeanoNumber k) => k -> String
 var2String x = [toEnum (97 + fromEnum x)]
 
 instance IsString UUID where
   fromString = UUID . fromInteger . fst . P.head . readHex . (P.filter isHexDigit)
 
--- Wunderfein. Hierein könnte man sogar noch automatische Ersetzung von URLs etc. machen
-instance Kind k => IsString (Annotation k) where
+instance PeanoNumber k => IsString (Annotation k) where
   fromString [] = Plain ""
   fromString xs = Plain (fromString xs)
 
@@ -96,13 +62,13 @@ instance Show UUID where
                          | otherwise        = xs
 
 
-data (Kind k)        => Type k = DataType      { typeRef ::  UUID } -- entweder extern der Ordnung k
+data (PeanoNumber k)        => Type k = DataType      { typeRef ::  UUID } -- entweder extern der Ordnung k
                                | Variable      k                    -- oder freie Variable der Ordnung k
                                | Application   (Type k) (Type k)    -- oder Typkonstruktor höherer Ordnung wird angewandt
-                               | Forall        { quantified :: (Type (Application Concrete k)) }
+                               | Forall        { quantified :: (Type (Succ k)) }
                                deriving (Eq, Ord, Show)
 
-data (Kind k)        => Constraint k = Constraint
+data (PeanoNumber k) => Constraint k = Constraint
                                        { constraintClass :: UUID
                                        , constraintVars  :: [Type k]
                                        }
@@ -112,70 +78,52 @@ data Person = Person    { personName :: String
                         } 
                         deriving (Eq, Ord, Show)
 
-
 data Definition a = Definition
-                    { identifier'       :: UUID
-                    , antecedent'       :: Maybe UUID
-                    , name'             :: UpperDesignator
-                    , creationTime'     :: Time UTC 
-                    , modificationTime' :: Time UTC
-                    , author'           :: Maybe Person
-                    , maintainer'       :: Person
-                    , structure'        :: Binding Zero Kind' a
+                    { identifier       :: UUID
+                    , antecedent       :: Maybe UUID
+                    , name             :: UpperDesignator
+                    , creationTime     :: Time UTC 
+                    , modificationTime :: Time UTC
+                    , author           :: Maybe Person
+                    , maintainer       :: Person
+                    , structure        :: Binding Zero Kind' a
                     }
 
-data (Kind        k) => TypeDefinition k = TypeDefinition
-                        { identifier      :: UUID
-                        , antecedent      :: Maybe UUID
-                        , created         :: Time UTC
-                        , modified        :: Time UTC
-                        , author          :: Maybe Person
-                        , maintainer      :: Person
-                        , name            :: UpperDesignator
-                        , semantics       :: Annotation k
-                        , variables       :: Map k (Annotation k)
-                        , constraints     :: Set (Constraint k)
-                        , constructors    :: Maybe [Constructor k]
-                        }
-                        deriving (Eq, Ord, Show)
+data (PeanoNumber a) => Type' a      = Type'
+                    { semantics        :: Text
+                    , constraints      :: Set (Constraint a)
+                    , constructors     :: Maybe [Constructor a]
+                    }
 
-data (Kind k)        => ClassDefinition k = ClassDefinition
-                        { classIdentifier      :: UUID
-                        , classAntecedent      :: Maybe UUID
-                        , classCreated         :: Time UTC
-                        , classModified        :: Time UTC
-                        , classAuthor          :: Maybe Person
-                        , classMaintainer      :: Person
-                        , className            :: UpperDesignator
-                        , classSemantics       :: Annotation k
-                        , classVariables       :: Map k (Annotation k)
+data (PeanoNumber k) => Class' k = Class'
+                        { classSemantics       :: Annotation k
                         , classConstraints     :: Set (Constraint k)
                         , classMethods         :: [Method k]
                         }
                         deriving (Eq, Ord, Show)
 
-data (Kind        k) => Method k = Method
+data (PeanoNumber k) => Method k = Method
                         { methodName      :: LowerDesignator
                         , methodSignature :: Type k
                         , mehtodSemantics :: Annotation k
                         }
                         deriving (Eq, Ord, Show)
 
-data (Kind        k) => Constructor k = Constructor
+data (PeanoNumber k) => Constructor k = Constructor
                         { constructorName      :: UpperDesignator
                         , constructorSemantics :: Annotation k
                         , constructorFields    :: [Field k] 
                         }
                         deriving (Eq, Ord, Show)
 
-data (Kind        k) => Field k = Field
+data (PeanoNumber k) => Field k = Field
                         { fieldName      :: LowerDesignator
                         , fieldSemantics :: Annotation k
                         , fieldType      :: Type k
                         }
                         deriving (Eq, Ord, Show)
 
-data (Kind        k) => Annotation k = Plain Text
+data (PeanoNumber k) => Annotation k = Plain Text
                         deriving (Eq, Ord, Show)
  
 data LatinAlphabet = A
@@ -218,8 +166,8 @@ data DecimalAlphabet = Zero
                      | Nine
                      deriving (Eq, Ord, Enum, Show)
 
-data (PeanoNumber b) => Binding a b c = Bind b (Binding (Succ.Succ a) b c)
-                                      | Expression (c a)
+data (PeanoNumber a) => Binding a b c = Bind { associated :: b, bound :: (Binding (Succ a) b c) }
+                                      | Expression { expression :: c a }
 
 data Symbol = Lower   LatinAlphabet
             | Upper   LatinAlphabet

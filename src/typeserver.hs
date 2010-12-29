@@ -57,42 +57,34 @@ serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
 
 serveType uuid = case M.lookup uuid records of
                    Just t  -> do msum [ withDataFn (look "format") $ \x -> case x of
-                                                                            "haskell" -> ok       $ toResponse $ haskellize t
+                                                                            "haskell" -> undefined -- ok       $ toResponse $ haskellize t
                                                                             _         -> mempty
                                       , ok $ toResponse $ htmlize t
                                       ]
                    Nothing -> notFound $ toResponse ((show uuid)++" ist nicht vorhanden.") 
-                 where
-                   haskellize :: Wrapped -> String
-                   haskellize (WrappedType t) = prettyPrint $ runContext (typeDefinition2HsDataDecl t) nameMapping 
-                   haskellize _               = error "don't know how to haskellize classes"
+
 
 serveClass = serveType
 
-
-
-
 -----------------
-data Wrapped = forall a. (Htmlize a, Kind a) => WrappedType   { unwrapType  :: (TypeDefinition  a) }
-             | forall a. (Htmlize a, Kind a) => WrappedClass  { unwrapClass :: (ClassDefinition a) }
 
-wrapType   :: (Htmlize a, Kind a) => TypeDefinition a -> (UUID, Wrapped)
-wrapType  x = (identifier x, WrappedType x)
-
-wrapClass  :: (Htmlize a, Kind a) => ClassDefinition a -> (UUID, Wrapped)
-wrapClass x = (classIdentifier x , WrappedClass x)
+data Wrapped = WrappedType  (Definition Type')
+             | WrappedClass (Definition Class')
 
 records :: M.Map UUID Wrapped 
-records  = M.fromList (types ++ classes)
+records  = M.fromList (map (f WrappedType) types ++ map (f WrappedClass) classes)
+           where
+             f z x = (identifier x, z x)
 
+instance Htmlize Wrapped where
+  htmlize (WrappedType x) = htmlize x
+  htmlize (WrappedClass x) = htmlize x
+
+nameMapping :: M.Map UUID String
 nameMapping = M.map f records 
   where
     f (WrappedType x)  = show (name x)
-    f (WrappedClass x) = show (className x)
-
-instance Htmlize Wrapped where
-  htmlize (WrappedType x)  = htmlize x
-  htmlize (WrappedClass x) = htmlize x
+    f (WrappedClass x) = show (name x)
 
 instance FromReqURI UUID where
   fromReqURI s = do a <- fromReqURI s :: Maybe String
@@ -106,114 +98,114 @@ instance ToMessage (Context Html) where
   toContentType _ = "text/html"
   toMessage x     = renderHtml $ encapsulate $ runContext x nameMapping
 
-classes :: [(UUID, Wrapped)]
+classes :: [Definition Class']
 classes = [
-            wrapClass c1  -- Eq
-          , wrapClass c2  -- Kind
-          , wrapClass c3  -- Ord
-          , wrapClass c4  -- Enum
-          , wrapClass c5  -- Bounded
-          , wrapClass c6  -- PeanoNumber
-          , wrapClass c7  -- TimeStandard
-          , wrapClass c8  -- Functor
-          , wrapClass c9  -- Applicative
-          , wrapClass c10 -- Monad
-          , wrapClass c11 -- Read
-          , wrapClass c12 -- Show
+            c1  -- Eq
+          , c2  -- Kind
+          , c3  -- Ord
+          , c4  -- Enum
+          , c5  -- Bounded
+          , c6  -- PeanoNumber
+          , c7  -- TimeStandard
+          , c8  -- Functor
+          , c9  -- Applicative
+          , c10 -- Monad
+          , c11 -- Read
+          , c12 -- Show
           ]
 
-types  :: [(UUID, Wrapped)]
-types   = [  wrapType t1
-           , wrapType t2
-           , wrapType t3
-           , wrapType t4
-           , wrapType t5
-           , wrapType t6
-           , wrapType t7
-           , wrapType t8
-           , wrapType t9
-           , wrapType t10
-           , wrapType t11
-           , wrapType t12
-           , wrapType t13
-           , wrapType t14
-           , wrapType t15
-           , wrapType t16
-           , wrapType t17
-           , wrapType t18
-           , wrapType t19
-           , wrapType t20
-           , wrapType t21
-           , wrapType t22
-           , wrapType t23
-           , wrapType t24
-           , wrapType t25
-           , wrapType t26
-           , wrapType t27
-           , wrapType t28
-           , wrapType t29
-           , wrapType t30
-           , wrapType t31
-           , wrapType t32
-           , wrapType t33
-           , wrapType t34
-           , wrapType t35
-           , wrapType t36
-           , wrapType t37
-           , wrapType t38
-           , wrapType t39
-           , wrapType t40
-           , wrapType t41
-           , wrapType t42
-           , wrapType t43
-           , wrapType t44
-           , wrapType t45
-           , wrapType t46
-           , wrapType t47
-           , wrapType t48
-           , wrapType t49
-           , wrapType t50
-           , wrapType t51
-           , wrapType t52
-           , wrapType t53
-           , wrapType t54
-           , wrapType t55
-           , wrapType t56
-           , wrapType t57
-           , wrapType t58
-           , wrapType t59
-           , wrapType t60
-           , wrapType t61
-           , wrapType t62
-           , wrapType t63
-           , wrapType t64
-           , wrapType t65
-           , wrapType t66
-           , wrapType t67
-           , wrapType t68
-           , wrapType t69
-           , wrapType t70
-           , wrapType t71
-           , wrapType t74
-           , wrapType t75
-           , wrapType t76
-           , wrapType t79
-           , wrapType t80
-           , wrapType t81
-           , wrapType t82
-           , wrapType t83
-           , wrapType t84
-           , wrapType t85
-           , wrapType t86
-           , wrapType t87
-           , wrapType t90
-           , wrapType t91
-           , wrapType t92
-           , wrapType t93 -- Ordering
-           , wrapType t94 -- Extension
-           , wrapType t95 -- Extension
-           , wrapType t96 -- Quantification
-           , wrapType t97 -- Kind
+types  :: [Definition Type']
+types   = [  t1
+           , t2
+           , t3
+           , t4
+           , t5
+           , t6
+           , t7
+           , t8
+           , t9
+           , t10
+           , t11
+           , t12
+           , t13
+           , t14
+           , t15
+           , t16
+           , t17
+           , t18
+           , t19
+           , t20
+           , t21
+           , t22
+           , t23
+           , t24
+           , t25
+           , t26
+           , t27
+           , t28
+           , t29
+           , t30
+           , t31
+           , t32
+           , t33
+           , t34
+           , t35
+           , t36
+           , t37
+           , t38
+           , t39
+           , t40
+           , t41
+           , t42
+           , t43
+           , t44
+           , t45
+           , t46
+           , t47
+           , t48
+           , t49
+           , t50
+           , t51
+           , t52
+           , t53
+           , t54
+           , t55
+           , t56
+           , t57
+           , t58
+--           , t59
+--           , t60
+--           , t61
+--           , t62
+--           , t63
+--           , t64
+--           , t65
+--           , t66
+--           , t67
+--           , t68
+--           , t69
+--           , t70
+--           , t71
+--           , t74
+--           , t75
+--           , t76
+           , t79
+           , t80
+           , t81
+           , t82
+           , t83
+           , t84
+           , t85
+           , t86
+           , t87
+           , t90
+           , t91
+           , t92
+           , t93 -- Ordering
+           , t94 -- Extension
+           , t95 -- Extension
+           , t96 -- Quantification
+           , t97 -- Kind
         ]
 
 
