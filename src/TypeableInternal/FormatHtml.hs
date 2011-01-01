@@ -208,7 +208,6 @@ instance Htmlize (Definition Type') where
 
 instance Htmlize (Definition Class') where
   htmlize x  = do (semantics', constraints', methods') <- toHtml (structure x)
-                  kind' <- htmlize $ kind $ structure x
                   mp <- metaPart x semantics'
                   return $     do mp
                                   H.table $ do
@@ -218,8 +217,6 @@ instance Htmlize (Definition Class') where
                                                          $ H.span ! A.class_ "class" $ string $ show (name x)
                                                      nbsp
                                                      mconcat (L.intersperse nbsp (variables $ kind $ structure x))
-                                                     " :: "
-                                                     kind'
                                     H.tr $ H.td ! A.colspan "3" ! A.class_ "constraints" $ constraints'
                                     methods'
     where

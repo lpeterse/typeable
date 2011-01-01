@@ -139,11 +139,11 @@ t94      = dt {
 t58      = dt {
              identifier   = "9035333f-c91c-42f8-ab8f-ba4c3f256a7b"
            , author       = Just personLars
-           , name         = "FOL"
-           , structure    = v2 $ (dt' :: Type' (Succ (Succ Zero)))
+           , name         = "FirstOrderLogic"
+           , structure    = v2' (Application' Concrete' Concrete') Concrete' $ (dt' :: Type' (Succ (Succ Zero)))
            { semantics    = "Formulas of the first order predicate logic. The structure is limited to the necessary: NAND. Other conjunctors are seen as a shorthand notation for: ..."
-           , constraints  = S.fromList [ Constraint "0d864b18-19bd-4230-905b-bad04a4c195e" [Variable First]
-                                       , Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable (Next First)]
+           , constraints  = S.fromList [ 
+                                        Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable (Next First)]
                                        ]
            , constructors = Just [
                                    defaultConstructor { constructorName   = "True" }
@@ -411,96 +411,6 @@ t97      = dt {
                                  ]
           }}
 
-t79      = dt {
-             identifier   = "b586fd6a-e075-49c4-b641-465feb232a00"
-           , author       = Just personLars
-           , name         = "TeXMath"
-           , structure    = v0 $ dt'
-           { semantics    = "According to John McFarlane's definition at https://github.com/jgm/texmath/blob/master/Text/TeXMath/Parser.hs."
-           , constructors = Just [
-                                   defaultConstructor
-                                   { constructorName    = "Number"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Grouped"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Identifier"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "MathOperator"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Symbol"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Space"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Sub"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Super"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Subsup"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Over"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Under"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Underover"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Up"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Down"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Downup"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Unary"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Scaled"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Stretchy"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Array"
-                                   , constructorFields  = []
-                                   }
-                                 , defaultConstructor
-                                   { constructorName    = "Text"
-                                   , constructorFields  = []
-                                   }
-                                 ]
-           }                     }
- 
 
 t48      = dt {
              identifier   = "9592f9fa4fae437a9e8d0917c14ff068"
@@ -540,15 +450,6 @@ t48      = dt {
                                                             { fieldName      = "reference"
                                                             , fieldType      = maybe $ DataType "e393b15b944c4b3597cd02b1be6d693b"
                                                             }
-                                                         ]
-                                   }
-                                 , defaultConstructor 
-                                   { constructorName   = "Math"
-                                   , constructorFields = [
-                                                           defaultField
-                                                           { fieldName = "tex"
-                                                           , fieldType = DataType "b586fd6a-e075-49c4-b641-465feb232a00"
-                                                           }
                                                          ]
                                    }
                                  , defaultConstructor 
@@ -729,7 +630,7 @@ t44       = dt {
                                                                   defaultField' 
                                                                   { fieldName      = "name"
                                                                   , fieldSemantics = ""
-                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  , fieldType      = DataType "9790ade9814a4aaca5eaa80c3e47685d"  
                                                                   }
                                                                ,  defaultField' 
                                                                   { fieldName      = "semantics"
@@ -792,9 +693,8 @@ t95      = dt {
              identifier   = "451f847e1cb642d0b7c5dbdfa03f41b5"
            , author       = Just personLars
            , name         = "Definition"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
-           { constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
-           , constructors = Just [
+           , structure    = v1' (Application' (Application' Concrete' Concrete') Concrete')  $ (dt' :: Type' (Succ Zero))
+           { constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Definition"
                                      , constructorFields    = [   defaultField'  
@@ -812,7 +712,7 @@ t95      = dt {
                                                                ,  defaultField'  
                                                                   { fieldName      = "name"
                                                                   , fieldSemantics = "A human readable designation. It doesn't need to be unique. In doubt choose a short one that already catches the semantics as good as possible."
-                                                                  , fieldType      = DataType "44d86fd3a506477ab88683d796e0d18b"  
+                                                                  , fieldType      = DataType "9790ade9814a4aaca5eaa80c3e47685d"  
                                                                   }
                                                                ,  defaultField'  
                                                                   { fieldName      = "creationTime"
@@ -1089,8 +989,8 @@ t41       = dt {
                                                             ]
                                    } 
                                  , defaultConstructor' 
-                                   { constructorName      = "Quantification"
-                                   , constructorSemantics = "Existential quantification."
+                                   { constructorName      = "Forall"
+                                   , constructorSemantics = "Introduces an additional variable and assciates it with constraints."
                                    , constructorFields    = [ defaultField 
                                                               { fieldName      = "constraints"
                                                               , fieldType      = Application 
@@ -1104,7 +1004,7 @@ t41       = dt {
                                                                                    )
                                                               }
                                                             , defaultField 
-                                                              { fieldName      = "forall"
+                                                              { fieldName      = "expression"
                                                               , fieldType      = Application
                                                                                    (DataType "0174bd22-6400-4820-bfe3-4e211cb35a7d")
                                                                                    (Application
@@ -1595,9 +1495,9 @@ t28       = dt {
 t29       = dt {
              identifier   = "9790ade9-814a-4aac-a5ea-a80c3e47685d"
            , author       = Just personClemens
-           , name         = "LowerDesignator"
+           , name         = "Designator"
            , structure    = v0 $ dt'
-           { semantics    = "This type represents valid designators. These contain at least one -> latin character that is lowercase, and a list of -> Symbols (lower/upper character, decimal character, underscore) of arbitrary length. Also look how the type itself determines the semantics of the single LatinAlphabet character: It itself does not have any case but the context induces one."
+           { semantics    = "This type represents valid designators. These contain at least one -> latin character and a list of -> Symbols (lower/upper character, decimal character, underscore, prime) of arbitrary length. Also look how the context determines the semantics of the single LatinAlphabet character: It itself does not have any case but the context induces one."
            , constructors = Just [
                                    defaultConstructor { 
                                      constructorName = "Designator"
@@ -1617,29 +1517,6 @@ t29       = dt {
           
           
           
-t30       = dt {
-             identifier   = "44d86fd3-a506-477a-b886-83d796e0d18b"
-           , author       = Just personClemens
-           , name         = "UpperDesignator"
-           , structure    = v0 $ dt'
-           { semantics    = "This type represents valid designators. These contain at least one -> latin character that is uppercase, a list of -> Symbol (lower/upper character, decimal character, underscore) of arbitrary length. Also look how the type itself determines the semantics of the single LatinAlphabet character: It itself does not have any case but the context induces one."
-           , constructors = Just [
-                                   defaultConstructor { 
-                                     constructorName = "Designator"
-                                    ,constructorFields = [ defaultField {
-                                                                   fieldName = "initial" 
-                                                                ,  fieldType = DataType "6716d098-a587-4337-9e54-c12f249cdc0c"  
-                                                                 }
-                                                         , defaultField {
-                                                                   fieldName = "rest" 
-                                                                ,  fieldType = list $ DataType "1566edb1-a4de-4aab-8106-e63293e9bfcf"
-                                                                 }
-                                                         ]
-                                   }           
-                                 ]
-          } } 
-          
-
 t31       = dt {
              identifier   = "7af30cce-9372-4981-a16a-80f3f193dc33"
            , name         = "Set"
@@ -1727,7 +1604,7 @@ t34       = dt {
              identifier   = "f47867c1-1a4d-4e30-ab65-2240dd8e72ba"
            , name         = "Void"
            , structure    = v0 $ dt'
-           { semantics    = "This type has no constructors and therefore no instances. Don't mix it up with -> Nil which has exactly one instance."
+           { semantics    = "This type has no constructors and therefore no instances. Don't mix it up with ->Unit which has exactly one instance."
            , constructors = Just []
           }}               
 

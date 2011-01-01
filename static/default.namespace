@@ -8,6 +8,17 @@ Basic
   c-d1c2d3e54e6f4910b9c83bd3c35617c6 --Monad
   c-56b4f8a2d8b34e138a8349ad7e3de441 --Read
   c-8cbc0d8529974ffc838ea3225176feb4 --Show
+
+  t-0219c59f732a8ef507215fbdb4cceacd --Bool
+  t-16f4245df3cc0b534f028235ff8aae16 --Char
+  t-d9eef038b47d0820c160ceb8b6a89943 --Either
+  t-f4b6d72c609d4003ba98917f8c56a678 --Ordering
+  t-f8f49ef6bbe874a42926fa23d5b3bc19 --Maybe
+  t-10f280df659654becb6e08122e846284 --Nil
+  t-346674042a7248b4a94abff0726d0c43 --UUID
+  t-f47867c11a4d4e30ab652240dd8e72ba --Void
+  t-50eae3e85d2d42c88754b026cc360981 --Function
+
   Numeric
     t-c74c35ddb3ef689646c50be868d11bdf --Float
     t-4b19d19d959322ac0ccd319a4d275bd0 --Double
@@ -44,30 +55,14 @@ Basic
     t-c1b1f6c722c2436fab3180146520814e --UTC
     t-aaaa6ecd826d4604801c4fa962cc1446 --TAI
     
-
-  
-  t-0219c59f732a8ef507215fbdb4cceacd --Bool
-  t-16f4245df3cc0b534f028235ff8aae16 --Char
-  t-d9eef038b47d0820c160ceb8b6a89943 --Either
-  t-f4b6d72c609d4003ba98917f8c56a678 --Ordering
-  t-f8f49ef6bbe874a42926fa23d5b3bc19 --Maybe
-  t-10f280df659654becb6e08122e846284 --Nil
-  t-346674042a7248b4a94abff0726d0c43 --UUID
-  t-f47867c11a4d4e30ab652240dd8e72ba --Void
-  t-50eae3e85d2d42c88754b026cc360981 --Function
-
 Typelevel
   PeanoNumbers
     c-c6ebaa9f4cdc4068894d1ffaef5a7a83 --PeanoNumber
     t-421496848904471ea3197f25e2a02b72 --Zero
     t-9e2e1e478e094a8abe5507f8574ac91f --Succ
-  Kind
-    c-2980bc10f5f246058ab35dbaaa4e1663 --Kind
-    t-606d6a2553714be6b0467d2eb2c0708e --Concrete
-    t-be46fbdd746743fe9ef39717c30b21fb --Application
 
 Logic
-  t-9035333fc91c42f8ab8fba4c3f256a7b --FOL
+  t-9035333fc91c42f8ab8fba4c3f256a7b --FirstOrderLogic
 
 Linguistics
   Grammar
@@ -76,14 +71,6 @@ Linguistics
     t-a384955f99d4401ca54a3f9c62b78d0a --Numerus
     t-ce462e9df1144a1681886cd2619b5d1a --Genus
   t-af20e1db8f0d414f90625b1521e41378 --Language
-
-Language
-  t-ff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
-  t-45cc309eec2d47f3a7ed3af50c84a392 --HexadecimalAlphabet
-  t-6716d098a58743379e54c12f249cdc0c --LatinAlphabet
-  t-1566edb1a4de4aab8106e63293e9bfcf --Symbol
-  t-9790ade9814a4aaca5eaa80c3e47685d --LowerDesignator
-  t-44d86fd3a506477ab88683d796e0d18b --UpperDesignator
 
 Typeable
   Definition
@@ -96,22 +83,28 @@ Typeable
   t-205895c8d2df475b8d5ead5ee33d9f63 --Field
   t-2a94a7a8d4e049759d8dd546e72293ff --Constraint
   t-e590e9ce9cea4dfe86a413e9270dd1c2 --Method
-  t-ce4219d18285469abe0b8a07bb2a1742 --Quantification
+  t-ce4219d18285469abe0b8a07bb2a1742 --Binding
   t-1660b01f08dc4aedbe4c0941584541cb --Kind
+  Designators
+    t-ff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
+    t-45cc309eec2d47f3a7ed3af50c84a392 --HexadecimalAlphabet
+    t-6716d098a58743379e54c12f249cdc0c --LatinAlphabet
+    t-1566edb1a4de4aab8106e63293e9bfcf --Symbol
+    t-9790ade9814a4aaca5eaa80c3e47685d --Designator
   Meta
-    t-2c62454c586f4bdea5e2b17e432db245 --Extension
-    t-3819884685d34bf19b3469304e15983d --Person
-    t-53e0d483a64144259dce752799d64305 --ContactInformation
-    t-1ea5eae4702844f7acbc3c65b2a40093 --URI
-    t-ed098cc975df4cd0adb99a5b7dc48600 --Mailto
-    t-f18ae792e5324a68a16f11ea5c61442a --Tel
-    t-d847a61a1a944723ab4bfcfb214bd8aa --Http
-    t-b0221a43509e4eddb062101bfd794bc4 --StructuredText
-    t-9592f9fa4fae437a9e8d0917c14ff068 --TextElement
-    t-3819884685d34bf19b3469304e15983d --Authorship
-    t-b586fd6ae07549c4b641465feb232a00 -- TeXMath
+    Person
+      t-3819884685d34bf19b3469304e15983d --Person
+      t-53e0d483a64144259dce752799d64305 --ContactInformation
+    Annotation
+      t-2c62454c586f4bdea5e2b17e432db245 --Extension
+      t-b0221a43509e4eddb062101bfd794bc4 --StructuredText
+      t-9592f9fa4fae437a9e8d0917c14ff068 --TextElement
 
-FileSystem
+XMisc
+  t-1ea5eae4702844f7acbc3c65b2a40093 --URI
+  t-ed098cc975df4cd0adb99a5b7dc48600 --Mailto
+  t-f18ae792e5324a68a16f11ea5c61442a --Tel
+  t-d847a61a1a944723ab4bfcfb214bd8aa --Http
   t-90eceef911894a18903b9cf36eb18e97 --Permission
   t-add67dbc2e184ffdaea3b1e8cb28f7d8 --UnixTime
   t-41f3d3c6311b4f18a600758219595871 --SpecialType
