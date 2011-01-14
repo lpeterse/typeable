@@ -57,4 +57,4 @@ Executable        typeserver
  hs-source-dirs:  src
  main-is:         typeserver.hs
  Build-depends:   base >= 4.0
- ghc-options:     -threaded -O2
+ ghc-options:     -threaded
