@@ -147,6 +147,10 @@ types   = [  t1
            , t96 -- Quantification
            , t97 -- Kind
            , t98 -- Pattern
+           , t99 -- SimpleDialog
+           , t100 -- SimpleMeta
+           , t101 -- Turn
+           , t102 -- SimpleSpeaker
         ]
 
 -----
@@ -2208,6 +2212,102 @@ t35       = dt {
                                   , defaultConstructor { constructorName = "ZZA", constructorSemantics = "Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki" }
                                  ]
           }}               
+
+
+t99       = dt {
+             identifier   = "e959d910-2edb-11e0-91fa-0800200c9a66"
+           , author       = Just personClemens
+           , name         = "SimpleDialog"
+           , structure    = v1 $ dt'
+           { semantics    = "One conversation between an arbitrary number of speakers taking turns (no overlap)"
+           , constructors = Just [
+                                   defaultConstructor { 
+                                     constructorName = "SimpleDialog"
+                                    ,constructorFields = [ defaultField {
+                                                                   fieldName = "dialoguemetadata" 
+                                                                ,  fieldType = DataType "0c761f8e-757e-4ea7-9d24-2a01136452d2" --SimpleMeta  
+                                                                 }
+                                                         , defaultField {
+                                                                   fieldName = "turns" 
+                                                                ,  fieldType = list $ (Application
+                                                                                       (DataType "dd9cf67a-3e2b-488d-aeb9-df9c29566a99") -- Turn
+                                                                                       (Variable First)
+                                                                                      )
+                                                                 }
+                                                         ]
+                                   }           
+                                 ]
+          }} 
+            
+t100       = dt {
+             identifier   = "0c761f8e-757e-4ea7-9d24-2a01136452d2"
+           , author       = Just personClemens
+           , name         = "SimpleMeta"
+           , structure    = v0 $ dt'
+           { semantics    = "The most basic information about something: Its name, and an unstructured comment about it."
+           , constructors = Just [
+                                   defaultConstructor { 
+                                     constructorName = "SimpleMeta"
+                                    ,constructorFields = [ defaultField {
+                                                                   fieldName = "name" 
+                                                                ,  fieldType = DataType "4f7db06c439541658a09689d3e7dd909"   -- Text
+                                                                 }
+                                                         , defaultField {
+                                                                   fieldName = "comments" 
+                                                                ,  fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
+                                                                 }
+                                                         ]
+                                   }           
+                                 ]
+          }}           
+          
+
+t101       = dt {
+             identifier   = "dd9cf67a-3e2b-488d-aeb9-df9c29566a99"
+           , author       = Just personClemens
+           , name         = "Turn"
+           , structure    = v1 $ dt'
+           { semantics    = "one continuous utterance of one speaker. "
+           , constructors = Just [
+                                   defaultConstructor { 
+                                     constructorName = "Turn"
+                                    ,constructorFields = [ defaultField {
+                                                                   fieldName = "who" 
+                                                                ,  fieldType = DataType "26b9a53370bc4489a322192e2e0416ce"  
+                                                                 }
+                                                         , defaultField {
+                                                                   fieldName = "utterance" 
+                                                                ,  fieldType = list $ (Variable First)
+                                                                                      
+                                                                 }
+                                                         ]
+                                   }           
+                                 ]
+          }} 
+
+t102       = dt {
+             identifier   = "26b9a533-70bc-4489-a322-192e2e0416ce"
+           , author       = Just personClemens
+           , name         = "SimpleSpeaker"
+           , structure    = v0 $ dt'
+           { semantics    = "Basic information about one speaker"
+           , constructors = Just [
+                                   defaultConstructor { 
+                                     constructorName = "SimpleMeta"
+                                    ,constructorFields = [ defaultField {
+                                                                   fieldName = "name" 
+                                                                ,  fieldType = DataType "4f7db06c439541658a09689d3e7dd909"   -- Text
+                                                                 }
+                                                         , defaultField {
+                                                                   fieldName = "gender" 
+                                                                ,  fieldType = DataType "2dbb6df873ad4e4baeb82172074ed042" -- gender
+                                                                 }
+                                                         ]
+                                   }           
+                                 ]
+          }}   
+
+
 
 {--
 t59 = dt {
