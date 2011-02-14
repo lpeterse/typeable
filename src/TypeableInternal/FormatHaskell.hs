@@ -1,4 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
 module TypeableInternal.FormatHaskell where
 
 import Data.List
@@ -27,13 +26,14 @@ imports (DataDecl _ _ _ _ _ xs _) = concatMap f xs
 typeModule  :: Definition Type' -> Context Module
 typeModule x = do dd <- dataDecl x
                   let decls = [dd]
+                  let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
                   return $ Module
                              sl
-                             (ModuleName $ "Typeable.T"++(show $ identifier x))
+                             mn
                              []                              -- [OptionPragma]
                              Nothing                         -- Maybe WarningText
                              Nothing                         -- Maybe [ExportSpec]
-                             (nub $ concatMap imports decls) -- [ImportDecl]
+                             ((nub $ concatMap imports decls) \\ [ImportDecl sl mn False False Nothing Nothing Nothing]) -- [ImportDecl]
                              decls
 
 variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]
@@ -48,7 +48,6 @@ variables  = f 0
 dataDecl                   :: Definition Type' -> Context Decl
 dataDecl t                  = do let typeName     = Ident $ show $ name t :: Name
                                  cs <- dataConstructors (structure t)
-                                 let derives      = []
                                  return $ DataDecl 
                                             sl 
                                             Syntax.DataType
@@ -56,7 +55,12 @@ dataDecl t                  = do let typeName     = Ident $ show $ name t :: Nam
                                             typeName
                                             (variables $ structure t)
                                             cs
-                                            derives
+                                            [
+                                              (UnQual $ Ident "Eq",   [])
+                                            , (UnQual $ Ident "Ord",  [])
+                                            , (UnQual $ Ident "Show", [])
+                                            , (UnQual $ Ident "Read", [])
+                                            ]
 
 dataConstructors                   :: (PeanoNumber a) => Binding a Kind' Type' -> Context [QualConDecl]
 dataConstructors (Bind _ x)         = dataConstructors x
