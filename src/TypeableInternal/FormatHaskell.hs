@@ -1,6 +1,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module TypeableInternal.FormatHaskell where
 
+import Data.List
+
 import Language.Haskell.Exts.Syntax hiding (Context, Type, DataType)
 import qualified Language.Haskell.Exts.Syntax as Syntax
 import TypeableInternal.Context
@@ -12,6 +14,15 @@ import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 
 sl = SrcLoc "" 0 0
 
+imports                          :: Decl -> [ImportDecl]
+imports (DataDecl _ _ _ _ _ xs _) = concatMap f xs 
+                                    where
+                                    f (QualConDecl _ _ _ c) = g c
+                                    g (RecDecl _ ts)        = concatMap h ts
+                                    h (_, UnBangedTy t)     = i t
+                                    i (TyVar _)             = []
+                                    i (TyCon (Qual m _))    = [ImportDecl sl m False False Nothing Nothing Nothing]
+                                    i (TyApp t1 t2)         = (i t1) ++ (i t2)
 
 typeModule  :: Definition Type' -> Context Module
 typeModule x = do dd <- dataDecl x
@@ -19,10 +30,10 @@ typeModule x = do dd <- dataDecl x
                   return $ Module
                              sl
                              (ModuleName $ "Typeable.T"++(show $ identifier x))
-                             []      -- [OptionPragma]
-                             Nothing -- Maybe WarningText
-                             Nothing -- Maybe [ExportSpec]
-                             []      -- [ImportDecl]
+                             []                              -- [OptionPragma]
+                             Nothing                         -- Maybe WarningText
+                             Nothing                         -- Maybe [ExportSpec]
+                             (nub $ concatMap imports decls) -- [ImportDecl]
                              decls
 
 variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]
