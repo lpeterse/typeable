@@ -29,6 +29,7 @@ Library
                   process,
                   containers,
                   bytestring,
+                  filepath,
                   text,
                   blaze-html,
                   url,

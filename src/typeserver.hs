@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances -XExistentialQuantification #-}
+{-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances -XFlexibleContexts -XExistentialQuantification #-}
 module Main where
 
 import Typeable.T421496848904471ea3197f25e2a02b72
@@ -24,6 +24,7 @@ import TypeableInternal.FormatHtml
 import TypeableInternal.FormatHaskell
 import System.IO.Unsafe
 import System (getArgs)
+import System.FilePath.Posix
 
 import Language.Haskell.Exts.Syntax (Module)
 import Language.Haskell.Exts.Pretty
@@ -54,38 +55,30 @@ handlers  = [
 serveOverview :: ServerPartT IO Response
 serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
 
-serveType uuid = case M.lookup uuid records of
+serveType :: UUID -> ServerPartT IO Response
+serveType uuid = case M.lookup uuid (typeMap static) of
                    Just t  -> do msum [ withDataFn (look "format") $ \x -> case x of
-                                                                            "haskell" -> ok       $ toResponse $ typeModule $ unwrap t
+                                                                            "haskell" -> msum [ serveFileUsing
+                                                                                                  filePathSendFile
+                                                                                                  (asContentType "text/plain")
+                                                                                                  ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs") 
+                                                                                              , ok $ toResponse $ typeModule $ t
+                                                                                              ]
                                                                             _         -> mempty
                                       , ok $ toResponse $ htmlize t
                                       ]
                    Nothing -> notFound $ toResponse ((show uuid)++" does not exist.") 
 
-
 serveClass = serveType
 
 -----------------
 
-data Wrapped = WrappedType  { unwrap :: Definition Type' }
-             | WrappedClass (Definition Class')
+static = Static (g types) (g classes)
+         where
+           g z = M.fromList (map (\x->(identifier x, x)) z)
 
-records :: M.Map UUID Wrapped 
-records  = M.fromList (map (f WrappedType) types ++ map (f WrappedClass) classes)
-           where
-             f z x = (identifier x, z x)
-
-instance Htmlize Wrapped where
-  htmlize (WrappedType x) = htmlize x
-  htmlize (WrappedClass x) = htmlize x
-
-
-nameMapping :: M.Map UUID String
-nameMapping = M.map f records 
-  where
-    f (WrappedType x)  = show (name x)
-    f (WrappedClass x) = show (name x)
-
+runC x = runContext x static
+        
 instance FromReqURI UUID where
   fromReqURI s = do a <- fromReqURI s :: Maybe String
                     return $ fromString a
@@ -96,11 +89,11 @@ instance ToMessage Html where
 
 instance ToMessage (Context Html) where
   toContentType _ = "text/html"
-  toMessage x     = renderHtml $ encapsulate $ runContext x nameMapping
+  toMessage x     = renderHtml $ encapsulate $ runC x 
 
 instance ToMessage (Context Module) where
-  toContentType _ = "text/html"
-  toMessage x     = toMessage $ prettyPrint $ runContext x nameMapping
+  toContentType _ = "text/plain"
+  toMessage x     = toMessage $ prettyPrint $ runC x 
 
 classes :: [Definition Class']
 classes = [
