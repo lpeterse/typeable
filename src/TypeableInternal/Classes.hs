@@ -16,6 +16,22 @@ import Typeable.T606f253533d3420da3465afae341d598  -- Time
 -- class-definitions (provisoric for as long as the binary format is not yet finalised)
 --
 
+classes :: [Definition Class']
+classes = [
+            c1  -- Eq
+          , c2  -- Kind
+          , c3  -- Ord
+          , c4  -- Enum
+          , c5  -- Bounded
+          , c6  -- PeanoNumber
+          , c7  -- TimeStandard
+          , c8  -- Functor
+          , c9  -- Applicative
+          , c10 -- Monad
+          , c11 -- Read
+          , c12 -- Show
+          ]
+
 dc :: Definition Class'
 dc  = Definition 
         { identifier       = undefined

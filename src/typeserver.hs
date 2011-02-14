@@ -46,14 +46,19 @@ namespace  = unsafePerformIO $ do n <- parseFromFile namespaceParser "static/def
 
 handlers :: [ServerPart Response]
 handlers  = [
-              dir "static" $ fileServe ["style.css"] "static/"  
-            , dir "type"   $ path serveType
-            , dir "class"  $ path serveClass
+              dirs "static/style.css" $ fileServe [] "static/style.css"  
+            , dir  "type"   $ nullDir >> listTypes
+            , dir  "type"   $ path serveType
+            , dir  "class"  $ nullDir >> listClasses
+            , dir  "class"  $ path serveClass
             , serveOverview
             ]
 
 serveOverview :: ServerPartT IO Response
 serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
+
+listTypes    = ok $ toResponse $ unlines $ map show $ M.keys (typeMap static)
+listClasses  = ok $ toResponse $ unlines $ map show $ M.keys (classMap static)
 
 serveType :: UUID -> ServerPartT IO Response
 serveType uuid = case M.lookup uuid (typeMap static) of
@@ -94,22 +99,5 @@ instance ToMessage (Context Html) where
 instance ToMessage (Context Module) where
   toContentType _ = "text/plain"
   toMessage x     = toMessage $ prettyPrint $ runC x 
-
-classes :: [Definition Class']
-classes = [
-            c1  -- Eq
-          , c2  -- Kind
-          , c3  -- Ord
-          , c4  -- Enum
-          , c5  -- Bounded
-          , c6  -- PeanoNumber
-          , c7  -- TimeStandard
-          , c8  -- Functor
-          , c9  -- Applicative
-          , c10 -- Monad
-          , c11 -- Read
-          , c12 -- Show
-          ]
-
 
 
