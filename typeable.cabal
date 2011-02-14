@@ -24,7 +24,7 @@ Library
                   Crypto >= 4.2.2,
                   mtl,
                   haskell98,
-                  haskell-src,
+                  haskell-src-exts,
                   time, time-extras,
                   process,
                   containers,

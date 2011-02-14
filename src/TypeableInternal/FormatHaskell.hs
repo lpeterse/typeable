@@ -1,54 +1,79 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module TypeableInternal.FormatHaskell where
 
-import Language.Haskell.Syntax
+import Language.Haskell.Exts.Syntax hiding (Context, Type, DataType)
+import qualified Language.Haskell.Exts.Syntax as Syntax
 import TypeableInternal.Context
 import TypeableInternal.InternalTypeDefs
 
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
+import Typeable.T421496848904471ea3197f25e2a02b72 -- Zero
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 
-typeDefinition2HsDataDecl :: Definition Type' -> Context HsDecl
-typeDefinition2HsDataDecl = undefined
+sl = SrcLoc "" 0 0
 
-{--
 
-typeDefinition2HsDataDecl t = do typeName <- upperDesignator2HsIdent $ name t
-                                 let context      = []
-                                 let vars         = domain :: [k]
-                                 constructors <- case constructors t of
-                                                   Just cs -> mapM constructor2HsConDecl cs
-                                                   Nothing -> return []
+typeModule  :: Definition Type' -> Context Module
+typeModule x = do dd <- dataDecl x
+                  let decls = [dd]
+                  return $ Module
+                             sl
+                             (ModuleName $ "Typeable.T"++(show $ identifier x))
+                             []      -- [OptionPragma]
+                             Nothing -- Maybe WarningText
+                             Nothing -- Maybe [ExportSpec]
+                             []      -- [ImportDecl]
+                             decls
+
+variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]
+variables  = f 0
+             where
+               f                 :: (PeanoNumber a) => Int -> Binding a Kind' b -> [TyVarBind]
+               f n (Bind y x)     = (KindedVar (Ident [toEnum ((fromEnum 'a') + n)]) (k y)):(f (n+1) x)
+               f _ (Expression _) = []
+               k Concrete'          = KindStar
+               k (Application' x y) = KindFn (k x) (k y)
+
+dataDecl                   :: Definition Type' -> Context Decl
+dataDecl t                  = do let typeName     = Ident $ show $ name t :: Name
+                                 cs <- dataConstructors (structure t)
                                  let derives      = []
-                                 return $ HsDataDecl 
-                                            (SrcLoc "" 0 0) 
-                                            context 
+                                 return $ DataDecl 
+                                            sl 
+                                            Syntax.DataType
+                                            [] 
                                             typeName
-                                            (map (HsIdent . var2String) vars)
-                                            constructors
+                                            (variables $ structure t)
+                                            cs
                                             derives
 
-constructor2HsConDecl     :: (PeanoNumber a) => Constructor a    -> Context HsConDecl
-constructor2HsConDecl c    = do let fs = constructorFields c 
-                                let f x = do n  <- lowerDesignator2HsIdent (fieldName x)
-                                             ty <- type2HsUnBangedTy (fieldType x) 
-                                             return ([n], HsUnBangedTy ty)
-                                fs' <- mapM f fs
-                                conName <- upperDesignator2HsIdent $ constructorName c
-                                return $ HsRecDecl (SrcLoc "" 0 0) conName fs'
+dataConstructors                   :: (PeanoNumber a) => Binding a Kind' Type' -> Context [QualConDecl]
+dataConstructors (Bind _ x)         = dataConstructors x
+dataConstructors (Expression x)     = case constructors x of
+                                        Nothing -> error "cannot haskellize abtract type"
+                                        Just cs -> mapM f cs
+                                      where
+                                        f  :: (PeanoNumber a) => Constructor a -> Context QualConDecl
+                                        f c = do fs <- mapM dataField (constructorFields c)
+                                                 return $ QualConDecl
+                                                            sl
+                                                            []  -- [TyVarBind]
+                                                            []  -- Context
+                                                            $ RecDecl
+                                                                (Ident $ show $ constructorName c)
+                                                                fs  -- [([Name], BangType)]
 
-upperDesignator2HsIdent    :: UpperDesignator  -> Context HsName
-upperDesignator2HsIdent x   = return $ HsIdent (show x)
+dataField              :: (PeanoNumber a) => Field a -> Context ([Name], BangType)
+dataField x             = do t <- dataType (fieldType x) 
+                             return ([Ident $ show $ fieldName x], UnBangedTy t)
 
-lowerDesignator2HsIdent    :: LowerDesignator  -> Context HsName
-lowerDesignator2HsIdent x   = return $ HsIdent (show x)
+dataType                  :: (PeanoNumber a) => Type a -> Context Syntax.Type
+dataType (DataType u)      = do n <- humanify u
+                                return $ TyCon $ Qual (ModuleName $ "Typeable.T" ++ (show u)) (Ident n)
+dataType (Variable v)      = return $ TyVar $ Ident [toEnum $ (fromEnum 'a') + (fromEnum v)] 
+dataType (Application f a) = do x <- dataType f
+                                y <- dataType a
+                                return $ TyApp x y
+dataType (Forall c)        = error "forall not implemented"
 
-type2HsUnBangedTy                  :: (PeanoNumber a) => Type a -> Context HsType 
-type2HsUnBangedTy (DataType u)     = do x <- humanify u
-                                        return $ HsTyCon $ UnQual $ HsIdent $ x  
-type2HsUnBangedTy (Application a b)   = do a' <- type2HsUnBangedTy a
-                                           b' <- type2HsUnBangedTy b
-                                           return $ HsTyApp a' b'  
-type2HsUnBangedTy (Variable v) = return $ HsTyVar $ HsIdent $ var2String v 
 
---}

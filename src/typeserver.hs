@@ -25,7 +25,8 @@ import TypeableInternal.FormatHaskell
 import System.IO.Unsafe
 import System (getArgs)
 
-import Language.Haskell.Pretty
+import Language.Haskell.Exts.Syntax (Module)
+import Language.Haskell.Exts.Pretty
 
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -55,18 +56,18 @@ serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
 
 serveType uuid = case M.lookup uuid records of
                    Just t  -> do msum [ withDataFn (look "format") $ \x -> case x of
-                                                                            "haskell" -> undefined -- ok       $ toResponse $ haskellize t
+                                                                            "haskell" -> ok       $ toResponse $ typeModule $ unwrap t
                                                                             _         -> mempty
                                       , ok $ toResponse $ htmlize t
                                       ]
-                   Nothing -> notFound $ toResponse ((show uuid)++" ist nicht vorhanden.") 
+                   Nothing -> notFound $ toResponse ((show uuid)++" does not exist.") 
 
 
 serveClass = serveType
 
 -----------------
 
-data Wrapped = WrappedType  (Definition Type')
+data Wrapped = WrappedType  { unwrap :: Definition Type' }
              | WrappedClass (Definition Class')
 
 records :: M.Map UUID Wrapped 
@@ -77,6 +78,7 @@ records  = M.fromList (map (f WrappedType) types ++ map (f WrappedClass) classes
 instance Htmlize Wrapped where
   htmlize (WrappedType x) = htmlize x
   htmlize (WrappedClass x) = htmlize x
+
 
 nameMapping :: M.Map UUID String
 nameMapping = M.map f records 
@@ -95,6 +97,10 @@ instance ToMessage Html where
 instance ToMessage (Context Html) where
   toContentType _ = "text/html"
   toMessage x     = renderHtml $ encapsulate $ runContext x nameMapping
+
+instance ToMessage (Context Module) where
+  toContentType _ = "text/html"
+  toMessage x     = toMessage $ prettyPrint $ runContext x nameMapping
 
 classes :: [Definition Class']
 classes = [
