@@ -1,69 +1,124 @@
-Basic
-  c-8658bc798a8742189aa7c70e2f9d0fe2 --Eq
-  c-96d7607db4b84dc29a37313009d5924b --Ord
-  c-34375052153345b09a1349a77ea57ee1 --Enum
-  c-d4bb0916fb934233b4458ffcc69e5bd3 --Bounded
-  c-584d85dcf5a144bebf0da92b7a5977a3 --Functor
-  c-30c5342d3f7243d29b04c5f9abb72405 --Applicative
-  c-d1c2d3e54e6f4910b9c83bd3c35617c6 --Monad
-  c-56b4f8a2d8b34e138a8349ad7e3de441 --Read
-  c-8cbc0d8529974ffc838ea3225176feb4 --Show
+Internal
+  Basic
+    c-8658bc798a8742189aa7c70e2f9d0fe2 --Eq
+    c-96d7607db4b84dc29a37313009d5924b --Ord
+    c-34375052153345b09a1349a77ea57ee1 --Enum
+    c-d4bb0916fb934233b4458ffcc69e5bd3 --Bounded
+    c-584d85dcf5a144bebf0da92b7a5977a3 --Functor
+    c-30c5342d3f7243d29b04c5f9abb72405 --Applicative
+    c-d1c2d3e54e6f4910b9c83bd3c35617c6 --Monad
+    c-56b4f8a2d8b34e138a8349ad7e3de441 --Read
+    c-8cbc0d8529974ffc838ea3225176feb4 --Show
+    t-0219c59f732a8ef507215fbdb4cceacd --Bool
+    t-16f4245df3cc0b534f028235ff8aae16 --Char
+    t-d9eef038b47d0820c160ceb8b6a89943 --Either
+    t-f4b6d72c609d4003ba98917f8c56a678 --Ordering
+    t-f8f49ef6bbe874a42926fa23d5b3bc19 --Maybe
+    t-10f280df659654becb6e08122e846284 --Nil
+    t-346674042a7248b4a94abff0726d0c43 --UUID
+    t-f47867c11a4d4e30ab652240dd8e72ba --Void
+    t-50eae3e85d2d42c88754b026cc360981 --Function
 
-  t-0219c59f732a8ef507215fbdb4cceacd --Bool
-  t-16f4245df3cc0b534f028235ff8aae16 --Char
-  t-d9eef038b47d0820c160ceb8b6a89943 --Either
-  t-f4b6d72c609d4003ba98917f8c56a678 --Ordering
-  t-f8f49ef6bbe874a42926fa23d5b3bc19 --Maybe
-  t-10f280df659654becb6e08122e846284 --Nil
-  t-346674042a7248b4a94abff0726d0c43 --UUID
-  t-f47867c11a4d4e30ab652240dd8e72ba --Void
-  t-50eae3e85d2d42c88754b026cc360981 --Function
+    Numeric
+      t-c74c35ddb3ef689646c50be868d11bdf --Float
+      t-4b19d19d959322ac0ccd319a4d275bd0 --Double
+      t-ec78dc6268e4fe6fe6df461f40359d62 --Int8
+      t-7ee200d207963cca2d2a49719e97e973 --Int16
+      t-7b05ee3f0bbe6569f48d3947ec425493 --Int32
+      t-cc620c86261c781e03c8efd9a974b1cf --Int64
+      t-7704e26b08886d6b8c3c788a3a0b2db0 --Word8
+      t-b567f4ccc26027e0a78edd227800fe94 --Word16
+      t-1a55145e5bd21e8adc14067707192552 --Word32
+      t-187e33b43715d8fe529de5014c864d85 --Word64
+      t-bbabbac1510d49aa9da25d8033147c54 --Word128
+      t-90ce401bd12d4afcbe37331bed9e0423 --Word256
+      t-c15eddf194ad44288cbabe701d5ae517 --Word512
+      t-ac2e770f2132aced749ec197385ff552 --Int
+      t-8006b4b18388f841272dbebeee847723 --Integer
+      t-62d2d5371f08461aa328bc06561594f6 --Word
+      t-982dce0943f64a74858ff22c753ab01d --Wordeger
+      t-c211e54d6eef4234a7b675d5f696efe5 --Rational
+      t-5e5c664cfc324271b542bf7ab0c9c104 --RationalUnsigned
+    Stream
+      t-4f7db06c439541658a09689d3e7dd909 --Text
+      t-f9f2f27af0f649b4bc8946c467c3b76a --ByteString
+    Container
+      t-0ba85f3f10099c75d4b696d0cf944e09 --List
+      t-34c13bdaac7d413ed735e64edcac7ff5 --Tuple
+      t-5cae969a657448ebbc2eaf7f31d7340f --Triple
+      t-7af30cce93724981a16a80f3f193dc33 --Set
+      t-43c6cd1333b04fc8a480668ecb24768e --Map
+      
+  Typelevel
+    PeanoNumbers
+      c-c6ebaa9f4cdc4068894d1ffaef5a7a83 --PeanoNumber
+      t-421496848904471ea3197f25e2a02b72 --Zero
+      t-9e2e1e478e094a8abe5507f8574ac91f --Succ
 
-  Numeric
-    t-c74c35ddb3ef689646c50be868d11bdf --Float
-    t-4b19d19d959322ac0ccd319a4d275bd0 --Double
-    t-ec78dc6268e4fe6fe6df461f40359d62 --Int8
-    t-7ee200d207963cca2d2a49719e97e973 --Int16
-    t-7b05ee3f0bbe6569f48d3947ec425493 --Int32
-    t-cc620c86261c781e03c8efd9a974b1cf --Int64
-    t-7704e26b08886d6b8c3c788a3a0b2db0 --Word8
-    t-b567f4ccc26027e0a78edd227800fe94 --Word16
-    t-1a55145e5bd21e8adc14067707192552 --Word32
-    t-187e33b43715d8fe529de5014c864d85 --Word64
-    t-bbabbac1510d49aa9da25d8033147c54 --Word128
-    t-90ce401bd12d4afcbe37331bed9e0423 --Word256
-    t-c15eddf194ad44288cbabe701d5ae517 --Word512
-    t-ac2e770f2132aced749ec197385ff552 --Int
-    t-8006b4b18388f841272dbebeee847723 --Integer
-    t-62d2d5371f08461aa328bc06561594f6 --Word
-    t-982dce0943f64a74858ff22c753ab01d --Wordeger
-    t-c211e54d6eef4234a7b675d5f696efe5 --Rational
-    t-5e5c664cfc324271b542bf7ab0c9c104 --RationalUnsigned
-  Stream
-    t-4f7db06c439541658a09689d3e7dd909 --Text
-    t-f9f2f27af0f649b4bc8946c467c3b76a --ByteString
-  Container
-    t-0ba85f3f10099c75d4b696d0cf944e09 --List
-    t-34c13bdaac7d413ed735e64edcac7ff5 --Tuple
-    t-5cae969a657448ebbc2eaf7f31d7340f --Triple
-    t-7af30cce93724981a16a80f3f193dc33 --Set
-    t-43c6cd1333b04fc8a480668ecb24768e --Map
+  Logic
+    t-9035333fc91c42f8ab8fba4c3f256a7b --FirstOrderLogic
+
+  Typeable
+    Definition
+      Definable
+        t-3e81531118e14888be21de7921b15bb5 --TypeDefintion
+        t-4e0b8f8ea2b145228fa4ec74b559bf6a --ClassDefintion
+      t-451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
+    t-0174bd2264004820bfe34e211cb35a7d --Type
+    t-37c8a341f0b34cc6bbbc9f2403f09be3 --Constructor
+    t-205895c8d2df475b8d5ead5ee33d9f63 --Field
+    t-2a94a7a8d4e049759d8dd546e72293ff --Constraint
+    t-e590e9ce9cea4dfe86a413e9270dd1c2 --Method
+    t-ce4219d18285469abe0b8a07bb2a1742 --Binding
+    t-1660b01f08dc4aedbe4c0941584541cb --Kind
+    Designators
+      t-ff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
+      t-45cc309eec2d47f3a7ed3af50c84a392 --HexadecimalAlphabet
+      t-6716d098a58743379e54c12f249cdc0c --LatinAlphabet
+      t-1566edb1a4de4aab8106e63293e9bfcf --Symbol
+      t-9790ade9814a4aaca5eaa80c3e47685d --Designator
+      Annotation
+        t-2c62454c586f4bdea5e2b17e432db245 --Extension
+        t-b0221a43509e4eddb062101bfd794bc4 --StructuredText
+        t-9592f9fa4fae437a9e8d0917c14ff068 --TextElement
+
+  XMisc
+    t-1ea5eae4702844f7acbc3c65b2a40093 --URI
+    t-ed098cc975df4cd0adb99a5b7dc48600 --Mailto
+    t-f18ae792e5324a68a16f11ea5c61442a --Tel
+    t-d847a61a1a944723ab4bfcfb214bd8aa --Http
+    t-90eceef911894a18903b9cf36eb18e97 --Permission
+    t-add67dbc2e184ffdaea3b1e8cb28f7d8 --UnixTime
+    t-41f3d3c6311b4f18a600758219595871 --SpecialType
+    t-fa0525067ac84473a274c4bac5ad0cc4 --IPCType
+    t-027770dd51344ee08cd8faf29e962167 --File
+    t-4eabdb360fbf4df69dcd33d16dac9516 --Inode
+    t-f2c4f6ddd939444ba209fbdf2152eb54 --SchemeSymbol
+    t-6e2f1233f1c84e6b9bb37c405c666234 --SchemeName
+    t-a078d5123ead415d8d857dc6dc15b475 --RootlessPath
+    t-6ffbfb8682ad4f6a89d73e6d36c8fc7a --AbsolutePath
+    t-5448c6b79a084b4ea40d442c4fd2e125 --Path
+    t-8068cbdaf35e4618a7e798c67ff9bee0 --Hierarchy
+    t-e393b15b944c4b3597cd02b1be6d693b --URI
+    t-a9c059006c8d4849af902d3ad12ee3cc --IP
+    t-335b76330e724b64a5256190fb579dad --Authority
+    t-9f64aa567f1d4456b7cef6bf7f299c06 --Host      
+
+
+
+
+World
+  t-0c761f8e757e4ea79d242a01136452d2 --SimpleMeta 
+  Person
+    t-3819884685d34bf19b3469304e15983d --Person
+    t-53e0d483a64144259dce752799d64305 --ContactInformation
   Time
     c-882f4a6affa24579830e0a850acad145 --TimeStandard
     t-b6831ec097f14b8eba74b1e486b4175d --Date
     t-606f253533d3420da3465afae341d598 --Time
     t-c1b1f6c722c2436fab3180146520814e --UTC
-    t-aaaa6ecd826d4604801c4fa962cc1446 --TAI
-    
-Typelevel
-  PeanoNumbers
-    c-c6ebaa9f4cdc4068894d1ffaef5a7a83 --PeanoNumber
-    t-421496848904471ea3197f25e2a02b72 --Zero
-    t-9e2e1e478e094a8abe5507f8574ac91f --Succ
-
-Logic
-  t-9035333fc91c42f8ab8fba4c3f256a7b --FirstOrderLogic
-
+    t-aaaa6ecd826d4604801c4fa962cc1446 --TAI 
+           
 Linguistics
   Grammar
     t-2dbb6df873ad4e4baeb82172074ed042 --Gender
@@ -71,53 +126,10 @@ Linguistics
     t-a384955f99d4401ca54a3f9c62b78d0a --Numerus
     t-ce462e9df1144a1681886cd2619b5d1a --Genus
   t-af20e1db8f0d414f90625b1521e41378 --Language
+  CorpusGenre
+    DialogueModelling
+      t-26b9a53370bc4489a322192e2e0416ce --SimpleSpeaker
+      t-e959d9102edb11e091fa0800200c9a66 --SimpleDialogue
+      t-dd9cf67a3e2b488daeb9df9c29566a99 --Turn
+      
 
-Typeable
-  Definition
-    Definable
-      t-3e81531118e14888be21de7921b15bb5 --TypeDefintion
-      t-4e0b8f8ea2b145228fa4ec74b559bf6a --ClassDefintion
-    t-451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
-  t-0174bd2264004820bfe34e211cb35a7d --Type
-  t-37c8a341f0b34cc6bbbc9f2403f09be3 --Constructor
-  t-205895c8d2df475b8d5ead5ee33d9f63 --Field
-  t-2a94a7a8d4e049759d8dd546e72293ff --Constraint
-  t-e590e9ce9cea4dfe86a413e9270dd1c2 --Method
-  t-ce4219d18285469abe0b8a07bb2a1742 --Binding
-  t-1660b01f08dc4aedbe4c0941584541cb --Kind
-  Designators
-    t-ff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
-    t-45cc309eec2d47f3a7ed3af50c84a392 --HexadecimalAlphabet
-    t-6716d098a58743379e54c12f249cdc0c --LatinAlphabet
-    t-1566edb1a4de4aab8106e63293e9bfcf --Symbol
-    t-9790ade9814a4aaca5eaa80c3e47685d --Designator
-  Meta
-    Person
-      t-3819884685d34bf19b3469304e15983d --Person
-      t-53e0d483a64144259dce752799d64305 --ContactInformation
-    Annotation
-      t-2c62454c586f4bdea5e2b17e432db245 --Extension
-      t-b0221a43509e4eddb062101bfd794bc4 --StructuredText
-      t-9592f9fa4fae437a9e8d0917c14ff068 --TextElement
-
-XMisc
-  t-1ea5eae4702844f7acbc3c65b2a40093 --URI
-  t-ed098cc975df4cd0adb99a5b7dc48600 --Mailto
-  t-f18ae792e5324a68a16f11ea5c61442a --Tel
-  t-d847a61a1a944723ab4bfcfb214bd8aa --Http
-  t-90eceef911894a18903b9cf36eb18e97 --Permission
-  t-add67dbc2e184ffdaea3b1e8cb28f7d8 --UnixTime
-  t-41f3d3c6311b4f18a600758219595871 --SpecialType
-  t-fa0525067ac84473a274c4bac5ad0cc4 --IPCType
-  t-027770dd51344ee08cd8faf29e962167 --File
-  t-4eabdb360fbf4df69dcd33d16dac9516 --Inode
-  t-f2c4f6ddd939444ba209fbdf2152eb54 --SchemeSymbol
-  t-6e2f1233f1c84e6b9bb37c405c666234 --SchemeName
-  t-a078d5123ead415d8d857dc6dc15b475 --RootlessPath
-  t-6ffbfb8682ad4f6a89d73e6d36c8fc7a --AbsolutePath
-  t-5448c6b79a084b4ea40d442c4fd2e125 --Path
-  t-8068cbdaf35e4618a7e798c67ff9bee0 --Hierarchy
-  t-e393b15b944c4b3597cd02b1be6d693b --URI
-  t-a9c059006c8d4849af902d3ad12ee3cc --IP
-  t-335b76330e724b64a5256190fb579dad --Authority
-  t-9f64aa567f1d4456b7cef6bf7f299c06 --Host      
