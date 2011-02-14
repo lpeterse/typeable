@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances -XFlexibleContexts -XExistentialQuantification #-}
+{-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances #-}
 module Main where
 
 import Typeable.T421496848904471ea3197f25e2a02b72
