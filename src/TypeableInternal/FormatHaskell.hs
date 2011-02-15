@@ -20,12 +20,20 @@ imports (DataDecl _ _ _ _ _ xs _) = concatMap f xs
                                     g (RecDecl _ ts)        = concatMap h ts
                                     h (_, UnBangedTy t)     = i t
                                     i (TyVar _)             = []
-                                    i (TyCon (Qual m _))    = [ImportDecl sl m False False Nothing Nothing Nothing]
+                                    i (TyCon (Qual m _))    = [impDecl m]
                                     i (TyApp t1 t2)         = (i t1) ++ (i t2)
+
+impDecl m = ImportDecl sl m False False Nothing Nothing Nothing
 
 typeModule  :: Definition Type' -> Context Module
 typeModule x = do dd <- dataDecl x
-                  let decls = [dd]
+                  ib <- instanceBinary dd
+                  let imps  = [ 
+                                impDecl (ModuleName "Data.Binary")
+                              , impDecl (ModuleName "Data.Binary.Put")
+                              , impDecl (ModuleName "Data.Binary.Get")
+                              ]
+                  let decls = [dd, ib]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
                   return $ Module
                              sl
@@ -33,7 +41,7 @@ typeModule x = do dd <- dataDecl x
                              []                              -- [OptionPragma]
                              Nothing                         -- Maybe WarningText
                              Nothing                         -- Maybe [ExportSpec]
-                             ((nub $ concatMap imports decls) \\ [ImportDecl sl mn False False Nothing Nothing Nothing]) -- [ImportDecl]
+                             (nub $ ((concatMap imports [dd]) ++ imps) \\ [impDecl mn]) -- [ImportDecl]
                              decls
 
 variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]
@@ -65,7 +73,7 @@ dataDecl t                  = do let typeName     = Ident $ show $ name t :: Nam
 dataConstructors                   :: (PeanoNumber a) => Binding a Kind' Type' -> Context [QualConDecl]
 dataConstructors (Bind _ x)         = dataConstructors x
 dataConstructors (Expression x)     = case constructors x of
-                                        Nothing -> error "cannot haskellize abtract type"
+                                        Nothing -> error "cannot haskellize abstract type"
                                         Just cs -> mapM f cs
                                       where
                                         f  :: (PeanoNumber a) => Constructor a -> Context QualConDecl
@@ -91,4 +99,25 @@ dataType (Application f a) = do x <- dataType f
                                 return $ TyApp x y
 dataType (Forall c)        = error "forall not implemented"
 
-
+instanceBinary (DataDecl _ _ _ n vs cs _) 
+                       = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 
+                            let cxt  = []
+                            let fieldTypes = let u (QualConDecl _ _ _ (RecDecl _ xs)) = map (\(_, UnBangedTy t)->t) xs
+                                             in  nub $ concatMap u cs :: [Syntax.Type]
+                            let u (i,(QualConDecl _ _ _ (RecDecl n xs))) = InsDecl $ FunBind $ return $ Match 
+                                                                             sl 
+                                                                             (Ident "put") 
+                                                                             [PApp (UnQual n) (map PVar fis)]
+                                                                             Nothing
+                                                                             (UnGuardedRhs e) 
+                                                                             (BDecls [])
+                                                                          where
+                                                                            fis = map (Ident . return) $ zipWith (\x _->x) ['a'..] xs
+                                                                            zs  = map (\x->Qualifier $ App (Var (UnQual $ Ident "put")) (Var $ UnQual x)) fis
+                                                                            e   = Do $ (Qualifier (App (Var (UnQual $ Ident "put")) (Lit $ Int i))):zs
+                            return $ InstDecl 
+                                       sl 
+                                       (map (\t-> ClassA (Qual (ModuleName "Data.Binary") (Ident "Binary")) [t]) fieldTypes)
+                                       (Qual (ModuleName "Data.Binary") (Ident "Binary"))
+                                       [foldl TyApp (TyCon $ UnQual n) vs']
+                                       (map u $ zip [0..] cs)
