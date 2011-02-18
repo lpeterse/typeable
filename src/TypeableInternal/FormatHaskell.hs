@@ -104,20 +104,49 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                             let cxt  = []
                             let fieldTypes = let u (QualConDecl _ _ _ (RecDecl _ xs)) = map (\(_, UnBangedTy t)->t) xs
                                              in  nub $ concatMap u cs :: [Syntax.Type]
-                            let u (i,(QualConDecl _ _ _ (RecDecl n xs))) = InsDecl $ FunBind $ return $ Match 
-                                                                             sl 
-                                                                             (Ident "put") 
-                                                                             [PApp (UnQual n) (map PVar fis)]
-                                                                             Nothing
-                                                                             (UnGuardedRhs e) 
-                                                                             (BDecls [])
-                                                                          where
-                                                                            fis = map (Ident . return) $ zipWith (\x _->x) ['a'..] xs
-                                                                            zs  = map (\x->Qualifier $ App (Var (UnQual $ Ident "put")) (Var $ UnQual x)) fis
-                                                                            e   = Do $ (Qualifier (App (Var (UnQual $ Ident "put")) (Lit $ Int i))):zs
+                            let u (i,(QualConDecl _ _ _ (RecDecl n xs))) =
+                                  InsDecl $ FunBind $ return $ Match 
+                                    sl 
+                                    (Ident "put") 
+                                    [PApp (UnQual n) (map PVar fis)]
+                                    Nothing
+                                    (UnGuardedRhs e) 
+                                    (BDecls [])
+                                  where
+                                   fis = map (Ident . return) $ zipWith const ['a'..] xs
+                                   zs  = map (\x->Qualifier $ App (Var (UnQual $ Ident "put")) (Var $ UnQual x)) fis
+                                   e   | length cs <= 1     = Do zs
+                                       | length cs <= 255   = Do $ (Qualifier (App (Var (UnQual $ Ident "putWord8"))    (Lit $ Int i))):zs
+                                       | length cs <= 65535 = Do $ (Qualifier (App (Var (UnQual $ Ident "putWord16be")) (Lit $ Int i))):zs
+                                       | otherwise          = error "instanceBinary: too many constructors"
+                            let v = InsDecl $ FunBind $ return $ Match 
+                                      sl 
+                                      (Ident "get") 
+                                      []
+                                      Nothing
+                                      (UnGuardedRhs e) 
+                                      (BDecls [])
+                                  where
+                                   e   | length cs <= 1     = Do $ (Generator sl (PVar $ Ident "index") $ App (Var $ UnQual $ Ident "return") (Lit $ Int 0)):zs
+                                       | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ UnQual $ Ident "getWord8")             :zs
+                                       | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ UnQual $ Ident "getWord16")            :zs
+                                       | otherwise          = error "instanceBinary: too many constructors"
+                                   f i = Alt sl (PLit $ Int $ fromIntegral i) (UnGuardedAlt $ g (cs !! i)) (BDecls [])
+                                   g (QualConDecl _ _ _ (RecDecl n xs)) 
+                                       = let ns = zipWith (\x _->Ident $ 'a':(show x)) [0..] xs
+                                         in  h ns $ App 
+                                               (Var $ UnQual $ Ident "return") 
+                                               $ foldl App (Con $ UnQual n) (map (Var . UnQual) ns)
+                                   h [] x = x
+                                   h (n:ns) x  = App
+                                                  (App (Var $ UnQual $ Symbol ">>=") (Var $ UnQual $ Ident "get"))
+                                                  (Lambda sl [PVar n] $ h ns x)  
+                                   zs  = return $ Qualifier $ Case 
+                                           (Var $ UnQual $ Ident "index")
+                                           (map f [0..((length cs)-1)])
                             return $ InstDecl 
                                        sl 
                                        (map (\t-> ClassA (Qual (ModuleName "Data.Binary") (Ident "Binary")) [t]) fieldTypes)
                                        (Qual (ModuleName "Data.Binary") (Ident "Binary"))
                                        [foldl TyApp (TyCon $ UnQual n) vs']
-                                       (map u $ zip [0..] cs)
+                                       (v:(map u $ zip [0..] cs))
