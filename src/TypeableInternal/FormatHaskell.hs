@@ -38,7 +38,7 @@ typeModule x = do dd <- dataDecl x
                   return $ Module
                              sl
                              mn
-                             []                              -- [OptionPragma]
+                             [OptionsPragma sl Nothing "-XEmptyDataDecls"]                              -- [OptionPragma]
                              Nothing                         -- Maybe WarningText
                              Nothing                         -- Maybe [ExportSpec]
                              (nub $ ((concatMap imports [dd]) ++ imps) \\ [impDecl mn]) -- [ImportDecl]
@@ -119,7 +119,7 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                        | length cs <= 255   = Do $ (Qualifier (App (Var (UnQual $ Ident "putWord8"))    (Lit $ Int i))):zs
                                        | length cs <= 65535 = Do $ (Qualifier (App (Var (UnQual $ Ident "putWord16be")) (Lit $ Int i))):zs
                                        | otherwise          = error "instanceBinary: too many constructors"
-                            let v = InsDecl $ FunBind $ return $ Match 
+                            let get = InsDecl $ FunBind $ return $ Match 
                                       sl 
                                       (Ident "get") 
                                       []
@@ -127,7 +127,8 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                       (UnGuardedRhs e) 
                                       (BDecls [])
                                   where
-                                   e   | length cs <= 1     = Do $ (Generator sl (PVar $ Ident "index") $ App (Var $ UnQual $ Ident "return") (Lit $ Int 0)):zs
+                                   e   | length cs == 0     = Var $ UnQual $ Ident "undefined"
+                                       | length cs == 1     = Do $ (Generator sl (PVar $ Ident "index") $ App (Var $ UnQual $ Ident "return") (Lit $ Int 0)):zs
                                        | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ UnQual $ Ident "getWord8")             :zs
                                        | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ UnQual $ Ident "getWord16")            :zs
                                        | otherwise          = error "instanceBinary: too many constructors"
@@ -144,9 +145,11 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                    zs  = return $ Qualifier $ Case 
                                            (Var $ UnQual $ Ident "index")
                                            (map f [0..((length cs)-1)])
+                            let puts | null cs   = return $ InsDecl $ FunBind $ return $ Match sl (Ident "put") [] Nothing (UnGuardedRhs $ Var $ UnQual $ Ident "undefined") (BDecls [])
+                                     | otherwise = map u $ zip [0..] cs
                             return $ InstDecl 
                                        sl 
                                        (map (\t-> ClassA (Qual (ModuleName "Data.Binary") (Ident "Binary")) [t]) fieldTypes)
                                        (Qual (ModuleName "Data.Binary") (Ident "Binary"))
                                        [foldl TyApp (TyCon $ UnQual n) vs']
-                                       (v:(map u $ zip [0..] cs))
+                                       (get:puts)
