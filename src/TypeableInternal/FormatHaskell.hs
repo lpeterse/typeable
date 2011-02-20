@@ -20,16 +20,26 @@ imports (DataDecl _ _ _ _ _ xs _) = concatMap f xs
                                     g (RecDecl _ ts)        = concatMap h ts
                                     h (_, UnBangedTy t)     = i t
                                     i (TyVar _)             = []
-                                    i (TyCon (Qual m _))    = [impDecl m]
+                                    i (TyCon (Qual m _))    = [(impDecl m) { importSrc = True }]
                                     i (TyApp t1 t2)         = (i t1) ++ (i t2)
 
-impDecl m = ImportDecl sl m False False Nothing Nothing Nothing
+impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
 
 typeModule  :: (Monad m) => Definition Type' -> Context m Module
 typeModule x = do dd <- dataDecl x
                   ib <- instanceBinary dd
                   let imps  = [ 
-                                impDecl (ModuleName "Data.Binary")
+                                (impDecl (ModuleName "Prelude")) { importQualified = False
+                                                                 , importSpecs = Just (False, [ IVar (Ident  "fromInteger")
+                                                                                              , IVar (Ident  "return")
+                                                                                              , IVar (Ident  "fail")
+                                                                                              , IVar (Symbol ">>=")
+                                                                                              , IVar (Symbol ">>")
+                                                                                              , IVar (Symbol "==")
+                                                                                              ])
+                                                                 }
+                              , impDecl (ModuleName "Prelude")
+                              , impDecl (ModuleName "Data.Binary")
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               ]
@@ -38,7 +48,11 @@ typeModule x = do dd <- dataDecl x
                   return $ Module
                              sl
                              mn
-                             [OptionsPragma sl Nothing "-XEmptyDataDecls"]                              -- [OptionPragma]
+                             [
+                               OptionsPragma sl Nothing "-XEmptyDataDecls"
+                             , OptionsPragma sl Nothing "-XKindSignatures"
+                             , OptionsPragma sl Nothing "-XNoImplicitPrelude"
+                             ]                              -- [OptionPragma]
                              Nothing                         -- Maybe WarningText
                              Nothing                         -- Maybe [ExportSpec]
                              (nub $ ((concatMap imports [dd]) ++ imps) \\ [impDecl mn]) -- [ImportDecl]
@@ -64,10 +78,10 @@ dataDecl t                  = do let typeName     = Ident $ show $ name t :: Nam
                                             (variables $ structure t)
                                             cs
                                             [
-                                              (UnQual $ Ident "Eq",   [])
-                                            , (UnQual $ Ident "Ord",  [])
-                                            , (UnQual $ Ident "Show", [])
-                                            , (UnQual $ Ident "Read", [])
+                                              (Qual (ModuleName "Prelude") $ Ident "Eq",   [])
+                                            , (Qual (ModuleName "Prelude") $ Ident "Ord",  [])
+                                            , (Qual (ModuleName "Prelude") $ Ident "Show", [])
+                                            , (Qual (ModuleName "Prelude") $ Ident "Read", [])
                                             ]
 
 dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a Kind' Type' -> Context m [QualConDecl]
@@ -114,10 +128,12 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                     (BDecls [])
                                   where
                                    fis = map (Ident . return) $ zipWith const ['a'..] xs
-                                   zs  = map (\x->Qualifier $ App (Var (UnQual $ Ident "put")) (Var $ UnQual x)) fis
-                                   e   | length cs <= 1     = Do zs
-                                       | length cs <= 255   = Do $ (Qualifier (App (Var (UnQual $ Ident "putWord8"))    (Lit $ Int i))):zs
-                                       | length cs <= 65535 = Do $ (Qualifier (App (Var (UnQual $ Ident "putWord16be")) (Lit $ Int i))):zs
+                                   zs  = map (\x->Qualifier $ App (Var (Qual (ModuleName "Data.Binary") $ Ident "put")) (Var $ UnQual x)) fis
+                                   e   | length cs <= 1     = if null zs 
+                                                                then App (Var (UnQual $ Ident "return")) (Tuple [])
+                                                                else Do zs
+                                       | length cs <= 255   = Do $ (Qualifier (App (Var (Qual (ModuleName "Data.Binary.Put") $ Ident "putWord8"))    (Lit $ Int i))):zs
+                                       | length cs <= 65535 = Do $ (Qualifier (App (Var (Qual (ModuleName "Data.Binary.Put") $ Ident "putWord16be")) (Lit $ Int i))):zs
                                        | otherwise          = error "instanceBinary: too many constructors"
                             let get = InsDecl $ FunBind $ return $ Match 
                                       sl 
@@ -129,8 +145,8 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                   where
                                    e   | length cs == 0     = Var $ UnQual $ Ident "undefined"
                                        | length cs == 1     = Do $ (Generator sl (PVar $ Ident "index") $ App (Var $ UnQual $ Ident "return") (Lit $ Int 0)):zs
-                                       | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ UnQual $ Ident "getWord8")             :zs
-                                       | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ UnQual $ Ident "getWord16")            :zs
+                                       | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord8")             :zs
+                                       | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord16")            :zs
                                        | otherwise          = error "instanceBinary: too many constructors"
                                    f i = Alt sl (PLit $ Int $ fromIntegral i) (UnGuardedAlt $ g (cs !! i)) (BDecls [])
                                    g (QualConDecl _ _ _ (RecDecl n xs)) 
@@ -140,7 +156,7 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                                $ foldl App (Con $ UnQual n) (map (Var . UnQual) ns)
                                    h [] x = x
                                    h (n:ns) x  = App
-                                                  (App (Var $ UnQual $ Symbol ">>=") (Var $ UnQual $ Ident "get"))
+                                                  (App (Var $ UnQual $ Symbol ">>=") (Var $ Qual (ModuleName "Data.Binary") $ Ident "get"))
                                                   (Lambda sl [PVar n] $ h ns x)  
                                    zs  = return $ Qualifier $ Case 
                                            (Var $ UnQual $ Ident "index")

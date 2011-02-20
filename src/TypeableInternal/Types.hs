@@ -120,16 +120,16 @@ types   = [  t1
 --           , t62
 --           , t63
 --           , t64
---           , t65
---           , t66
---           , t67
---           , t68
---           , t69
---           , t70
---           , t71
---           , t74
---           , t75
---           , t76
+           , t65
+           , t66
+           , t67
+           , t68
+           , t69
+           , t70
+           , t71
+           , t74
+           , t75
+           , t76
            , t80
            , t81
            , t82
@@ -556,10 +556,6 @@ t48      = dt {
                                                             { fieldName      = "cancelled"
                                                             , fieldSemantics = "States whether the text is stroked out."
                                                             , fieldType      = DataType "0219c59f732a8ef507215fbdb4cceacd"
-                                                            }
-                                                          , defaultField
-                                                            { fieldName      = "reference"
-                                                            , fieldType      = maybe $ DataType "e393b15b944c4b3597cd02b1be6d693b"
                                                             }
                                                          ]
                                    }
@@ -2557,12 +2553,12 @@ t64 = dt {
 					fieldSemantics = "Time of last modification.",
 					fieldType = DataType "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
 				},
-				(defaultField :: Field (Application Concrete Concrete)) {
+				defaultField  {
 					fieldName = "ctime",
 					fieldSemantics = "Time of file creation.",
 					fieldType = DataType "add67dbc-2e18-4ffd-aea3-b1e8cb28f7d8"
 				},
-				(defaultField :: Field  (Application Concrete Concrete)) {
+				defaultField {
 					fieldName = "xattr",
 					fieldSemantics = "Extended attributes.",
 					fieldType =
@@ -2574,7 +2570,7 @@ t64 = dt {
 							(DataType "f9f2f27af0f649b4bc8946c467c3b76a")
 						)
 				},
-				(defaultField :: Field (Application Concrete Concrete)) {
+				defaultField  {
 					fieldName = "file",
 					fieldSemantics = "The actual file.",
 					fieldType =
@@ -2588,11 +2584,14 @@ t64 = dt {
 	]
 }
 
-t65     :: TypeDefinition Concrete 
+--}
+
+
 t65 = dt {
 	identifier = "f2c4f6dd-d939-444b-a209-fbdf2152eb54",
   author       = Just personMikael,
 	name = "SchemeSymbol",
+  structure = v0 $ dt' {
 	semantics = "URI scheme symbol.",
 	constructors = Just [
 		defaultConstructor {
@@ -2617,13 +2616,13 @@ t65 = dt {
 		defaultConstructor { constructorName = "Minus" },
 		defaultConstructor { constructorName = "FullStop" }
 	]
-}
+}}
 
-t66     :: TypeDefinition Concrete 
 t66 = dt {
 	identifier = "6e2f1233-f1c8-4e6b-9bb3-7c405c666234",
   author       = Just personMikael,
 	name = "SchemeName",
+  structure = v0 $ dt' {
 	semantics = "URI scheme.",
 	constructors = Just [
 		defaultConstructor {
@@ -2644,19 +2643,19 @@ t66 = dt {
 			]
 		}
 	]
-}
+}}
 
-t67     :: TypeDefinition Concrete 
 t67 = dt {
 	identifier = "a078d512-3ead-415d-8d85-7dc6dc15b475",
   author       = Just personMikael,
 	name = "RootlessPath",
+  structure = v0 $ dt' {
 	semantics = "Root-less path name.",
 	constructors = Just [
 		defaultConstructor {
 			constructorName = "RootlessPath",
 			constructorFields = [
-				(defaultField  :: Field Concrete) {
+				(defaultField :: Field Zero)  {
 					fieldName = "segments",
 					fieldSemantics = "Path segments.",
 					fieldType =
@@ -2668,19 +2667,19 @@ t67 = dt {
 			]
 		}
 	]
-}
+}}
 
-t68     :: TypeDefinition Concrete 
 t68 = dt {
 	identifier = "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a",
   author       = Just personMikael,
 	name = "AbsolutePath",
+  structure = v0 $ dt' {
 	semantics = "Absolute path name.",
 	constructors = Just [
 		defaultConstructor {
 			constructorName = "AbsolutePath",
 			constructorFields = [
-				(defaultField :: Field Concrete) {
+				(defaultField  :: Field Zero)  {
 					fieldName = "segments",
 					fieldSemantics = "Path segments.",
 					fieldType =
@@ -2692,19 +2691,19 @@ t68 = dt {
 			]
 		}
 	]
-}
+}}
 
-t69     :: TypeDefinition Concrete 
 t69 = dt {
 	identifier = "5448c6b7-9a08-4b4e-a40d-442c4fd2e125",
   author       = Just personMikael,
 	name = "Path",
+  structure = v0 $ dt' {
 	semantics = "Path name.",
 	constructors = Just [
 		defaultConstructor {
 			constructorName = "AbsolutePath",
 			constructorFields = [
-				defaultField {
+				(defaultField  :: Field Zero) {
 					fieldName = "absolute",
 					fieldType = DataType "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a"
 				}
@@ -2713,20 +2712,20 @@ t69 = dt {
 		defaultConstructor {
 			constructorName = "RootlessPath",
 			constructorFields = [
-				defaultField {
+				(defaultField  :: Field Zero) {
 					fieldName = "rootless",
 					fieldType = DataType "a078d512-3ead-415d-8d85-7dc6dc15b475"
 				}
 			]
 		}
 	]
-}
+}}
 
-t70     :: TypeDefinition Concrete 
 t70 = dt {
 	identifier = "8068cbda-f35e-4618-a7e7-98c67ff9bee0",
   author       = Just personMikael,
 	name = "Hierarchy",
+  structure = v0 $ dt' {
 	semantics = "URI hierarchy",
 	constructors = Just [
 		defaultConstructor {
@@ -2752,13 +2751,13 @@ t70 = dt {
 			]
 		}
 	]
-}
+}}
 
-t71     :: TypeDefinition Concrete 
 t71 = dt {
 	identifier = "e393b15b-944c-4b35-97cd-02b1be6d693b",
   author       = Just personMikael,
 	name = "URI",
+  structure = v0 $ dt' {
 	semantics = "Uniform Resource Identifier",
 	constructors = Just [
 		defaultConstructor {
@@ -2783,16 +2782,16 @@ t71 = dt {
 			]
 		}
 	]
-}
+}}
 
-t74     :: TypeDefinition Concrete 
 t74 = dt {
 	identifier = "a9c05900-6c8d-4849-af90-2d3ad12ee3cc",
   author       = Just personMikael,
 	name = "IP",
+  structure = v0 $ dt' {
 	semantics = "Internet Protocol address.",
 	constructors = Just [
-		defaultConstructor  {
+		(defaultConstructor :: Constructor Zero) {
 			constructorName = "IPv6",
 			constructorSemantics = "IP version 6 address.",
 			constructorFields = [
@@ -2802,7 +2801,7 @@ t74 = dt {
 				}
 			]
 		},
-		defaultConstructor  {
+		(defaultConstructor :: Constructor Zero)  {
 			constructorName = "IPv4",
 			constructorSemantics = "IP version 4 address.",
 			constructorFields = [
@@ -2813,27 +2812,28 @@ t74 = dt {
 			]
 		}
 	]
-}
+}}
 
 t75 = dt {
 	identifier = "335b7633-0e72-4b64-a525-6190fb579dad",
   author       = Just personMikael,
 	name = "Authority",
+  structure = v0 $ dt' {
 	constructors = Just [
 		defaultConstructor {
 			constructorName = "Authority",
 			constructorFields = [
-				defaultField  {
+				(defaultField :: Field Zero)  {
 					fieldName = "userinfo",
 					fieldSemantics = "User information.",
 					fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
 				},
-				defaultField  {
+				(defaultField :: Field Zero) {
 					fieldName = "host",
 					fieldSemantics = "Host",
 					fieldType = DataType "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06"
 				},
-				defaultField  {
+				(defaultField :: Field Zero)  {
 					fieldName = "port",
 					fieldSemantics = "Port number",
 					fieldType =
@@ -2845,18 +2845,19 @@ t75 = dt {
 			]
 		}
 	]
-}
+}}
 
 t76 = dt {
 	identifier = "9f64aa56-7f1d-4456-b7ce-f6bf7f299c06",
   author       = Just personMikael,
 	name = "Host",
+  structure = v0 $ dt' {
 	semantics = "URI host",
 	constructors = Just [
 		defaultConstructor {
 			constructorName = "IP",
 			constructorFields = [
-				defaultField  {
+				(defaultField :: Field Zero)  {
 					fieldName = "ip",
 					fieldSemantics = "IP address",
 					fieldType = DataType "a9c05900-6c8d-4849-af90-2d3ad12ee3cc"
@@ -2866,7 +2867,7 @@ t76 = dt {
 		defaultConstructor {
 			constructorName = "RegName",
 			constructorFields = [
-				defaultField  {
+				(defaultField  :: Field Zero) {
 					fieldName = "regName",
 					fieldSemantics = "Registered name",
 					fieldType = DataType "4f7db06c439541658a09689d3e7dd909"
@@ -2874,6 +2875,6 @@ t76 = dt {
 			]
 		}
 	]
-}
+}}
 
---}
+
