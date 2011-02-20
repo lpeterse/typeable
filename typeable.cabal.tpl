@@ -25,11 +25,6 @@ Executable        typeserver
  Build-depends:   base >= 4.0
  ghc-options:     -threaded
 
-Executable        typeable-bootstrap 
- hs-source-dirs:  src
- main-is:         typeable-bootstrap.hs
- Build-depends:   base >= 4.0
-
 Library
  Build-Depends:   base >= 4.0,
                   Crypto >= 4.2.2,
