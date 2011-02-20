@@ -55,7 +55,7 @@ handlers  = [
             ]
 
 serveOverview :: ServerPartT IO Response
-serveOverview = ok $ toResponse $ (htmlize namespace :: Context Html)
+serveOverview = runC (htmlize namespace) >>= ok . toResponse 
 
 listTypes    = ok $ toResponse $ unlines $ map show $ M.keys (typeMap static)
 listClasses  = ok $ toResponse $ unlines $ map show $ M.keys (classMap static)
@@ -67,10 +67,10 @@ serveType uuid = case M.lookup uuid (typeMap static) of
                                                                                                   filePathSendFile
                                                                                                   (asContentType "text/plain")
                                                                                                   ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs") 
-                                                                                              , ok $ toResponse $ typeModule $ t
+                                                                                              , runC (typeModule t) >>= ok . toResponse 
                                                                                               ]
                                                                             _         -> mempty
-                                      , ok $ toResponse $ htmlize t
+                                      , runC (htmlize t) >>= ok . toResponse 
                                       ]
                    Nothing -> notFound $ toResponse ((show uuid)++" does not exist.") 
 
@@ -92,12 +92,7 @@ instance ToMessage Html where
   toContentType _ = "text/html"
   toMessage       = renderHtml . encapsulate
 
-instance ToMessage (Context Html) where
-  toContentType _ = "text/html"
-  toMessage x     = renderHtml $ encapsulate $ runC x 
-
-instance ToMessage (Context Module) where
+instance ToMessage Module where
   toContentType _ = "text/plain"
-  toMessage x     = toMessage $ prettyPrint $ runC x 
-
+  toMessage       = toMessage . prettyPrint
 

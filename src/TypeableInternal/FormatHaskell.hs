@@ -25,7 +25,7 @@ imports (DataDecl _ _ _ _ _ xs _) = concatMap f xs
 
 impDecl m = ImportDecl sl m False False Nothing Nothing Nothing
 
-typeModule  :: Definition Type' -> Context Module
+typeModule  :: (Monad m) => Definition Type' -> Context m Module
 typeModule x = do dd <- dataDecl x
                   ib <- instanceBinary dd
                   let imps  = [ 
@@ -53,7 +53,7 @@ variables  = f 0
                k Concrete'          = KindStar
                k (Application' x y) = KindFn (k x) (k y)
 
-dataDecl                   :: Definition Type' -> Context Decl
+dataDecl                   :: (Monad m) => Definition Type' -> Context m Decl
 dataDecl t                  = do let typeName     = Ident $ show $ name t :: Name
                                  cs <- dataConstructors (structure t)
                                  return $ DataDecl 
@@ -70,13 +70,13 @@ dataDecl t                  = do let typeName     = Ident $ show $ name t :: Nam
                                             , (UnQual $ Ident "Read", [])
                                             ]
 
-dataConstructors                   :: (PeanoNumber a) => Binding a Kind' Type' -> Context [QualConDecl]
+dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a Kind' Type' -> Context m [QualConDecl]
 dataConstructors (Bind _ x)         = dataConstructors x
 dataConstructors (Expression x)     = case constructors x of
-                                        Nothing -> error "cannot haskellize abstract type"
+                                        Nothing -> fail "cannot haskellize abstract type"
                                         Just cs -> mapM f cs
                                       where
-                                        f  :: (PeanoNumber a) => Constructor a -> Context QualConDecl
+                                        f  :: (PeanoNumber a, Monad m) => Constructor a -> Context m QualConDecl
                                         f c = do fs <- mapM dataField (constructorFields c)
                                                  return $ QualConDecl
                                                             sl
@@ -86,18 +86,18 @@ dataConstructors (Expression x)     = case constructors x of
                                                                 (Ident $ show $ constructorName c)
                                                                 fs  -- [([Name], BangType)]
 
-dataField              :: (PeanoNumber a) => Field a -> Context ([Name], BangType)
+dataField              :: (PeanoNumber a, Monad m) => Field a -> Context m ([Name], BangType)
 dataField x             = do t <- dataType (fieldType x) 
                              return ([Ident $ show $ fieldName x], UnBangedTy t)
 
-dataType                  :: (PeanoNumber a) => Type a -> Context Syntax.Type
+dataType                  :: (PeanoNumber a, Monad m) => Type a -> Context m Syntax.Type
 dataType (DataType u)      = do n <- humanify u
                                 return $ TyCon $ Qual (ModuleName $ "Typeable.T" ++ (show u)) (Ident n)
 dataType (Variable v)      = return $ TyVar $ Ident [toEnum $ (fromEnum 'a') + (fromEnum v)] 
 dataType (Application f a) = do x <- dataType f
                                 y <- dataType a
                                 return $ TyApp x y
-dataType (Forall c)        = error "forall not implemented"
+dataType (Forall c)        = fail "forall not implemented"
 
 instanceBinary (DataDecl _ _ _ n vs cs _) 
                        = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 

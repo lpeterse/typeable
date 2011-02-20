@@ -60,7 +60,7 @@ variables x         = f 0 x
                                                  )
 
 class Htmlize a where
-  htmlize :: a -> (Context Html)
+  htmlize :: (Monad m) => a -> (Context m Html)
 
 instance Htmlize Kind' where
   htmlize = htmlize' False
@@ -196,7 +196,7 @@ instance Htmlize (Definition Type') where
                                     H.tr $ H.td ! A.colspan "4" ! A.class_ "constraints" $ constraints'
                                     constructors'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a) => Binding a Kind' Type' -> Context (Html, Html, Html)
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a Kind' Type' -> Context m (Html, Html, Html)
       toHtml (Expression x) = do a  <- htmlize $ semantics x 
                                  bs <- mapM htmlize $ S.toList $ constraints x
                                  let b = mconcat $ L.intersperse (string "|") bs
@@ -220,7 +220,7 @@ instance Htmlize (Definition Class') where
                                     H.tr $ H.td ! A.colspan "3" ! A.class_ "constraints" $ constraints'
                                     methods'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a) => Binding a Kind' Class' -> Context (Html, Html, Html)
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a Kind' Class' -> Context m (Html, Html, Html)
       toHtml (Expression x) = do a  <- htmlize $ classSemantics x 
                                  bs <- mapM htmlize $ S.toList $ classConstraints x
                                  let b = mconcat $ L.intersperse (string "|") bs
@@ -228,7 +228,7 @@ instance Htmlize (Definition Class') where
                                  return (a,b,mconcat ms)
       toHtml (Bind _ x)     = toHtml x
 
-metaPart  :: Definition a -> Html -> Context Html
+metaPart  :: (Monad m) => Definition a -> Html -> Context m Html
 metaPart x s = do author'              <- case author x of
                                             Nothing -> return "PublicDomain"
                                             Just a  -> htmlize a
