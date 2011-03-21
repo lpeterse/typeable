@@ -31,6 +31,12 @@ import qualified Data.Map as M
 
 type List a = [a]
 
+isAbstract :: Definition Type' -> Bool
+isAbstract  = f . structure
+              where
+                f               :: (PeanoNumber a) => Binding a b Type' -> Bool
+                f (Bind _ b)     = f b
+                f (Expression t) = (constructors t) == Nothing
 
 data Kind' = Concrete'
            | Application' Kind' Kind'

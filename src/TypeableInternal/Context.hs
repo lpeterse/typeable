@@ -16,6 +16,12 @@ data Static = Static { typeMap  :: M.Map UUID (Definition Type')
 
 runContext = runReaderT
 
+getTypes  :: (Monad m) => Context m (M.Map UUID (Definition Type'))
+getTypes   = ask >>= return . typeMap
+
+getType  :: (Monad m) => UUID -> Context m (Maybe (Definition Type'))
+getType u = ask >>= return . (M.lookup u) . typeMap
+
 instance HumanReadable UUID where
   humanify x = do s <- ask 
                   return $ case M.lookup x (typeMap s) of

@@ -67,7 +67,13 @@ serveType uuid = case M.lookup uuid (typeMap static) of
                                                                                                   filePathSendFile
                                                                                                   (asContentType "text/plain")
                                                                                                   ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs") 
-                                                                                              , runC (typeModule t) >>= ok . toResponse 
+                                                                                              , runC (typeModule False t) >>= ok . toResponse 
+                                                                                              ]
+                                                                            "haskell-boot" -> msum [ serveFileUsing
+                                                                                                  filePathSendFile
+                                                                                                  (asContentType "text/plain")
+                                                                                                  ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs-boot") 
+                                                                                              , runC (typeModule True t) >>= ok . toResponse 
                                                                                               ]
                                                                             _         -> mempty
                                       , runC (htmlize t) >>= ok . toResponse 

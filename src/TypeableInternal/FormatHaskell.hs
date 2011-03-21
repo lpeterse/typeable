@@ -1,11 +1,13 @@
 module TypeableInternal.FormatHaskell where
 
 import Data.List
+import Data.String
 
 import Language.Haskell.Exts.Syntax hiding (Context, Type, DataType)
 import qualified Language.Haskell.Exts.Syntax as Syntax
 import TypeableInternal.Context
 import TypeableInternal.InternalTypeDefs
+import Control.Monad
 
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
 import Typeable.T421496848904471ea3197f25e2a02b72 -- Zero
@@ -13,21 +15,37 @@ import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
 
 sl = SrcLoc "" 0 0
 
-imports                          :: Decl -> [ImportDecl]
-imports (DataDecl _ _ _ _ _ xs _) = concatMap f xs 
-                                    where
-                                    f (QualConDecl _ _ _ c) = g c
-                                    g (RecDecl _ ts)        = concatMap h ts
-                                    h (_, UnBangedTy t)     = i t
-                                    i (TyVar _)             = []
-                                    i (TyCon (Qual m _))    = [(impDecl m) { importSrc = True }]
-                                    i (TyApp t1 t2)         = (i t1) ++ (i t2)
+moduleToUUID  :: String -> Maybe UUID 
+moduleToUUID n | "Typeable.T" `isPrefixOf` n = return $ fromString (drop 10 n)
+               | otherwise                   = Nothing
 
-impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
+importSrcd    :: (Monad m) => ModuleName -> Context m Bool
+importSrcd (ModuleName n) = case moduleToUUID n of
+                              Nothing -> return False
+                              Just u  -> do s <- getType u
+                                            case s of
+                                              Nothing -> return False
+                                              Just t  -> return $ not $ isAbstract t
 
-typeModule  :: (Monad m) => Definition Type' -> Context m Module
-typeModule x = do dd <- dataDecl x
-                  ib <- instanceBinary dd
+imports                          :: (Monad m) => [ModuleName] -> Decl -> Context m [ImportDecl]
+imports ms (DataDecl _ _ _ _ _ xs _) = (liftM concat) $ mapM f xs 
+                                       where
+                                       f (QualConDecl _ _ _ c) = g c
+                                       g (RecDecl _ ts)        = (liftM concat) $ mapM h ts
+                                       h (_, UnBangedTy t)     = i t
+                                       i (TyVar _)             = return []
+                                       i (TyCon (Qual m _))    = do src <- importSrcd m
+                                                                    return [(impDecl m) {importSrc=src} | m `notElem` ms ]
+                                       i (TyApp t1 t2)         = do a <- i t1
+                                                                    b <- i t2
+                                                                    return (a++b)
+
+impDecl    m = ImportDecl sl m True False Nothing Nothing Nothing
+
+typeModule  :: (Monad m) => Bool -> Definition Type' -> Context m Module
+typeModule b x 
+             = do dd <- dataDecl b x
+                  ib <- instanceBinary b dd
                   let imps  = [ 
                                 (impDecl (ModuleName "Prelude")) { importQualified = False
                                                                  , importSpecs = Just (False, [ IVar (Ident  "fromInteger")
@@ -43,8 +61,9 @@ typeModule x = do dd <- dataDecl x
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               ]
-                  let decls = [dd, ib]
+                  let decls = [dd]--, ib]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
+                  is <- imports [mn] dd
                   return $ Module
                              sl
                              mn
@@ -52,10 +71,11 @@ typeModule x = do dd <- dataDecl x
                                OptionsPragma sl Nothing "-XEmptyDataDecls"
                              , OptionsPragma sl Nothing "-XKindSignatures"
                              , OptionsPragma sl Nothing "-XNoImplicitPrelude"
+                             , OptionsPragma sl Nothing "-XFlexibleContexts"
                              ]                              -- [OptionPragma]
                              Nothing                         -- Maybe WarningText
                              Nothing                         -- Maybe [ExportSpec]
-                             (nub $ ((concatMap imports [dd]) ++ imps) \\ [impDecl mn]) -- [ImportDecl]
+                             (nub $ is ++ imps) -- [ImportDecl]
                              decls
 
 variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]
@@ -67,8 +87,8 @@ variables  = f 0
                k Concrete'          = KindStar
                k (Application' x y) = KindFn (k x) (k y)
 
-dataDecl                   :: (Monad m) => Definition Type' -> Context m Decl
-dataDecl t                  = do let typeName     = Ident $ show $ name t :: Name
+dataDecl                   :: (Monad m) => Bool -> Definition Type' -> Context m Decl
+dataDecl b t                = do let typeName     = Ident $ show $ name t :: Name
                                  cs <- dataConstructors (structure t)
                                  return $ DataDecl 
                                             sl 
@@ -77,12 +97,15 @@ dataDecl t                  = do let typeName     = Ident $ show $ name t :: Nam
                                             typeName
                                             (variables $ structure t)
                                             cs
-                                            [
-                                              (Qual (ModuleName "Prelude") $ Ident "Eq",   [])
-                                            , (Qual (ModuleName "Prelude") $ Ident "Ord",  [])
-                                            , (Qual (ModuleName "Prelude") $ Ident "Show", [])
-                                            , (Qual (ModuleName "Prelude") $ Ident "Read", [])
-                                            ]
+                                            (if True
+                                              then []
+                                              else [
+                                                     (Qual (ModuleName "Prelude") $ Ident "Eq",   [])
+                                                   , (Qual (ModuleName "Prelude") $ Ident "Ord",  [])
+                                                   , (Qual (ModuleName "Prelude") $ Ident "Show", [])
+                                                   , (Qual (ModuleName "Prelude") $ Ident "Read", [])
+                                                   ]
+                                            )
 
 dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a Kind' Type' -> Context m [QualConDecl]
 dataConstructors (Bind _ x)         = dataConstructors x
@@ -113,7 +136,7 @@ dataType (Application f a) = do x <- dataType f
                                 return $ TyApp x y
 dataType (Forall c)        = fail "forall not implemented"
 
-instanceBinary (DataDecl _ _ _ n vs cs _) 
+instanceBinary b (DataDecl _ _ _ n vs cs _) 
                        = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 
                             let cxt  = []
                             let fieldTypes = let u (QualConDecl _ _ _ (RecDecl _ xs)) = map (\(_, UnBangedTy t)->t) xs
@@ -168,4 +191,4 @@ instanceBinary (DataDecl _ _ _ n vs cs _)
                                        (map (\t-> ClassA (Qual (ModuleName "Data.Binary") (Ident "Binary")) [t]) fieldTypes)
                                        (Qual (ModuleName "Data.Binary") (Ident "Binary"))
                                        [foldl TyApp (TyCon $ UnQual n) vs']
-                                       (get:puts)
+                                       (if b then [] else get:puts)

@@ -430,10 +430,6 @@ t49      = dt {
                                                             , fieldType     = DataType "4f7db06c439541658a09689d3e7dd909"
                                                             }
                                                           , defaultField
-                                                            { fieldName     = "birthday"
-                                                            , fieldType     = maybe $ DataType "b6831ec097f14b8eba74b1e486b4175d"
-                                                            }
-                                                          , defaultField
                                                             { fieldName     = "contacts"
                                                             , fieldType     = set $ DataType "53e0d483-a641-4425-9dce-752799d64305"
                                                             }
@@ -592,7 +588,26 @@ t46      = dt {
 t47      = dt {
              identifier   = "2a94a7a8d4e049759d8dd546e72293ff"
            , name         = "Constraint"
-           }
+           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           { semantics    = ""
+           , constructors = Just [
+                                   defaultConstructor'  
+                                     { constructorName      = "Constraint"
+                                     , constructorFields    = [   defaultField'
+                                                                  { fieldName      = "class"
+                                                                  , fieldType      = (DataType "346674042a7248b4a94abff0726d0c43")
+                                                                  }
+                                                               ,  defaultField'  
+                                                                  { fieldName      = "tail"
+                                                                  , fieldSemantics = "the remaining list"
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "0174bd2264004820bfe34e211cb35a7d") 
+                                                                                       (Variable First)  
+                                                                  }
+                                                              ]
+                                     } 
+                                 ]
+           } } 
           
           
 t2       = dt {
