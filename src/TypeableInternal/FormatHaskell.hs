@@ -1,52 +1,59 @@
+{-# OPTIONS -XFlexibleContexts -XScopedTypeVariables #-}
 module TypeableInternal.FormatHaskell where
 
 import Data.List
 import Data.String
 
+import qualified Data.Map as M
+import qualified Data.Set as S
+
 import Language.Haskell.Exts.Syntax hiding (Context, Type, DataType)
 import qualified Language.Haskell.Exts.Syntax as Syntax
 import TypeableInternal.Context
 import TypeableInternal.InternalTypeDefs
+import TypeableInternal.Graph
 import Control.Monad
 
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4
 import Typeable.T421496848904471ea3197f25e2a02b72 -- Zero
 import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f
 
 sl = SrcLoc "" 0 0
 
-moduleToUUID  :: String -> Maybe UUID 
-moduleToUUID n | "Typeable.T" `isPrefixOf` n = return $ fromString (drop 10 n)
-               | otherwise                   = Nothing
-
-importSrcd    :: (Monad m) => ModuleName -> Context m Bool
-importSrcd (ModuleName n) = case moduleToUUID n of
-                              Nothing -> return False
-                              Just u  -> do s <- getType u
-                                            case s of
-                                              Nothing -> return False
-                                              Just t  -> return $ not $ isAbstract t
-
-imports                          :: (Monad m) => [ModuleName] -> Decl -> Context m [ImportDecl]
-imports ms (DataDecl _ _ _ _ _ xs _) = (liftM concat) $ mapM f xs 
-                                       where
-                                       f (QualConDecl _ _ _ c) = g c
-                                       g (RecDecl _ ts)        = (liftM concat) $ mapM h ts
-                                       h (_, UnBangedTy t)     = i t
-                                       i (TyVar _)             = return []
-                                       i (TyCon (Qual m _))    = do src <- importSrcd m
-                                                                    return [(impDecl m) {importSrc=src} | m `notElem` ms ]
-                                       i (TyApp t1 t2)         = do a <- i t1
-                                                                    b <- i t2
-                                                                    return (a++b)
-
-impDecl    m = ImportDecl sl m True False Nothing Nothing Nothing
+importMapping  :: (Monad m) => Context m (M.Map UUID (S.Set UUID))
+importMapping   = getTypes >>= return . M.map imports 
+                  where
+                    imports                       :: Definition Type' -> S.Set UUID
+                    imports                        = imports' . structure
+                    imports'                      :: (PeanoNumber a) => Binding a b Type' -> S.Set UUID
+                    imports' (Bind _ x)            = imports'  x
+                    imports' (Expression x)        = imports''  x
+                    imports''                     :: (PeanoNumber a) => Type' a -> S.Set UUID
+                    imports'' x                    = case constructors x of
+                                                       Nothing -> S.empty
+                                                       Just cs -> foldr (S.union . imports''') S.empty cs
+                    imports'''                    :: (PeanoNumber a) => Constructor a -> S.Set UUID
+                    imports'''                     = (foldr (S.union . imports'''') S.empty) . constructorFields
+                    imports''''                   :: (PeanoNumber a) => Field a -> S.Set UUID
+                    imports''''                    = imports''''' . fieldType
+                    imports'''''                  :: (PeanoNumber a) => Type a -> S.Set UUID
+                    imports''''' (DataType u)      = S.singleton u
+                    imports''''' (Application a b) = imports''''' a `S.union` imports''''' b
+                    imports'''''  _                = S.empty
 
 typeModule  :: (Monad m) => Bool -> Definition Type' -> Context m Module
 typeModule b x 
              = do dd <- dataDecl b x
                   ib <- instanceBinary b dd
-                  let imps  = [ 
+                  im <- importMapping
+                  let impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
+                  let imps2  = [ let s = identifier x `S.member` runGraph (successorsToDepth 5 z) im
+                                 in  ImportDecl sl (ModuleName $ "Typeable.T"++(show z)) True s Nothing Nothing Nothing   
+                               | z <- S.toList $ M.findWithDefault S.empty (identifier x) im 
+                               , identifier x /= z
+                               ]  
+                  let imps1  = [ 
                                 (impDecl (ModuleName "Prelude")) { importQualified = False
                                                                  , importSpecs = Just (False, [ IVar (Ident  "fromInteger")
                                                                                               , IVar (Ident  "return")
@@ -63,7 +70,6 @@ typeModule b x
                               ]
                   let decls = [dd]--, ib]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
-                  is <- imports [mn] dd
                   return $ Module
                              sl
                              mn
@@ -75,7 +81,7 @@ typeModule b x
                              ]                              -- [OptionPragma]
                              Nothing                         -- Maybe WarningText
                              Nothing                         -- Maybe [ExportSpec]
-                             (nub $ is ++ imps) -- [ImportDecl]
+                             (nub $ imps1 ++ imps2) -- [ImportDecl]
                              decls
 
 variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]

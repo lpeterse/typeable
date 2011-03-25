@@ -4,7 +4,8 @@ module Main where
 
 import Typeable.T421496848904471ea3197f25e2a02b72
 
-import Happstack.Server
+import Happstack.Server hiding (serveFile)
+import Happstack.Server.FileServe
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
 import Control.Monad
@@ -55,7 +56,7 @@ handlers  = [
             ]
 
 serveOverview :: ServerPartT IO Response
-serveOverview = runC (htmlize namespace) >>= ok . toResponse 
+serveOverview = runC (htmlize namespace) >>= ok . toResponse . encapsulate 
 
 listTypes    = ok $ toResponse $ unlines $ map show $ M.keys (typeMap static)
 listClasses  = ok $ toResponse $ unlines $ map show $ M.keys (classMap static)
@@ -63,20 +64,18 @@ listClasses  = ok $ toResponse $ unlines $ map show $ M.keys (classMap static)
 serveType :: UUID -> ServerPartT IO Response
 serveType uuid = case M.lookup uuid (typeMap static) of
                    Just t  -> do msum [ withDataFn (look "format") $ \x -> case x of
-                                                                            "haskell" -> msum [ serveFileUsing
-                                                                                                  filePathSendFile
+                                                                            "haskell" -> msum [ serveFile
                                                                                                   (asContentType "text/plain")
                                                                                                   ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs") 
                                                                                               , runC (typeModule False t) >>= ok . toResponse 
                                                                                               ]
-                                                                            "haskell-boot" -> msum [ serveFileUsing
-                                                                                                  filePathSendFile
+                                                                            "haskell-boot" -> msum [ serveFile
                                                                                                   (asContentType "text/plain")
                                                                                                   ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs-boot") 
                                                                                               , runC (typeModule True t) >>= ok . toResponse 
                                                                                               ]
                                                                             _         -> mempty
-                                      , runC (htmlize t) >>= ok . toResponse 
+                                      , runC (htmlize t) >>= ok . toResponse . encapsulate
                                       ]
                    Nothing -> notFound $ toResponse ((show uuid)++" does not exist.") 
 
@@ -93,10 +92,6 @@ runC x = runContext x static
 instance FromReqURI UUID where
   fromReqURI s = do a <- fromReqURI s :: Maybe String
                     return $ fromString a
-
-instance ToMessage Html where
-  toContentType _ = "text/html"
-  toMessage       = renderHtml . encapsulate
 
 instance ToMessage Module where
   toContentType _ = "text/plain"
