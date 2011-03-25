@@ -52,6 +52,7 @@ typeModule b x
                                  in  ImportDecl sl (ModuleName $ "Typeable.T"++(show z)) True s Nothing Nothing Nothing   
                                | z <- S.toList $ M.findWithDefault S.empty (identifier x) im 
                                , identifier x /= z
+                               , not b
                                ]  
                   let imps1  = [ 
                                 (impDecl (ModuleName "Prelude")) { importQualified = False
@@ -68,7 +69,8 @@ typeModule b x
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               ]
-                  let decls = [dd]--, ib]
+                  let id    = []
+                  let decls = [dd] ++ id --, ib]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
                   return $ Module
                              sl
@@ -102,8 +104,8 @@ dataDecl b t                = do let typeName     = Ident $ show $ name t :: Nam
                                             [] 
                                             typeName
                                             (variables $ structure t)
-                                            cs
-                                            (if True
+                                            (if not b then cs else [])
+                                            (if True || b || null cs
                                               then []
                                               else [
                                                      (Qual (ModuleName "Prelude") $ Ident "Eq",   [])
@@ -131,7 +133,10 @@ dataConstructors (Expression x)     = case constructors x of
 
 dataField              :: (PeanoNumber a, Monad m) => Field a -> Context m ([Name], BangType)
 dataField x             = do t <- dataType (fieldType x) 
-                             return ([Ident $ show $ fieldName x], UnBangedTy t)
+                             return ([Ident $ haskape $ show $ fieldName x], UnBangedTy t)
+
+haskape x | x `elem` ["type", "class", "if", "then", "else", "where", "let", "in", "do"] = x++"_"
+          | otherwise                                                                    = x
 
 dataType                  :: (PeanoNumber a, Monad m) => Type a -> Context m Syntax.Type
 dataType (DataType u)      = do n <- humanify u

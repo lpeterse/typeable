@@ -815,7 +815,7 @@ t95      = dt {
              identifier   = "451f847e1cb642d0b7c5dbdfa03f41b5"
            , author       = Just personLars
            , name         = "Definition"
-           , structure    = v1' (Application' (Application' Concrete' Concrete') Concrete')  $ (dt' :: Type' (Succ Zero))
+           , structure    = v1' (Application' Concrete' Concrete')  $ (dt' :: Type' (Succ Zero))
            { constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Definition"
