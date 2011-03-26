@@ -5,7 +5,7 @@ module Typeable.T9e2e1e478e094a8abe5507f8574ac91f where
 import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4 -- Finite
 import {-# SOURCE #-} Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber 
 
-data PeanoNumber a => Succ a = First | Next a deriving (Eq, Ord, Show)
+data Succ a = First | Next a deriving (Eq, Ord, Show, Read)
 
 instance PeanoNumber k => Enum (Succ k) where
   fromEnum First      = 0

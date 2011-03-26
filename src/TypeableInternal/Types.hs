@@ -113,7 +113,6 @@ types   = [  t1
            , t55
            , t56
            , t57
-           , t58
 --           , t59
 --           , t60
 --           , t61
@@ -245,78 +244,6 @@ t94      = dt {
                                  ]
            }}
 
-
-
-t58      = dt {
-             identifier   = "9035333f-c91c-42f8-ab8f-ba4c3f256a7b"
-           , author       = Just personLars
-           , name         = "FirstOrderLogic"
-           , structure    = v2' (Application' Concrete' Concrete') Concrete' $ (dt' :: Type' (Succ (Succ Zero)))
-           { semantics    = "Formulas of the first order predicate logic. The structure is limited to the necessary: NAND. Other conjunctors are seen as a shorthand notation for: ..."
-           , constraints  = S.fromList [ 
-                                        Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable (Next First)]
-                                       ]
-           , constructors = Just [
-                                   defaultConstructor { constructorName   = "True" }
-                                 , defaultConstructor { constructorName   = "Negation"
-                                                        , constructorFields = [ defaultField
-                                                                                { fieldName = "negated"
-                                                                                , fieldType = Application
-                                                                                                (Application
-                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (Variable First)
-                                                                                                )
-                                                                                                (Variable (Next First))
-                                                                                }
-                                                                              ]
-                                                        }
-                                 , defaultConstructor { constructorName   = "And"
-                                                        , constructorFields = [ defaultField
-                                                                                { fieldName = "left"
-                                                                                , fieldType = Application
-                                                                                                (Application
-                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (Variable First)
-                                                                                                )
-                                                                                                (Variable (Next First))
-                                                                                }
-                                                                              , defaultField
-                                                                                { fieldName = "right"
-                                                                                , fieldType = Application
-                                                                                                (Application
-                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (Variable First)
-                                                                                                )
-                                                                                                (Variable (Next First))
-                                                                                }
-                                                                              ]
-                                                        }
-                                 , defaultConstructor { constructorName   = "Predicate"
-                                                        , constructorFields = [ defaultField
-                                                                                { fieldName = "predicate"
-                                                                                , fieldType = Application
-                                                                                                (Variable First)
-                                                                                                (Variable (Next First))
-                                                                                }
-                                                                              ]
-                                                        }
-                                 , defaultConstructor { constructorName   = "Forall"
-                                                        , constructorFields = [ defaultField
-                                                                                { fieldName = "universal"
-                                                                                , fieldType = Application
-                                                                                                (Application
-                                                                                                  (DataType "9035333f-c91c-42f8-ab8f-ba4c3f256a7b")
-                                                                                                  (Variable First)
-                                                                                                )
-                                                                                                (Application 
-                                                                                                  (DataType "9e2e1e47-8e09-4a8a-be55-07f8574ac91f")
-                                                                                                  (Variable (Next First))
-                                                                                                )
-                                                                                }
-                                                                              ]
-                                                        }
-                                 ]
-          }}
 
 
 t86      = dt {
