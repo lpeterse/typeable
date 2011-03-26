@@ -2,12 +2,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module TypeableInternal.InternalTypeDefs where
 
-import Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83 -- PeanoNumber
 import Typeable.T606f253533d3420da3465afae341d598 -- Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
-import Typeable.T421496848904471ea3197f25e2a02b72 -- Zero
-import Typeable.T9e2e1e478e094a8abe5507f8574ac91f -- Succ
-import Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4 -- Finite
 
 import Data.Word
 import Data.LargeWord
@@ -30,6 +26,48 @@ import Data.Data
 import qualified Data.Map as M
 
 type List a = [a]
+
+class (Finite a) => PeanoNumber a
+
+instance PeanoNumber Zero
+instance PeanoNumber a => PeanoNumber (Succ a)
+
+class (Eq a, Ord a, Enum a) => Finite a where
+  domain :: [a]
+
+data Zero
+
+instance Eq Zero where
+  (==) = undefined
+ 
+instance Ord Zero where
+  compare = undefined
+
+instance Show Zero where
+  show = undefined
+
+instance Enum Zero where
+  fromEnum = undefined
+  toEnum   = undefined
+
+instance Finite Zero where
+  domain = []
+
+data Succ a = First | Next a deriving (Eq, Ord, Show, Read)
+
+instance PeanoNumber k => Enum (Succ k) where
+  fromEnum First      = 0
+  fromEnum (Next x)   = 1 + (fromEnum x)
+  toEnum 0            = First
+  toEnum n            = Next (toEnum (n-1))
+
+instance (PeanoNumber a, Finite a) => Finite (Succ a) where
+  domain = case domain :: [a] of
+            [] -> [First]
+            xs -> First:(P.map Next xs)
+
+---------------------
+
 
 isAbstract :: Definition Type' -> Bool
 isAbstract  = f . structure

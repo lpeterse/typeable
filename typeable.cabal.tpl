@@ -52,6 +52,4 @@ Library
                   TypeableInternal.FormatHaskell, 
                   TypeableInternal.Context, 
                   TypeableInternal.NamespaceParser,
-                  TypeableInternal.Graph,
-                  Typeable.Cb5ba7ec44dbb4236826c6ef6bc4837e4,
-                  Typeable.Cc6ebaa9f4cdc4068894d1ffaef5a7a83
+                  TypeableInternal.Graph
