@@ -57,8 +57,6 @@ nonNullaryConstructors  = f . structure
                       g :: (PeanoNumber a) => Constructor a -> Bool
                       g = not . null . constructorFields
 
-
-
 typeModule  :: (Monad m) => Bool -> Definition Type' -> Context m Module
 typeModule b x 
              = do dd      <- dataDecl b x
@@ -92,7 +90,7 @@ typeModule b x
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               ]
-                  let decls = [dd] --, iEq ]--, iOrd, iShow, iRead] -- ++[iEnum | not $ nonNullaryConstructors x]
+                  let decls = [dd, iEq, iOrd, iShow] -- , iRead] -- ++[iEnum | not $ nonNullaryConstructors x]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
                   return $ Module
                              sl

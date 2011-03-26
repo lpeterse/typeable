@@ -140,7 +140,6 @@ types   = [  t1
            , t93 -- Ordering
            , t94 -- Extension
            , t95 -- Extension
-           , t96 -- Quantification
            , t97 -- Kind
            , t98 -- Pattern
            , t99 -- SimpleDialog
@@ -361,58 +360,6 @@ t49      = dt {
                                    }
                                  ]
           }}
-
-
-t96      = dt {
-             identifier   = "ce4219d18285469abe0b8a07bb2a1742"
-           , author       = Just personLars
-           , name         = "Binding"
-           , structure    = v3' Concrete' Concrete' (Application' Concrete' Concrete') $ (dt' :: Type' (Succ (Succ (Succ Zero))))
-           { semantics    = "'Generates' a finite domain of variables that get associated with values of $b and passed over to $c. $a is the current domain."
-           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
-           , constructors = Just [
-                                   defaultConstructor 
-                                   { constructorName    = "Bind"
-                                   , constructorFields  = [
-                                                            defaultField''' 
-                                                            { fieldName = "associated"
-                                                            , fieldSemantics = "A value associated with the bound variable. It can make use of former bound variables."
-                                                            , fieldType = Variable (Next First)
-                                                            }
-                                                          , defaultField''' 
-                                                            { fieldName = "quantified"
-                                                            , fieldSemantics = "Recursive nesting."
-                                                            , fieldType = Application
-                                                                            (Application
-                                                                              (Application
-                                                                                (DataType "ce4219d18285469abe0b8a07bb2a1742")
-                                                                                (Application
-                                                                                  (DataType "9e2e1e478e094a8abe5507f8574ac91f")
-                                                                                  (Variable First)
-                                                                                )
-                                                                              )
-                                                                              (Variable (Next First))
-                                                                            )
-                                                                            (Variable (Next (Next First)))
-                                                            }
-                                                          ]
-                                   }
-                                 , defaultConstructor' 
-                                   { constructorName    = "Expression"
-                                   , constructorSemantics = "The expression whose variables got bound."
-                                   , constructorFields  = [
-                                                            defaultField 
-                                                            { fieldName = "expression"
-                                                            , fieldType = Application
-                                                                            (Variable (Next (Next First)))
-                                                                            (Variable First)
-                                                            }
-                                                          ]
-                                   }
-                                 ]
-          }}
-
-
 
 
 t97      = dt {
@@ -788,14 +735,8 @@ t95      = dt {
                                                                   { fieldName      = "structure"
                                                                   , fieldSemantics = ""
                                                                   , fieldType      = Application
-                                                                                       (Application
-                                                                                         (Application
-                                                                                           (DataType "ce4219d1-8285-469a-be0b-8a07bb2a1742") --Quantification
-                                                                                           (DataType "421496848904471ea3197f25e2a02b72")     --Zero
-                                                                                         )
-                                                                                         (DataType "1660b01f-08dc-4aed-be4c-0941584541cb")
-                                                                                       )
                                                                                        (Variable First)
+                                                                                       (DataType "421496848904471ea3197f25e2a02b72")     --Zero
                                                                   }
                                                            ]
                                      } 
@@ -824,22 +765,28 @@ t42      = dt {
                                                                                         (Variable First)
                                                                                       )
                                                                   }
-                                                               ,  defaultField' 
-                                                                  { fieldName      = "constraints"
-                                                                  , fieldSemantics = "Constraints on the type's free variables."
-                                                                  , fieldType      = Application
-                                                                                       (DataType "7af30cce93724981a16a80f3f193dc33")
-                                                                                       (Application
-                                                                                         (DataType "2a94a7a8-d4e0-4975-9d8d-d546e72293ff")
-                                                                                         (Variable First)
-                                                                                       )
-                                                                  }
                                                                ,  defaultField'
                                                                   { fieldName      = "constructors"
                                                                   , fieldSemantics = "The type's value constructors. If it is nothing, this means the type is abstract. Otherwise the constructors are listed whereas the order is relevant. Note the semantic difference between just the empty list and nothing."
                                                                   , fieldType      = Application 
                                                                                        (DataType "f8f49ef6bbe874a42926fa23d5b3bc19")  
-                                                                                       (list      (Application (DataType "37c8a341-f0b3-4cc6-bbbc-9f2403f09be3") (Variable First)))
+                                                                                       (list $ Application (DataType "37c8a341-f0b3-4cc6-bbbc-9f2403f09be3") (Variable First))
+                                                                  }
+                                                           ]
+                                     } 
+ 
+                                 , defaultConstructor' 
+                                     { constructorName      = "Quantification"
+                                     , constructorFields    = [
+                                                                  defaultField' 
+                                                                  { fieldName      = "kind"
+                                                                  , fieldType      = DataType "1660b01f08dc4aedbe4c0941584541cb" 
+                                                                  }
+                                                               ,  defaultField'
+                                                                  { fieldName      = "quantified"
+                                                                  , fieldType      = Application 
+                                                                                       (DataType "3e815311-18e1-4888-be21-de7921b15bb5")  
+                                                                                       (Application (DataType "9e2e1e478e094a8abe5507f8574ac91f") (Variable First))
                                                                   }
                                                            ]
                                      } 
