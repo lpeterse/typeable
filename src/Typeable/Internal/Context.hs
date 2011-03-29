@@ -1,7 +1,7 @@
 {-# OPTIONS -XFlexibleContexts -XFlexibleInstances -XMultiParamTypeClasses -XGeneralizedNewtypeDeriving #-}
-module TypeableInternal.Context where
+module Typeable.Internal.Context where
 
-import TypeableInternal.InternalTypeDefs
+import Typeable.Internal.InternalTypeDefs
 import qualified Data.Map as M
 import Control.Monad.Reader
 import Control.Monad.Error

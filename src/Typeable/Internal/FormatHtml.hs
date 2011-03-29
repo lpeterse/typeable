@@ -1,7 +1,7 @@
 {-# OPTIONS -XFlexibleInstances -XNoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
-module TypeableInternal.FormatHtml where
+module Typeable.Internal.FormatHtml where
 
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
@@ -20,8 +20,8 @@ import qualified Data.Set             as S
 import qualified Data.Text            as T
 import qualified Data.ByteString.Lazy as BS
 
-import TypeableInternal.Context
-import TypeableInternal.InternalTypeDefs
+import Typeable.Internal.Context
+import Typeable.Internal.InternalTypeDefs
 
 encapsulate  :: Html -> Html
 encapsulate t = H.docTypeHtml $ do 

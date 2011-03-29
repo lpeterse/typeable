@@ -2,8 +2,6 @@
 {-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances #-}
 module Main where
 
-import Typeable.T421496848904471ea3197f25e2a02b72
-
 import Happstack.Server hiding (serveFile)
 import Happstack.Server.FileServe
 import Text.Blaze
@@ -13,16 +11,16 @@ import Data.Monoid
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.String
-import TypeableInternal.NamespaceParser
+import Typeable.Internal.NamespaceParser
 import Text.ParserCombinators.Parsec hiding (string)
 
-import TypeableInternal.InternalTypeDefs
-import TypeableInternal.Types
-import TypeableInternal.Classes
-import TypeableInternal.TypesDefault
-import TypeableInternal.Context
-import TypeableInternal.FormatHtml
-import TypeableInternal.FormatHaskell
+import Typeable.Internal.InternalTypeDefs
+import Typeable.Internal.Types
+import Typeable.Internal.Classes
+import Typeable.Internal.TypesDefault
+import Typeable.Internal.Context
+import Typeable.Internal.FormatHtml
+import Typeable.Internal.FormatHaskell
 import System.IO.Unsafe
 import System (getArgs)
 import System.FilePath.Posix

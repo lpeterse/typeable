@@ -1,8 +1,8 @@
-module TypeableInternal.NamespaceParser where
+module Typeable.Internal.NamespaceParser where
 
 import qualified Data.Set as S
 import qualified Data.Map as M
-import TypeableInternal.InternalTypeDefs
+import Typeable.Internal.InternalTypeDefs
 import Data.String
 
 import Text.ParserCombinators.Parsec 

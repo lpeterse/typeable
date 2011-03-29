@@ -1,9 +1,7 @@
 {-# OPTIONS -XEmptyDataDecls -XDeriveDataTypeable -XStandaloneDeriving -XFlexibleInstances -XOverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module TypeableInternal.InternalTypeDefs where
+module Typeable.Internal.InternalTypeDefs where
 
-import Typeable.T606f253533d3420da3465afae341d598 -- Time
-import Typeable.Tc1b1f6c722c2436fab3180146520814e -- UTC
 
 import Data.Word
 import Data.LargeWord
@@ -15,7 +13,11 @@ import Data.Map
 import Data.Set
 import qualified Data.Set as S
 import Data.ByteString
+import Data.Ratio
+import Data.Time
 import Data.Time.Calendar
+import Data.Time.Clock
+import System.Locale
 import Network.URL
 import Data.Char
 import Prelude as P
@@ -25,7 +27,23 @@ import Data.Data
 
 import qualified Data.Map as M
 
+import Typeable.Internal.EBF
+
 type List a = [a]
+
+data Time a = Time { seconds :: Rational } deriving (Eq, Ord)
+
+data UTC
+
+instance Show (Time UTC) where
+  show (Time x) = formatTime defaultTimeLocale "%c" $ UTCTime (ModifiedJulianDay (fromIntegral d)) (secondsToDiffTime (fromIntegral s)) 
+                  where
+                    y = (numerator x `div` denominator x)+1297728000
+                    (d,s) = y `quotRem` (3600*24)
+
+instance EBF (Time a) where
+  put = error "Time: no instance for EBF"
+  get = error "Time: no instance for EBF"
 
 class (Finite a) => PeanoNumber a
 

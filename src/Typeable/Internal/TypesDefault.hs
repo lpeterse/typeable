@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 {-# OPTIONS -XExistentialQuantification -XNoMonomorphismRestriction #-}
-module TypeableInternal.TypesDefault where
+module Typeable.Internal.TypesDefault where
 
-import TypeableInternal.InternalTypeDefs
+import Typeable.Internal.InternalTypeDefs
 
 import qualified Data.Set as S
 import qualified Data.Map as M

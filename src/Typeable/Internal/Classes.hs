@@ -1,13 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
-module TypeableInternal.Classes where
+module Typeable.Internal.Classes where
 
 import Prelude hiding (maybe)
 
-import TypeableInternal.TypesDefault
-import TypeableInternal.InternalTypeDefs
+import Typeable.Internal.TypesDefault
+import Typeable.Internal.InternalTypeDefs
 import qualified Data.Set as S
 import qualified Data.Map as M
-import Typeable.T606f253533d3420da3465afae341d598  -- Time
 
 -----
 -- class-definitions (provisoric for as long as the binary format is not yet finalised)

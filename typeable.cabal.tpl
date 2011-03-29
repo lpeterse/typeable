@@ -27,7 +27,7 @@ Executable        typeserver
 
 Library
  Build-Depends:   base >= 4.0,
-                  Crypto >= 4.2.2,
+                  largeword,
                   mtl,
                   haskell98,
                   haskell-src-exts,
@@ -44,12 +44,13 @@ Library
                   old-locale,     
                   parsec >= 3.0.0
  hs-source-dirs:  src
- Exposed-Modules: TypeableInternal.FormatHtml, 
-                  TypeableInternal.Types, 
-                  TypeableInternal.Classes, 
-                  TypeableInternal.TypesDefault, 
-                  TypeableInternal.InternalTypeDefs, 
-                  TypeableInternal.FormatHaskell, 
-                  TypeableInternal.Context, 
-                  TypeableInternal.NamespaceParser,
-                  TypeableInternal.Graph
+ Exposed-Modules: Typeable.Internal.FormatHtml, 
+                  Typeable.Internal.Types, 
+                  Typeable.Internal.Classes, 
+                  Typeable.Internal.TypesDefault, 
+                  Typeable.Internal.InternalTypeDefs, 
+                  Typeable.Internal.EBF,
+                  Typeable.Internal.FormatHaskell, 
+                  Typeable.Internal.Context, 
+                  Typeable.Internal.NamespaceParser,
+                  Typeable.Internal.Graph

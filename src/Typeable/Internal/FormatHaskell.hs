@@ -1,5 +1,5 @@
 {-# OPTIONS -XFlexibleContexts -XScopedTypeVariables #-}
-module TypeableInternal.FormatHaskell where
+module Typeable.Internal.FormatHaskell where
 
 import Data.List
 import Data.String
@@ -9,9 +9,9 @@ import qualified Data.Set as S
 
 import Language.Haskell.Exts.Syntax hiding (Context, Type, DataType)
 import qualified Language.Haskell.Exts.Syntax as Syntax
-import TypeableInternal.Context
-import TypeableInternal.InternalTypeDefs
-import TypeableInternal.Graph
+import Typeable.Internal.Context
+import Typeable.Internal.InternalTypeDefs
+import Typeable.Internal.Graph
 import Control.Monad
 
 sl = SrcLoc "" 0 0
@@ -89,8 +89,9 @@ typeModule b x
                               , impDecl (ModuleName "Data.Binary")
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
+                              , impDecl (ModuleName "Typeable.Internal.EBF")
                               ]
-                  let decls = [dd, iEq, iOrd, iShow] -- , iRead] -- ++[iEnum | not $ nonNullaryConstructors x]
+                  let decls = [dd, iEq, iOrd, iShow, iBinary] -- , iRead] -- ++[iEnum | not $ nonNullaryConstructors x]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
                   return $ Module
                              sl
@@ -190,9 +191,15 @@ instanceOf cn cms b (DataDecl _ _ _ n vs cs _)
 
 instanceBinary b (DataDecl _ _ _ n vs cs _) 
   = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 
-       let cxt  = []
+       let vA (TyApp a b) = vA a
+           vA (TyCon _  ) = False
+           vA (TyVar _  ) = True
+           vA _           = False
+       let starVariables = map (\(KindedVar n _) -> TyVar n) $ filter (\(KindedVar _ k) -> k == KindStar) vs
        let fieldTypes = let u (QualConDecl _ _ _ (RecDecl _ xs)) = map (\(_, UnBangedTy t)->t) xs
                         in  nub $ concatMap u cs :: [Syntax.Type]
+       let ctxTypes   = nub $ (filter vA fieldTypes) ++ starVariables
+ 
        let u (i,(QualConDecl _ _ _ (RecDecl n xs))) =
              InsDecl $ FunBind $ return $ Match 
                sl 
@@ -203,7 +210,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
                (BDecls [])
              where
               fis = map (Ident . return) $ zipWith const ['a'..] xs
-              zs  = map (\x->Qualifier $ App (Var (Qual (ModuleName "Data.Binary") $ Ident "put")) (Var $ UnQual x)) fis
+              zs  = map (\x->Qualifier $ App (Var (Qual (ModuleName "Typeable.Internal.EBF") $ Ident "put")) (Var $ UnQual x)) fis
               e   | length cs <= 1     = if null zs 
                                            then App (Var (UnQual $ Ident "return")) (Tuple [])
                                            else Do zs
@@ -221,7 +228,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
               e   | length cs == 0     = Var $ UnQual $ Ident "undefined"
                   | length cs == 1     = Do $ (Generator sl (PVar $ Ident "index") $ App (Var $ UnQual $ Ident "return") (Lit $ Int 0)):zs
                   | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord8")             :zs
-                  | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord16")            :zs
+                  | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord16be")            :zs
                   | otherwise          = error "instanceBinary: too many constructors"
               f i = Alt sl (PLit $ Int $ fromIntegral i) (UnGuardedAlt $ g (cs !! i)) (BDecls [])
               g (QualConDecl _ _ _ (RecDecl n xs)) 
@@ -231,7 +238,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
                           $ foldl App (Con $ UnQual n) (map (Var . UnQual) ns)
               h [] x = x
               h (n:ns) x  = App
-                             (App (Var $ UnQual $ Symbol ">>=") (Var $ Qual (ModuleName "Data.Binary") $ Ident "get"))
+                             (App (Var $ UnQual $ Symbol ">>=") (Var $ Qual (ModuleName "Typeable.Internal.EBF") $ Ident "get"))
                              (Lambda sl [PVar n] $ h ns x)  
               zs  = return $ Qualifier $ Case 
                       (Var $ UnQual $ Ident "index")
@@ -240,7 +247,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
                 | otherwise = map u $ zip [0..] cs
        return $ InstDecl 
                   sl 
-                  (map (\t-> ClassA (Qual (ModuleName "Data.Binary") (Ident "Binary")) [t]) fieldTypes)
-                  (Qual (ModuleName "Data.Binary") (Ident "Binary"))
+                  (map (\t-> ClassA (Qual (ModuleName "Typeable.Internal.EBF") (Ident "EBF")) [t]) ctxTypes)
+                  (Qual (ModuleName "Typeable.Internal.EBF") (Ident "EBF"))
                   [foldl TyApp (TyCon $ UnQual n) vs']
                   (if b then [] else get:puts)

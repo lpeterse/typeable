@@ -1,4 +1,4 @@
-module TypeableInternal.Graph where
+module Typeable.Internal.Graph where
 
 import Data.Word
 

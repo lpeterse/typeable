@@ -1,15 +1,14 @@
 {-# OPTIONS -XNoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
-module TypeableInternal.Types where
+module Typeable.Internal.Types where
 
 import Prelude hiding (maybe)
 
-import TypeableInternal.TypesDefault
-import TypeableInternal.InternalTypeDefs
+import Typeable.Internal.TypesDefault
+import Typeable.Internal.InternalTypeDefs
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Ratio
-import Typeable.T606f253533d3420da3465afae341d598  -- Time
 
 dt :: Definition Type'
 dt  = Definition 
@@ -442,7 +441,7 @@ t45      = dt {
              identifier   = "c1b1f6c7-22c2-436f-ab31-80146520814e"
            , author       = Just personMikael
            , name         = "UTC"
-           , structure    = v1 $ dt'
+           , structure    = v0 $ dt'
            { semantics    = "The UTC time standard."
            , constructors = Just [] 
            }}
