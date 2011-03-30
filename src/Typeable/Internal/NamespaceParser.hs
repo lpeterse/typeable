@@ -1,5 +1,7 @@
 module Typeable.Internal.NamespaceParser where
 
+import Typeable.T9790ade9814a4aaca5eaa80c3e47685d -- Designator
+
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Typeable.Internal.InternalTypeDefs

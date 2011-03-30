@@ -4,6 +4,8 @@ module Typeable.Internal.InternalTypeDefs where
 
 import Typeable.T6716d098a58743379e54c12f249cdc0c --LatinAlphabet
 import Typeable.Tff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
+import Typeable.T9790ade9814a4aaca5eaa80c3e47685d --Designator
+import Typeable.T1566edb1a4de4aab8106e63293e9bfcf --Symbol
 
 import Data.Word
 import Data.LargeWord
@@ -194,7 +196,7 @@ data (PeanoNumber k) => Annotation k = Plain Text
 data (PeanoNumber a) => Binding a b c = Bind { associated :: b, bound :: (Binding (Succ a) b c) }
                                       | Expression { expression :: c a }
 
-data Symbol = Lower   LatinAlphabet
+{-- data Symbol = Lower   LatinAlphabet
             | Upper   LatinAlphabet
             | Decimal DecimalAlphabet
             | Underscore
@@ -202,7 +204,7 @@ data Symbol = Lower   LatinAlphabet
             deriving (Eq, Ord, Show)
 
 data Designator = Designator LatinAlphabet [Symbol] deriving (Eq, Ord, Show)
-
+--}
 
 class (Show a) => Show' a where
   show' :: a -> String
