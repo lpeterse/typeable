@@ -3,6 +3,7 @@ module Typeable.Internal.FormatHaskell where
 
 import Data.List
 import Data.String
+import Data.Char
 
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -91,7 +92,7 @@ typeModule b x
                               , impDecl (ModuleName "Data.Binary.Get")
                               , impDecl (ModuleName "Typeable.Internal.EBF")
                               ]
-                  let decls = [dd, iEq, iOrd, iShow, iBinary] -- , iRead] -- ++[iEnum | not $ nonNullaryConstructors x]
+                  let decls = [dd, iEq, iOrd, iShow, iBinary] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
                   let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
                   return $ Module
                              sl
@@ -120,7 +121,7 @@ variables  = f 0
                k (Application' x y) = KindFn (k x) (k y)
 
 dataDecl                   :: (Monad m) => Bool -> Definition Type' -> Context m Decl
-dataDecl b t                = do let typeName     = Ident $ show $ name t :: Name
+dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Name
                                  cs <- dataConstructors (structure t)
                                  return $ DataDecl 
                                             sl 
@@ -144,12 +145,14 @@ dataConstructors (Expression x)     = case constructors x of
                                                             []  -- [TyVarBind]
                                                             []  -- Context
                                                             $ RecDecl
-                                                                (Ident $ show $ constructorName c)
+                                                                (Ident $ show' $ constructorName c)
                                                                 fs  -- [([Name], BangType)]
 
 dataField              :: (PeanoNumber a, Monad m) => Field a -> Context m ([Name], BangType)
 dataField x             = do t <- dataType (fieldType x) 
-                             return ([Ident $ haskape $ show $ fieldName x], UnBangedTy t)
+                             return ([Ident $ haskape $ g $ show' $ fieldName x], UnBangedTy t)
+                          where
+                            g (x:xs) = (toLower x):xs
 
 haskape x | x `elem` ["type", "class", "if", "then", "else", "where", "let", "in", "do"] = x++"_"
           | otherwise                                                                    = x

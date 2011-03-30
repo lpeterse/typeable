@@ -13,6 +13,7 @@ import Numeric
 import Data.Monoid   (mconcat, mempty)
 import Data.Function
 import Data.String
+import Data.Char
 import qualified Prelude              as P
 import qualified Data.List            as L
 import qualified Data.Map             as M
@@ -102,21 +103,21 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
 instance (PeanoNumber k, Htmlize k) => Htmlize (Field k) where
   htmlize (Field n s t) = do t' <- htmlize t
                              s' <- htmlize s
-                             return $ H.tr $ do H.td ! A.class_ "function"   $ string (show n)
+                             return $ H.tr $ do H.td ! A.class_ "function"   $ string (let g (x:xs)=(toLower x):xs in g $ show' n)
                                                 H.td ! A.class_ "type"       $ t'
                                                 H.td ! A.class_ "annotation" $ s'
 
 instance (PeanoNumber k, Htmlize k) => Htmlize (Method k) where
   htmlize (Method n t s) = do t' <- htmlize t
                               s' <- htmlize s
-                              return $ H.tr $ do H.td ! A.class_ "function" $ string (show n)
+                              return $ H.tr $ do H.td ! A.class_ "function" $ string (let g (x:xs)=(toLower x):xs in g $ show' n)
                                                  H.td ! A.class_ "type"       $ t'
                                                  H.td ! A.class_ "annotation" $ s'
 
 instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
   htmlize (Constructor n s cs) = do s'  <- htmlize s
                                     cs' <- htmlize cs
-                                    return $ do H.tr $ do H.td ! A.class_ "constructor" ! A.rowspan (stringValue $ show (P.length cs + 1)) $ string (show n)
+                                    return $ do H.tr $ do H.td ! A.class_ "constructor" ! A.rowspan (stringValue $ show (P.length cs + 1)) $ string (show' n)
                                                           H.td ! A.class_ "annotation"  ! A.colspan "3" $ s'
                                                 cs'
 
@@ -183,7 +184,7 @@ instance Htmlize (Definition Type') where
                                     H.tr $ H.td ! A.colspan "4" 
                                                 ! A.class_ "caption" 
                                                 $ do H.a ! A.href "" 
-                                                         $ string $ show (name x)
+                                                         $ string $ show' (name x)
                                                      nbsp
                                                      mconcat (L.intersperse nbsp (variables $ kind $ structure x))
                                                      " :: "
@@ -209,7 +210,7 @@ instance Htmlize (Definition Class') where
                                     H.tr $ H.td ! A.colspan "3" 
                                                 ! A.class_ "caption" 
                                                 $ do H.a ! A.href "" 
-                                                         $ H.span ! A.class_ "class" $ string $ show (name x)
+                                                         $ H.span ! A.class_ "class" $ string $ show' (name x)
                                                      nbsp
                                                      mconcat (L.intersperse nbsp (variables $ kind $ structure x))
                                     H.tr $ H.td ! A.colspan "3" ! A.class_ "constraints" $ constraints'
@@ -232,7 +233,7 @@ metaPart x s = do author'              <- case author x of
                     H.div ! A.id "meta" $ do
                       H.h1 "Meta"
                       H.table $ do H.tr $ do H.td "Name"
-                                             H.td ! A.class_ "type" $ string $ show $ name x
+                                             H.td ! A.class_ "type" $ string $ show' $ name x
                                    H.tr $ do H.td "UUID"
                                              H.td $ string $ show (identifier x)
                                    H.tr $ do H.td "Author"

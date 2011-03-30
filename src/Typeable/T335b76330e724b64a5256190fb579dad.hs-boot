@@ -1,0 +1,24 @@
+{-# OPTIONS -XEmptyDataDecls #-}
+{-# OPTIONS -XKindSignatures #-}
+{-# OPTIONS -XNoImplicitPrelude #-}
+{-# OPTIONS -XFlexibleContexts #-}
+{-# OPTIONS -XUndecidableInstances #-}
+{-# OPTIONS -XStandaloneDeriving #-}
+module Typeable.T335b76330e724b64a5256190fb579dad where
+import Prelude
+       (fromInteger, return, fail, undefined, (>>=), (>>), (==))
+import qualified Prelude
+import qualified Data.Binary
+import qualified Data.Binary.Put
+import qualified Data.Binary.Get
+import qualified Typeable.Internal.EBF
+ 
+data Authority
+ 
+instance Prelude.Eq Authority
+ 
+instance Prelude.Ord Authority
+ 
+instance Prelude.Show Authority
+ 
+instance Typeable.Internal.EBF.EBF Authority

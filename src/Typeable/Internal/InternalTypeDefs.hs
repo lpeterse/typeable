@@ -2,13 +2,15 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Typeable.Internal.InternalTypeDefs where
 
+import Typeable.T6716d098a58743379e54c12f249cdc0c --LatinAlphabet
+import Typeable.Tff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
 
 import Data.Word
 import Data.LargeWord
 import GHC.Real
 import Numeric
 import Data.String
-import Data.Text
+import Data.Text (Text)
 import Data.Map
 import Data.Set
 import qualified Data.Set as S
@@ -143,7 +145,7 @@ data Person = Person    { personName :: String
 data Definition a = Definition
                     { identifier       :: UUID
                     , antecedent       :: Maybe UUID
-                    , name             :: UpperDesignator
+                    , name             :: Designator
                     , creationTime     :: Time UTC 
                     , modificationTime :: Time UTC
                     , author           :: Maybe Person
@@ -165,21 +167,21 @@ data (PeanoNumber k) => Class' k = Class'
                         deriving (Eq, Ord, Show)
 
 data (PeanoNumber k) => Method k = Method
-                        { methodName      :: LowerDesignator
+                        { methodName      :: Designator
                         , methodSignature :: Type k
                         , mehtodSemantics :: Annotation k
                         }
                         deriving (Eq, Ord, Show)
 
 data (PeanoNumber k) => Constructor k = Constructor
-                        { constructorName      :: UpperDesignator
+                        { constructorName      :: Designator
                         , constructorSemantics :: Annotation k
                         , constructorFields    :: [Field k] 
                         }
                         deriving (Eq, Ord, Show)
 
 data (PeanoNumber k) => Field k = Field
-                        { fieldName      :: LowerDesignator
+                        { fieldName      :: Designator
                         , fieldSemantics :: Annotation k
                         , fieldType      :: Type k
                         }
@@ -188,45 +190,6 @@ data (PeanoNumber k) => Field k = Field
 data (PeanoNumber k) => Annotation k = Plain Text
                         deriving (Eq, Ord, Show)
  
-data LatinAlphabet = A
-                   | B
-                   | C
-                   | D
-                   | E
-                   | F
-                   | G
-                   | H
-                   | I
-                   | J
-                   | K
-                   | L
-                   | M
-                   | N
-                   | O
-                   | P
-                   | Q
-                   | R
-                   | S
-                   | T
-                   | U
-                   | V
-                   | W
-                   | X
-                   | Y
-                   | Z
-                   deriving (Eq, Ord, Enum, Show)
-
-data DecimalAlphabet = Zero
-                     | One
-                     | Two
-                     | Three
-                     | Four
-                     | Five
-                     | Six
-                     | Seven
-                     | Eight
-                     | Nine
-                     deriving (Eq, Ord, Enum, Show)
 
 data (PeanoNumber a) => Binding a b c = Bind { associated :: b, bound :: (Binding (Succ a) b c) }
                                       | Expression { expression :: c a }
@@ -238,44 +201,30 @@ data Symbol = Lower   LatinAlphabet
             | Prime
             deriving (Eq, Ord, Show)
 
-data LowerDesignator = LowerDesignator LatinAlphabet [Symbol] deriving (Eq, Ord)
-data UpperDesignator = UpperDesignator LatinAlphabet [Symbol] deriving (Eq, Ord)
-
-show' :: [Symbol] -> String
-show' []              = []
-show' (Underscore:xs) = '_':(show' xs)
-show' (Prime     :xs) = '\'':(show' xs)
-show' (Lower a   :xs) = (chr $ (fromEnum a)+97):(show' xs)
-show' (Upper a   :xs) = (chr $ (fromEnum a)+65):(show' xs)
-show' (Decimal a :xs) = (chr $ (fromEnum a)+48):(show' xs)
-
-data Namespace = Namespace {
-                             nstypes      :: S.Set UUID
-                            ,nsclasses    :: S.Set UUID
-                            ,subspaces    :: M.Map UpperDesignator Namespace
-                           } deriving (Eq, Show)
-                           
-
-instance Show LowerDesignator where
-  show (LowerDesignator a xs) = (chr $ (fromEnum a)+97):(show' xs)
-
-instance Show UpperDesignator where
-  show (UpperDesignator a xs) = (chr $ (fromEnum a)+65):(show' xs)
+data Designator = Designator LatinAlphabet [Symbol] deriving (Eq, Ord, Show)
 
 
-instance IsString LowerDesignator where
-  fromString []     = error "LowerDesignator must consist of at least one lower letter."
-  fromString (x:xs) | i < 97 || i > 122 = error $ "Character '"++(show x)++"' is not a lowercase letter."
-                    | otherwise         = LowerDesignator (toEnum $ i-97) (fromString xs)  
+class (Show a) => Show' a where
+  show' :: a -> String
+  show'  = show
+
+instance Show' [Symbol] where
+  show' []              = []
+  show' (Underscore:xs) = '_':(show' xs)
+  show' (Prime     :xs) = '\'':(show' xs)
+  show' (Lower a   :xs) = (chr $ (fromEnum a)+97):(show' xs)
+  show' (Upper a   :xs) = (chr $ (fromEnum a)+65):(show' xs)
+  show' (Decimal a :xs) = (chr $ (fromEnum a)+48):(show' xs)
+
+instance Show' Designator where
+  show' (Designator a xs) = (chr $ (fromEnum a)+65):(show' xs)
+
+instance IsString Designator where
+  fromString []     = error "Designator must consist of at least one letter."
+  fromString (x:xs) | i < 97 || i > 122 = error $ "Character '"++(show x)++"' is not a letter."
+                    | otherwise         = Designator (toEnum $ i-97) (fromString xs)  
                     where 
-                      i = fromEnum x
-
-instance IsString UpperDesignator where
-  fromString []     = error "UpperDesignator must consist of at least one upper letter."
-  fromString (x:xs) | i < 65 || i > 90  = error $ "Character '"++(show x)++"' is not an upperrcase letter."
-                    | otherwise         = UpperDesignator (toEnum $ i-65) (fromString xs)  
-                    where 
-                      i = fromEnum x
+                      i = fromEnum (toLower x)
 
 instance IsString [Symbol] where
   fromString []        = []
@@ -287,3 +236,9 @@ instance IsString [Symbol] where
                        | otherwise           = error $ "Character '"++(show x)++"' is not allowed here.'"
                        where i = fromEnum x
 
+data Namespace = Namespace {
+                             nstypes      :: S.Set UUID
+                            ,nsclasses    :: S.Set UUID
+                            ,subspaces    :: M.Map Designator Namespace
+                           } deriving (Eq, Show)
+                           

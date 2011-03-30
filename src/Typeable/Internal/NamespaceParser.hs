@@ -20,19 +20,12 @@ lineEnd   :: Parser String
 lineEnd    = anyChar `manyTill` (eof <|> (char '\n' >> return ())) 
 
 
-upperDesignator :: Perser UpperDesignator
-upperDesignator = do
-                    initial <- upper     
-                    rest <- many $ choice [alphaNum, char '_']  
-                    return $ fromString (initial:rest)
+designator :: Perser Designator
+designator = do
+               initial <- upper     
+               rest <- many $ choice [alphaNum, char '_', char '\'']  
+               return $ fromString (initial:rest)
                          
-lowerDesignator :: Perser LowerDesignator
-lowerDesignator = do
-                    initial <- lower     
-                    rest <- many $ choice [alphaNum, char '_']  
-                    return $ fromString (initial:rest)                         
-
-
 parseUUID :: Perser UUID
 parseUUID = do
               uuid' <- count 32 hexDigit
@@ -53,7 +46,7 @@ parseClass n = do
                  return n {nsclasses = S.insert uuid (nsclasses n)}             
 
 parseSubnamespace   :: Int -> Namespace -> Perser Namespace
-parseSubnamespace i n = do ud <- upperDesignator
+parseSubnamespace i n = do ud <- designator
                            lineEnd
                            s  <- fillNamespace (i+2) $ Namespace {nstypes = S.empty, nsclasses = S.empty, subspaces = M.empty}
                            return n {subspaces = M.insert ud s $ subspaces n}

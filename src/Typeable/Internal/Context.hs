@@ -25,9 +25,9 @@ getType u = ask >>= return . (M.lookup u) . typeMap
 instance HumanReadable UUID where
   humanify x = do s <- ask 
                   return $ case M.lookup x (typeMap s) of
-                             Just a  -> show $ name a
+                             Just a  -> show' $ name a
                              Nothing -> case M.lookup x (classMap s) of
-                                          Just b  -> show $ name b
+                                          Just b  -> show' $ name b
                                           Nothing -> show x 
 
 class HumanReadable a where
