@@ -13,6 +13,7 @@ import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
 import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
 import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
+import qualified Typeable.T3819884685d34bf19b3469304e15983d as Person
 
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
@@ -33,7 +34,7 @@ import qualified Data.Text            as T
 import qualified Data.ByteString.Lazy as BS
 
 import Typeable.Internal.Context
-import Typeable.Internal.InternalTypeDefs
+import Typeable.Internal.InternalTypeDefs hiding (kind)
 
 encapsulate  :: Html -> Html
 encapsulate t = H.docTypeHtml $ do 
@@ -181,14 +182,14 @@ instance Htmlize a => Htmlize [a] where
   htmlize xs = do xs' <- mapM htmlize xs
                   return $ mconcat xs'
 
-instance Htmlize Person where
-  htmlize x  = return $ string $ personName x
+instance Htmlize Person.Person where
+  htmlize x  = return $ text $ Person.name x
 
 instance Htmlize T.Text where
   htmlize = return . text
 
-instance Htmlize (Definition Type') where
-  htmlize x  = do (semantics', constraints', constructors') <- toHtml (structure x)
+instance Htmlize (Definition Type) where
+  htmlize x  = do (semantics', constructors') <- toHtml (structure x)
                   kind' <- htmlize $ kind $ structure x
                   mp                                        <- metaPart x semantics'
                   return $     do mp
@@ -201,20 +202,17 @@ instance Htmlize (Definition Type') where
                                                      mconcat (L.intersperse nbsp (variables $ kind $ structure x))
                                                      " :: "
                                                      kind'
-                                    H.tr $ H.td ! A.colspan "4" ! A.class_ "constraints" $ constraints'
                                     constructors'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Type' -> Context m (Html, Html, Html)
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Type -> Context m (Html, Html)
       toHtml (Expression x) = do a  <- htmlize $ semantics x 
-                                 bs <- mapM htmlize $ S.toList $ constraints x
-                                 let b = mconcat $ L.intersperse (string "|") bs
                                  c  <- case constructors x of
                                          Nothing -> return $ H.tr $ H.td ! A.colspan "4" $ "This is an abstract type. Its possible values are described above."
                                          Just y  -> htmlize y
-                                 return (a,b,c)
+                                 return (a,c)
       toHtml (Bind _ x)     = toHtml x
 
-instance Htmlize (Definition Class') where
+instance Htmlize (Definition Class) where
   htmlize x  = do (semantics', constraints', methods') <- toHtml (structure x)
                   mp <- metaPart x semantics'
                   return $     do mp
@@ -228,7 +226,7 @@ instance Htmlize (Definition Class') where
                                     H.tr $ H.td ! A.colspan "3" ! A.class_ "constraints" $ constraints'
                                     methods'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Class' -> Context m (Html, Html, Html)
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Class -> Context m (Html, Html, Html)
       toHtml (Expression x) = do a  <- htmlize $ classSemantics x 
                                  bs <- mapM htmlize $ S.toList $ classConstraints x
                                  let b = mconcat $ L.intersperse (string "|") bs

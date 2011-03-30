@@ -26,12 +26,12 @@ sl = SrcLoc "" 0 0
 importMapping  :: (Monad m) => Context m (M.Map UUID (S.Set UUID))
 importMapping   = getTypes >>= return . M.map imports 
                   where
-                    imports                       :: Definition Type' -> S.Set UUID
+                    imports                       :: Definition Type -> S.Set UUID
                     imports                        = imports' . structure
-                    imports'                      :: (PeanoNumber a) => Binding a b Type' -> S.Set UUID
+                    imports'                      :: (PeanoNumber a) => Binding a b Type -> S.Set UUID
                     imports' (Bind _ x)            = imports'  x
                     imports' (Expression x)        = imports''  x
-                    imports''                     :: (PeanoNumber a) => Type' a -> S.Set UUID
+                    imports''                     :: (PeanoNumber a) => Type a -> S.Set UUID
                     imports'' x                    = case constructors x of
                                                        Nothing -> S.empty
                                                        Just cs -> foldr (S.union . imports''') S.empty cs
@@ -44,19 +44,19 @@ importMapping   = getTypes >>= return . M.map imports
                     imports''''' (Application a b) = imports''''' a `S.union` imports''''' b
                     imports'''''  _                = S.empty
 
-constructorCount :: Definition Type' -> Maybe Int
+constructorCount :: Definition Type -> Maybe Int
 constructorCount  = f . structure
                     where
-                      f :: (PeanoNumber a) => Binding a b Type' -> Maybe Int
+                      f :: (PeanoNumber a) => Binding a b Type -> Maybe Int
                       f (Bind _ x)     = f x
                       f (Expression x) = case constructors x of
                                            Nothing -> Nothing
                                            Just cs -> Just $ length cs
 
-nonNullaryConstructors :: Definition Type' -> Bool
+nonNullaryConstructors :: Definition Type -> Bool
 nonNullaryConstructors  = f . structure
                     where
-                      f :: (PeanoNumber a) => Binding a b Type' -> Bool
+                      f :: (PeanoNumber a) => Binding a b Type -> Bool
                       f (Bind _ x)     = f x
                       f (Expression x) = case constructors x of
                                            Nothing -> False
@@ -64,7 +64,7 @@ nonNullaryConstructors  = f . structure
                       g :: (PeanoNumber a) => Constructor a -> Bool
                       g = not . null . constructorFields
 
-typeModule  :: (Monad m) => Bool -> Definition Type' -> Context m Module
+typeModule  :: (Monad m) => Bool -> Definition Type -> Context m Module
 typeModule b x 
              = do dd      <- dataDecl b x
                   iEq     <- instanceOf (Qual (ModuleName "Prelude") (Ident "Eq"))   [Symbol "=="]                                                   b dd
@@ -126,7 +126,7 @@ variables  = f 0
                k K.KindStar          = KindStar
                k (K.KindApplication x y) = KindFn (k x) (k y)
 
-dataDecl                   :: (Monad m) => Bool -> Definition Type' -> Context m Decl
+dataDecl                   :: (Monad m) => Bool -> Definition Type -> Context m Decl
 dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Name
                                  cs <- dataConstructors (structure t)
                                  return $ DataDecl 
@@ -138,7 +138,7 @@ dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Na
                                             (if not b then cs else [])
                                             []
 
-dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a K.Kind Type' -> Context m [QualConDecl]
+dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a K.Kind Type -> Context m [QualConDecl]
 dataConstructors (Bind _ x)         = dataConstructors x
 dataConstructors (Expression x)     = case constructors x of
                                         Nothing -> fail "cannot haskellize abstract type"

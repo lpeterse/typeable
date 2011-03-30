@@ -16,7 +16,7 @@ import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Ratio
 
-dt :: Definition Type'
+dt :: Definition Type
 dt  = Definition 
         { identifier       = undefined
         , antecedent       = Nothing
@@ -28,7 +28,7 @@ dt  = Definition
         , structure        = v0 dt'  
         }
 
-dt' = Type' { semantics = "", constraints = S.empty, constructors = Nothing }
+dt' = Type { semantics = "", constructors = Nothing }
 
 defaultConstructor :: forall a. PeanoNumber a => Constructor a
 defaultConstructor  = Constructor {
@@ -58,7 +58,7 @@ defaultField''  = defaultField
 defaultField''' :: Field (Succ (Succ (Succ Zero)))
 defaultField'''  = defaultField
 
-types  :: [Definition Type']
+types  :: [Definition Type]
 types   = [  t1
            , t2
            , t3
@@ -183,7 +183,7 @@ t57      = dt {
              identifier   = "9e2e1e47-8e09-4a8a-be55-07f8574ac91f"
            , author       = Just personLars
            , name         = "Succ"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "Counting in the peano sense. Interpreted as a set it is the set that contains n ordinal numbers."
            , constructors = Just [
                                    defaultConstructor { constructorName   = "First" }
@@ -463,7 +463,7 @@ t46      = dt {
 t47      = dt {
              identifier   = "2a94a7a8d4e049759d8dd546e72293ff"
            , name         = "Constraint"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = ""
            , constructors = Just [
                                    defaultConstructor'  
@@ -488,7 +488,7 @@ t47      = dt {
 t2       = dt {
              identifier   = "0ba85f3f10099c75d4b696d0cf944e09"
            , name         = "List"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "This is the default type for listing something. The order of elements matters and elements may occur more than once."
            , constructors = Just [
                                    defaultConstructor'
@@ -519,7 +519,7 @@ t43       = dt {
              identifier   = "b0221a43-509e-4edd-b062-101bfd794bc4"
            , author       = Just personLars
            , name         = "StructuredText"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "A Markup format."
            , constructors = Just [ 
                                    defaultConstructor
@@ -617,7 +617,7 @@ t44       = dt {
              identifier   = "37c8a341f0b34cc6bbbc9f2403f09be3"
            , author       = Just personLars
            , name         = "Constructor"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "A value constructor."
            , constructors = Just [ defaultConstructor 
                                    { constructorName      = "Constructor"
@@ -651,7 +651,7 @@ t51      = dt {
              identifier   = "205895c8-d2df-475b-8d5e-ad5ee33d9f63"
            , author       = Just personLars
            , name         = "Field"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = ""
            , constructors = Just [ defaultConstructor 
                                    { constructorName      = "Field"
@@ -687,7 +687,7 @@ t95      = dt {
              identifier   = "451f847e1cb642d0b7c5dbdfa03f41b5"
            , author       = Just personLars
            , name         = "Definition"
-           , structure    = v1' (KindApplication KindStar KindStar)  $ (dt' :: Type' (Succ Zero))
+           , structure    = v1' (KindApplication KindStar KindStar)  $ (dt' :: Type (Succ Zero))
            { constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Definition"
@@ -749,7 +749,7 @@ t42      = dt {
              identifier   = "3e815311-18e1-4888-be21-de7921b15bb5"
            , author       = Just personLars
            , name         = "Type"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "This is the datatype the whole system relies on :-)"
            , constructors = Just [
                                    defaultConstructor' 
@@ -797,7 +797,7 @@ t80      = dt {
              identifier   = "4e0b8f8e-a2b1-4522-8fa4-ec74b559bf6a"
            , author       = Just personLars
            , name         = "Class"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Class"
@@ -839,7 +839,7 @@ t85       = dt {
               identifier   = "53e0d483a64144259dce752799d64305"
             , author       = Just personLars
             , name         = "ContactInformation"
-            , structure    = v0 $ (dt' :: Type' Zero)
+            , structure    = v0 $ (dt' :: Type Zero)
             { constructors = Just [
                                     (defaultConstructor :: Constructor Zero)
                                     { constructorName      = "Email"
@@ -941,7 +941,7 @@ t41       = dt {
              identifier   = "0174bd22-6400-4820-bfe3-4e211cb35a7d"
            , author       = Just personLars
            , name         = "DataType"
-           , structure    =  v1 $ (dt' :: Type' (Succ Zero))
+           , structure    =  v1 $ (dt' :: Type (Succ Zero))
            { semantics    = ""
            , constructors = Just [
                                    defaultConstructor'  
@@ -1302,7 +1302,7 @@ t92       = dt
             { identifier    = "be46fbdd-7467-43fe-9ef3-9717c30b21fb"
             , name          = "Application"
             , author        = Just personLars
-            , structure     = v2 $ (dt' :: Type' (Succ (Succ Zero)))
+            , structure     = v2 $ (dt' :: Type (Succ (Succ Zero)))
             { semantics     = "The concrete kind."
             , constructors  = Just [ 
                                      defaultConstructor''
@@ -1549,7 +1549,7 @@ t40       = dt {
              identifier   = "606f2535-33d3-420d-a346-5afae341d598"
            , author       = Just personMikael
            , name         = "Time"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "This type is used for noting a point in time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
            , constructors = Just [
                                   defaultConstructor 
@@ -1570,7 +1570,7 @@ t50       = dt {
              identifier   = "b6831ec097f14b8eba74b1e486b4175d"
            , author       = Just personLars
            , name         = "Date"
-           , structure    = v1 $ (dt' :: Type' (Succ Zero))
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "This type is used for noting a day time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
            , constructors = Just [
                                   defaultConstructor' 

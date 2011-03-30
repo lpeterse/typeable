@@ -18,7 +18,7 @@ import qualified Data.Map as M
 -- class-definitions (provisoric for as long as the binary format is not yet finalised)
 --
 
-classes :: [Definition Class']
+classes :: [Definition Class]
 classes = [
             c1  -- Eq
           , c2  -- Kind
@@ -34,7 +34,7 @@ classes = [
           , c12 -- Show
           ]
 
-dc :: Definition Class'
+dc :: Definition Class
 dc  = Definition 
         { identifier       = undefined
         , antecedent       = Nothing
@@ -46,8 +46,8 @@ dc  = Definition
         , structure        = v1 dc'  
         }
 
-dc' :: Class' (Succ Zero)
-dc' = Class' { classSemantics = "", classConstraints = S.empty, classMethods = [] }
+dc' :: Class (Succ Zero)
+dc' = Class { classSemantics = "", classConstraints = S.empty, classMethods = [] }
 
 ----
 
