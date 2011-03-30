@@ -1,6 +1,8 @@
 {-# OPTIONS -XFlexibleContexts -XFlexibleInstances -XMultiParamTypeClasses -XGeneralizedNewtypeDeriving #-}
 module Typeable.Internal.Context where
 
+import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
+
 import Typeable.Internal.InternalTypeDefs
 import qualified Data.Map as M
 import Control.Monad.Reader
@@ -28,7 +30,7 @@ instance HumanReadable UUID where
                              Just a  -> show' $ name a
                              Nothing -> case M.lookup x (classMap s) of
                                           Just b  -> show' $ name b
-                                          Nothing -> show x 
+                                          Nothing -> show' x 
 
 class HumanReadable a where
   humanify :: (Monad m) => a -> Context m String

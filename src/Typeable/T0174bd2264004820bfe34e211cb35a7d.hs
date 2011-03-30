@@ -18,7 +18,7 @@ import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
 import qualified Typeable.T346674042a7248b4a94abff0726d0c43
 import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f
  
-data DataType (a :: *) = DataType{typeRef ::
+data DataType (a :: *) = DataType{reference ::
                                   Typeable.T346674042a7248b4a94abff0726d0c43.UUID}
                        | Variable{variable :: a}
                        | Application{function ::

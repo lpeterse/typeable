@@ -2,6 +2,8 @@
 {-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances #-}
 module Main where
 
+import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
+
 import Happstack.Server hiding (serveFile)
 import Happstack.Server.FileServe
 import Text.Blaze
@@ -56,26 +58,26 @@ handlers  = [
 serveOverview :: ServerPartT IO Response
 serveOverview = runC (htmlize namespace) >>= ok . toResponse . encapsulate 
 
-listTypes    = ok $ toResponse $ unlines $ map show $ M.keys (typeMap static)
-listClasses  = ok $ toResponse $ unlines $ map show $ M.keys (classMap static)
+listTypes    = ok $ toResponse $ unlines $ map show' $ M.keys (typeMap static)
+listClasses  = ok $ toResponse $ unlines $ map show' $ M.keys (classMap static)
 
 serveType :: UUID -> ServerPartT IO Response
 serveType uuid = case M.lookup uuid (typeMap static) of
                    Just t  -> do msum [ withDataFn (look "format") $ \x -> case x of
                                                                             "haskell" -> msum [ serveFile
                                                                                                   (asContentType "text/plain")
-                                                                                                  ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs") 
+                                                                                                  ("static"</>"exports"</>"haskell"</>"T"++(show' uuid)<.>"hs") 
                                                                                               , runC (typeModule False t) >>= ok . toResponse 
                                                                                               ]
                                                                             "haskell-boot" -> msum [ serveFile
                                                                                                   (asContentType "text/plain")
-                                                                                                  ("static"</>"exports"</>"haskell"</>"T"++(show uuid)<.>"hs-boot") 
+                                                                                                  ("static"</>"exports"</>"haskell"</>"T"++(show' uuid)<.>"hs-boot") 
                                                                                               , runC (typeModule True t) >>= ok . toResponse 
                                                                                               ]
                                                                             _         -> mempty
                                       , runC (htmlize t) >>= ok . toResponse . encapsulate
                                       ]
-                   Nothing -> notFound $ toResponse ((show uuid)++" does not exist.") 
+                   Nothing -> notFound $ toResponse ((show' uuid)++" does not exist.") 
 
 serveClass = serveType
 

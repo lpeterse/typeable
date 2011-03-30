@@ -13,10 +13,10 @@ import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Typeable.Internal.EBF
  
-data Kind = Type{}
-          | Application{function ::
-                        Typeable.T1660b01f08dc4aedbe4c0941584541cb.Kind,
-                        argument :: Typeable.T1660b01f08dc4aedbe4c0941584541cb.Kind}
+data Kind = KindStar{}
+          | KindApplication{function ::
+                            Typeable.T1660b01f08dc4aedbe4c0941584541cb.Kind,
+                            argument :: Typeable.T1660b01f08dc4aedbe4c0941584541cb.Kind}
  
 deriving instance Prelude.Eq Kind
  
@@ -28,13 +28,13 @@ instance Typeable.Internal.EBF.EBF Kind where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> return Type
+                   0 -> return KindStar
                    1 -> (>>=) Typeable.Internal.EBF.get
                           (\ a0 ->
                              (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (Application a0 a1)))
-        put Type = do Data.Binary.Put.putWord8 0
-        put (Application a b)
+                               (\ a1 -> return (KindApplication a0 a1)))
+        put KindStar = do Data.Binary.Put.putWord8 0
+        put (KindApplication a b)
           = do Data.Binary.Put.putWord8 1
                Typeable.Internal.EBF.put a
                Typeable.Internal.EBF.put b

@@ -3,10 +3,16 @@
 
 module Typeable.Internal.FormatHtml where
 
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
+import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import Typeable.Tb0221a43509e4eddb062101bfd794bc4 --StructuredText
 import Typeable.T2c62454c586f4bdea5e2b17e432db245 (Extension) --Extension 
 import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
 import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068 as TE --TextElement
+import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
+import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
+import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
+import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
 
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
@@ -45,15 +51,15 @@ encapsulate t = H.docTypeHtml $ do
 
 nbsp = preEscapedString "&nbsp;"
 
-kind               :: (PeanoNumber a) => Binding a Kind' c -> Kind'
-kind (Expression _) = Concrete'
-kind (Bind k x    ) = Application' k (kind x) 
+kind               :: (PeanoNumber a) => Binding a K.Kind c -> K.Kind
+kind (Expression _) = K.KindStar
+kind (Bind k x    ) = K.KindApplication k (kind x) 
                               
-variables          :: Kind' -> [Html]
+variables          :: K.Kind -> [Html]
 variables x         = f 0 x
                       where
-                        f _ Concrete'          = []
-                        f n (Application' k y) = ( H.span ! A.class_ "variable bound"
+                        f _ K.KindStar          = []
+                        f n (K.KindApplication k y) = ( H.span ! A.class_ "variable bound"
                                                           ! A.title  (stringValue $ show k)
                                                           $ string [toEnum ((fromEnum 'a') + n)]
                                                  ):( 
@@ -63,18 +69,18 @@ variables x         = f 0 x
 class Htmlize a where
   htmlize :: (Monad m) => a -> (Context m Html)
 
-instance Htmlize Kind' where
+instance Htmlize K.Kind where
   htmlize = htmlize' False
     where
-      htmlize' _     Concrete'          = return "\x2605" 
+      htmlize' _     K.KindStar          = return "\x2605" 
       htmlize' True  x                  = htmlize' False x >>= \y-> return $ do "("
                                                                                 y
                                                                                 ")"
-      htmlize' False (Application' a b) = do a' <- htmlize' True  a
-                                             b' <- htmlize' False b
-                                             return $ do a'
-                                                         "\x202f\x2192\x202f"
-                                                         b'
+      htmlize' False (K.KindApplication a b) = do a' <- htmlize' True  a
+                                                  b' <- htmlize' False b
+                                                  return $ do a'
+                                                              "\x202f\x2192\x202f"
+                                                              b'
 
 instance Htmlize Zero where
   htmlize = undefined
@@ -86,8 +92,8 @@ instance Htmlize Namespace where
   htmlize x = do ns' <- mapM (htmlize . snd) ns >>= return . zip (map fst ns)
                  ts' <- mapM humanify ts        >>= return . L.sortBy (compare `on` snd) . zip ts
                  cs' <- mapM humanify cs        >>= return . L.sortBy (compare `on` snd) . zip cs
-                 return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show u)) $ H.span ! A.class_ "class" $ string n) cs'
-                                    mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show u))  $ H.span ! A.class_ "type"  $ string n) ts'
+                 return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show' u)) $ H.span ! A.class_ "class" $ string n) cs'
+                                    mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show' u))  $ H.span ! A.class_ "type"  $ string n) ts'
                                     mconcat $ map (\(f,s)-> H.li (string (show f) >> s)) ns' 
 
     where
@@ -102,7 +108,7 @@ instance (PeanoNumber k) => Htmlize (StructuredText (Extension k)) where
 instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
                                  i'  <- humanify i
-                                 return $ do H.a ! A.href (stringValue $ "../class/"++(show i)) $ H.span ! A.class_ "class" $ string i'
+                                 return $ do H.a ! A.href (stringValue $ "../class/"++(show' i)) $ H.span ! A.class_ "class" $ string i'
                                              nbsp
                                              ts'
 
@@ -127,18 +133,18 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
                                                           H.td ! A.class_ "annotation"  ! A.colspan "3" $ s'
                                                 cs'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
+instance (PeanoNumber k, Htmlize k) => Htmlize (DataType k) where
   htmlize x = htmlize' x False
     where 
-      htmlize' (DataType i) _ = humanify i >>= return . (H.a ! A.href (stringValue $ show i)) . string
+      htmlize' (DataType i) _ = humanify i >>= return . (H.a ! A.href (stringValue $ show' i)) . string
       htmlize' (Variable v) _ = htmlize v
-      htmlize' (Forall t)   _ = do let vs = domain :: [k] 
-                                   t' <- htmlize t 
-                                   v' <- htmlize (Next $ last vs :: (Succ k))
-                                   return $ do "\x2200"
-                                               v'
-                                               nbsp
-                                               t'
+      htmlize' (Forall _ t)   _ = do let vs = domain :: [k] 
+                                     t' <- htmlize t 
+                                     v' <- htmlize (Next $ last vs :: (Succ k))
+                                     return $ do "\x2200"
+                                                 v'
+                                                 nbsp
+                                                 t'
       htmlize' (Application
                  (Application 
                    (DataType (UUID 107557859644440974686449305308309621121)) 
@@ -153,13 +159,13 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
                                                t2'
                                                if w then ")" else ""
       htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
-                                                                                              return $ do H.a ! A.href (stringValue $ show $ typeRef t1) $ "["
+                                                                                              return $ do H.a ! A.href (stringValue $ show' $ reference t1) $ "["
                                                                                                           t2'
-                                                                                                          H.a ! A.href (stringValue $ show $ typeRef t1) $ "]"
+                                                                                                          H.a ! A.href (stringValue $ show' $ reference t1) $ "]"
                                      | t1 == DataType "7af30cce93724981a16a80f3f193dc33" = do t2' <- htmlize t2
-                                                                                              return $ do H.a ! A.href (stringValue $ show $ typeRef t1) $ "{"
+                                                                                              return $ do H.a ! A.href (stringValue $ show' $ reference t1) $ "{"
                                                                                                           t2'
-                                                                                                          H.a ! A.href (stringValue $ show $ typeRef t1) $ "}"
+                                                                                                          H.a ! A.href (stringValue $ show' $ reference t1) $ "}"
                                      | otherwise = do t1' <- htmlize' t1 False
                                                       t2' <- htmlize' t2 True
                                                       return $ do if w then string "(" else mempty
@@ -169,7 +175,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Type k) where
                                                                   if w then string ")" else mempty
 
 instance Htmlize UUID where
-  htmlize x = return $ H.a ! A.href (stringValue $ (show x)) ! A.class_ "fixedwidth" $ string (show x)
+  htmlize x = return $ H.a ! A.href (stringValue $ (show' x)) ! A.class_ "fixedwidth" $ string (show' x)
 
 instance Htmlize a => Htmlize [a] where
   htmlize xs = do xs' <- mapM htmlize xs
@@ -198,7 +204,7 @@ instance Htmlize (Definition Type') where
                                     H.tr $ H.td ! A.colspan "4" ! A.class_ "constraints" $ constraints'
                                     constructors'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a Kind' Type' -> Context m (Html, Html, Html)
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Type' -> Context m (Html, Html, Html)
       toHtml (Expression x) = do a  <- htmlize $ semantics x 
                                  bs <- mapM htmlize $ S.toList $ constraints x
                                  let b = mconcat $ L.intersperse (string "|") bs
@@ -222,7 +228,7 @@ instance Htmlize (Definition Class') where
                                     H.tr $ H.td ! A.colspan "3" ! A.class_ "constraints" $ constraints'
                                     methods'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a Kind' Class' -> Context m (Html, Html, Html)
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Class' -> Context m (Html, Html, Html)
       toHtml (Expression x) = do a  <- htmlize $ classSemantics x 
                                  bs <- mapM htmlize $ S.toList $ classConstraints x
                                  let b = mconcat $ L.intersperse (string "|") bs
@@ -241,19 +247,19 @@ metaPart x s = do author'              <- case author x of
                       H.table $ do H.tr $ do H.td "Name"
                                              H.td ! A.class_ "type" $ string $ show' $ name x
                                    H.tr $ do H.td "UUID"
-                                             H.td $ string $ show (identifier x)
+                                             H.td $ string $ show' (identifier x)
                                    H.tr $ do H.td "Author"
                                              H.td author'
                                    H.tr $ do H.td "Maintainer"
                                              H.td maintainer' 
                                    H.tr $ do H.td "Created"
-                                             H.td (string $ show (creationTime x))
+                                             H.td (string $ show' (creationTime x))
                                    H.tr $ do H.td "Modified"
-                                             H.td (string $ show (modificationTime x))
+                                             H.td (string $ show' (modificationTime x))
                     H.div ! A.id "exports" $ do
                       H.h1 "Export"
-                      H.ul $ do H.li $ H.a ! A.href (stringValue ((show (identifier x)) ++ "?format=haskell")) $ "Haskell" 
-                                H.li $ H.a ! A.href (stringValue ((show (identifier x)) ++ "?format=haskell-boot")) $ "Haskell-Boot" 
+                      H.ul $ do H.li $ H.a ! A.href (stringValue ((show' (identifier x)) ++ "?format=haskell")) $ "Haskell" 
+                                H.li $ H.a ! A.href (stringValue ((show' (identifier x)) ++ "?format=haskell-boot")) $ "Haskell-Boot" 
                     H.div ! A.id "description" $ do
                       H.h1 "Description"
                       H.div ! A.class_ "annotation" $ s

@@ -1,6 +1,7 @@
 module Typeable.Internal.NamespaceParser where
 
 import Typeable.T9790ade9814a4aaca5eaa80c3e47685d -- Designator
+import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 
 import qualified Data.Set as S
 import qualified Data.Map as M

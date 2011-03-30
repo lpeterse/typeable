@@ -1,6 +1,12 @@
 {-# OPTIONS -XFlexibleContexts -XScopedTypeVariables #-}
 module Typeable.Internal.FormatHaskell where
 
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
+import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
+import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
+import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
+import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
+
 import Data.List
 import Data.String
 import Data.Char
@@ -33,7 +39,7 @@ importMapping   = getTypes >>= return . M.map imports
                     imports'''                     = (foldr (S.union . imports'''') S.empty) . constructorFields
                     imports''''                   :: (PeanoNumber a) => Field a -> S.Set UUID
                     imports''''                    = imports''''' . fieldType
-                    imports'''''                  :: (PeanoNumber a) => Type a -> S.Set UUID
+                    imports'''''                  :: (PeanoNumber a) => DataType a -> S.Set UUID
                     imports''''' (DataType u)      = S.singleton u
                     imports''''' (Application a b) = imports''''' a `S.union` imports''''' b
                     imports'''''  _                = S.empty
@@ -70,7 +76,7 @@ typeModule b x
                   im <- importMapping
                   let impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
                   let imps2  = [ let s = identifier x `S.member` runGraph (successorsToDepth 5 z) im
-                                 in  ImportDecl sl (ModuleName $ "Typeable.T"++(show z)) True s Nothing Nothing Nothing   
+                                 in  ImportDecl sl (ModuleName $ "Typeable.T"++(show' z)) True s Nothing Nothing Nothing   
                                | z <- S.toList $ M.findWithDefault S.empty (identifier x) im 
                                , identifier x /= z
                                , not b
@@ -93,7 +99,7 @@ typeModule b x
                               , impDecl (ModuleName "Typeable.Internal.EBF")
                               ]
                   let decls = [dd, iEq, iOrd, iShow, iBinary] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
-                  let mn    = ModuleName $ "Typeable.T"++(show $ identifier x)
+                  let mn    = ModuleName $ "Typeable.T"++(show' $ identifier x)
                   return $ Module
                              sl
                              mn
@@ -111,14 +117,14 @@ typeModule b x
                              (nub $ imps1 ++ imps2)      -- [ImportDecl]
                              decls
 
-variables :: (PeanoNumber a) => Binding a Kind' b -> [TyVarBind]
+variables :: (PeanoNumber a) => Binding a K.Kind b -> [TyVarBind]
 variables  = f 0
              where
-               f                 :: (PeanoNumber a) => Int -> Binding a Kind' b -> [TyVarBind]
+               f                 :: (PeanoNumber a) => Int -> Binding a K.Kind b -> [TyVarBind]
                f n (Bind y x)     = (KindedVar (Ident [toEnum ((fromEnum 'a') + n)]) (k y)):(f (n+1) x)
                f _ (Expression _) = []
-               k Concrete'          = KindStar
-               k (Application' x y) = KindFn (k x) (k y)
+               k K.KindStar          = KindStar
+               k (K.KindApplication x y) = KindFn (k x) (k y)
 
 dataDecl                   :: (Monad m) => Bool -> Definition Type' -> Context m Decl
 dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Name
@@ -132,7 +138,7 @@ dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Na
                                             (if not b then cs else [])
                                             []
 
-dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a Kind' Type' -> Context m [QualConDecl]
+dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a K.Kind Type' -> Context m [QualConDecl]
 dataConstructors (Bind _ x)         = dataConstructors x
 dataConstructors (Expression x)     = case constructors x of
                                         Nothing -> fail "cannot haskellize abstract type"
@@ -157,14 +163,14 @@ dataField x             = do t <- dataType (fieldType x)
 haskape x | x `elem` ["type", "class", "if", "then", "else", "where", "let", "in", "do"] = x++"_"
           | otherwise                                                                    = x
 
-dataType                  :: (PeanoNumber a, Monad m) => Type a -> Context m Syntax.Type
+dataType                  :: (PeanoNumber a, Monad m) => DataType a -> Context m Syntax.Type
 dataType (DataType u)      = do n <- humanify u
-                                return $ TyCon $ Qual (ModuleName $ "Typeable.T" ++ (show u)) (Ident n)
+                                return $ TyCon $ Qual (ModuleName $ "Typeable.T" ++ (show' u)) (Ident n)
 dataType (Variable v)      = return $ TyVar $ Ident [toEnum $ (fromEnum 'a') + (fromEnum v)] 
 dataType (Application f a) = do x <- dataType f
                                 y <- dataType a
                                 return $ TyApp x y
-dataType (Forall c)        = fail "forall not implemented"
+dataType (Forall _ _)      = fail "FormatHaskell.dataType: forall not implemented"
 
 instanceOf cn cms b (DataDecl _ _ _ n vs cs _)
   = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 

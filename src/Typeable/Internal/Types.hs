@@ -2,6 +2,12 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 module Typeable.Internal.Types where
 
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
+import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
+import Typeable.T606f253533d3420da3465afae341d598 --Time
+import Typeable.T1660b01f08dc4aedbe4c0941584541cb --Kind
+import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
+
 import Prelude hiding (maybe)
 
 import Typeable.Internal.TypesDefault
@@ -368,11 +374,11 @@ t97      = dt {
            { semantics    = "Representation of a type's kind."
            , constructors = Just [
                                    defaultConstructor
-                                   { constructorName    = "Type"
+                                   { constructorName    = "KindStar"
                                    , constructorFields  = []
                                    }
                                  , defaultConstructor
-                                   { constructorName    = "Application"
+                                   { constructorName    = "KindApplication"
                                    , constructorFields  = [
                                                             defaultField
                                                             { fieldName = "function"
@@ -681,7 +687,7 @@ t95      = dt {
              identifier   = "451f847e1cb642d0b7c5dbdfa03f41b5"
            , author       = Just personLars
            , name         = "Definition"
-           , structure    = v1' (Application' Concrete' Concrete')  $ (dt' :: Type' (Succ Zero))
+           , structure    = v1' (KindApplication KindStar KindStar)  $ (dt' :: Type' (Succ Zero))
            { constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Definition"
@@ -942,7 +948,7 @@ t41       = dt {
                                    { constructorName      = "DataType"
                                    , constructorSemantics = "References another Datatype by -> UUID."
                                    , constructorFields    = [ defaultField 
-                                                              { fieldName      = "typeRef"
+                                                              { fieldName      = "reference"
                                                               , fieldType      = DataType "346674042a7248b4a94abff0726d0c43"
                                                               }
                                                             ]

@@ -1,6 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Typeable.Internal.Classes where
 
+import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
+import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
+import Typeable.T606f253533d3420da3465afae341d598 --Time
+import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (function) --DataType
+import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
+
 import Prelude hiding (maybe)
 
 import Typeable.Internal.TypesDefault
@@ -184,8 +190,8 @@ c8  = dc
       { classSemantics    = ""
       , classMethods      =            [ Method
                                            "fmap" 
-                                           (Forall $
-                                             Forall $   
+                                           (Forall S.empty $
+                                             Forall S.empty $   
                                                function
                                                  (function (Variable (Next First)) (Variable (Next (Next First))))
                                                  (function
@@ -204,16 +210,16 @@ c9  = dc
       , name         = "Applicative"
       , structure    = v1 $ dc'
       { classSemantics    = ""
-      , classConstraints  = S.fromList [Constraint  "584d85dcf5a144bebf0da92b7a5977a3" [Variable First]]
+      , classConstraints  = S.fromList [Constraint  "584d85dcf5a144bebf0da92b7a5977a3" (Variable First)]
       , classMethods      = [ Method
                                 "pure"
-                                (Forall $
+                                (Forall S.empty $
                                   function (Variable (Next First)) (Application (Variable First) (Variable (Next First)))
                                 )
                                 ""
                             , Method
                                 "sequence"
-                                (Forall $ Forall $
+                                (Forall S.empty $ Forall S.empty $
                                   function 
                                     (Application
                                       (Variable First)
@@ -235,7 +241,7 @@ c10  = dc
       { classSemantics    = ""
       , classMethods      = [ Method
                                 "bind"
-                                (Forall $ Forall $
+                                (Forall S.empty $ Forall S.empty $
                                   function
                                     (Application (Variable First) (Variable (Next First)))
                                     (function 
@@ -249,7 +255,7 @@ c10  = dc
                                 ""
                             , Method
                                 "bind'"
-                                (Forall $ Forall $
+                                (Forall S.empty $ Forall S.empty $
                                   function
                                     (Application (Variable First) (Variable (Next First)))
                                     (function 
@@ -260,7 +266,7 @@ c10  = dc
                                 ""
                             , Method
                                 "return"
-                                (Forall $ 
+                                (Forall S.empty $ 
                                   function
                                     (Variable (Next First))
                                     (Application (Variable First) (Variable (Next First)))
@@ -268,7 +274,7 @@ c10  = dc
                                 ""
                             , Method
                                 "fail"
-                                (Forall $ 
+                                (Forall S.empty $ 
                                   function
                                     (list (DataType "16f4245df3cc0b534f028235ff8aae16"))
                                     (Application (Variable First) (Variable (Next First)))
