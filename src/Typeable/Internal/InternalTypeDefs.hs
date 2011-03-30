@@ -6,6 +6,10 @@ import Typeable.T6716d098a58743379e54c12f249cdc0c --LatinAlphabet
 import Typeable.Tff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet
 import Typeable.T9790ade9814a4aaca5eaa80c3e47685d --Designator
 import Typeable.T1566edb1a4de4aab8106e63293e9bfcf --Symbol
+import Typeable.Tb0221a43509e4eddb062101bfd794bc4 --StructuredText
+import Typeable.T9592f9fa4fae437a9e8d0917c14ff068 --TextElement
+import Typeable.T2c62454c586f4bdea5e2b17e432db245 (Extension) --Extension
+import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
 
 import Data.Word
 import Data.LargeWord
@@ -13,6 +17,7 @@ import GHC.Real
 import Numeric
 import Data.String
 import Data.Text (Text)
+import qualified Data.Text as T
 import Data.Map
 import Data.Set
 import qualified Data.Set as S
@@ -115,9 +120,11 @@ var2String x = [toEnum (97 + fromEnum x)]
 instance IsString UUID where
   fromString = UUID . fromInteger . fst . P.head . readHex . (P.filter isHexDigit)
 
-instance PeanoNumber k => IsString (Annotation k) where
-  fromString [] = Plain ""
-  fromString xs = Plain (fromString xs)
+type Annotation a = StructuredText (Extension a)
+
+instance PeanoNumber k => IsString (StructuredText (Extension k)) where
+  fromString [] = Paragraph M.empty
+  fromString xs = Paragraph $ M.singleton ENG [Plaintext (T.pack xs) False False False False]
 
 data UUID       = UUID Word128 deriving (Eq, Ord)
 
@@ -171,7 +178,7 @@ data (PeanoNumber k) => Class' k = Class'
 data (PeanoNumber k) => Method k = Method
                         { methodName      :: Designator
                         , methodSignature :: Type k
-                        , mehtodSemantics :: Annotation k
+                        , methodSemantics :: Annotation k
                         }
                         deriving (Eq, Ord, Show)
 
@@ -189,22 +196,8 @@ data (PeanoNumber k) => Field k = Field
                         }
                         deriving (Eq, Ord, Show)
 
-data (PeanoNumber k) => Annotation k = Plain Text
-                        deriving (Eq, Ord, Show)
- 
-
 data (PeanoNumber a) => Binding a b c = Bind { associated :: b, bound :: (Binding (Succ a) b c) }
                                       | Expression { expression :: c a }
-
-{-- data Symbol = Lower   LatinAlphabet
-            | Upper   LatinAlphabet
-            | Decimal DecimalAlphabet
-            | Underscore
-            | Prime
-            deriving (Eq, Ord, Show)
-
-data Designator = Designator LatinAlphabet [Symbol] deriving (Eq, Ord, Show)
---}
 
 class (Show a) => Show' a where
   show' :: a -> String

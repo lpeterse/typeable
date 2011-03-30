@@ -16,6 +16,13 @@ class (Ord a) => EBF a where
   put :: a -> B.Put
   get :: B.Get a
 
+instance EBF Bool where
+  put False = BP.putWord8 0
+  put True  = BP.putWord8 1
+  get       = BG.getWord8 >>= \x-> case x of
+                                     0 -> return False
+                                     1 -> return True
+
 instance (EBF a) => EBF [a] where
   put []     = BP.putWord8 1
   put (x:xs) = BP.putWord8 0 >> put x >> put xs 

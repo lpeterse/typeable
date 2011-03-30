@@ -396,7 +396,7 @@ t48      = dt {
            { semantics    = "Used by -> StructuredText."
            , constructors = Just [
                                    defaultConstructor'
-                                   { constructorName    = "Text"
+                                   { constructorName    = "Plaintext"
                                    , constructorFields  = [
                                                             defaultField'
                                                             { fieldName      = "text"

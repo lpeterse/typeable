@@ -3,6 +3,11 @@
 
 module Typeable.Internal.FormatHtml where
 
+import Typeable.Tb0221a43509e4eddb062101bfd794bc4 --StructuredText
+import Typeable.T2c62454c586f4bdea5e2b17e432db245 (Extension) --Extension 
+import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
+import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068 as TE --TextElement
+
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
 import qualified Text.Blaze.Html5 as H
@@ -90,8 +95,9 @@ instance Htmlize Namespace where
       cs = S.toList (nsclasses x)
       ns = M.toList (subspaces x)
 
-instance PeanoNumber k => Htmlize (Annotation k) where
-  htmlize (Plain t)     = return $ text t
+instance (PeanoNumber k) => Htmlize (StructuredText (Extension k)) where
+  htmlize (Paragraph m) = let ls = M.findWithDefault [] ENG m
+                          in  return $  if null ls then "" else string $ show $ TE.text $ head ls
 
 instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
