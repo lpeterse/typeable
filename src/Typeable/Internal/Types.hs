@@ -179,7 +179,6 @@ t57      = dt {
            , name         = "Succ"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = "Counting in the peano sense. Interpreted as a set it is the set that contains n ordinal numbers."
-           , constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor { constructorName   = "First" }
                                  , defaultConstructor { constructorName   = "Next"
@@ -516,7 +515,6 @@ t43       = dt {
            , name         = "StructuredText"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = "A Markup format."
-           , constraints  = S.fromList [Constraint "edba1ef6-3e72-4b61-8256-9040555253a8" [Variable First]]
            , constructors = Just [ 
                                    defaultConstructor
                                    { constructorName   = "Paragraph"
@@ -615,7 +613,6 @@ t44       = dt {
            , name         = "Constructor"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = "A value constructor."
-           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , constructors = Just [ defaultConstructor 
                                    { constructorName      = "Constructor"
                                    , constructorFields    = [
@@ -649,8 +646,7 @@ t51      = dt {
            , author       = Just personLars
            , name         = "Field"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
-           { constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
-           , semantics    = ""
+           { semantics    = ""
            , constructors = Just [ defaultConstructor 
                                    { constructorName      = "Field"
                                    , constructorFields    = [
@@ -749,7 +745,6 @@ t42      = dt {
            , name         = "Type"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = "This is the datatype the whole system relies on :-)"
-           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor' 
                                      { constructorName      = "Type"
@@ -797,8 +792,7 @@ t80      = dt {
            , author       = Just personLars
            , name         = "Class"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
-           { constraints  = S.fromList [Constraint "c6ebaa9f-4cdc-4068-894d-1ffaef5a7a83" [Variable First]]
-           , constructors = Just [
+           { constructors = Just [
                                    defaultConstructor 
                                      { constructorName      = "Class"
                                      , constructorFields    = [   defaultField'
@@ -943,7 +937,6 @@ t41       = dt {
            , name         = "DataType"
            , structure    =  v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = ""
-           , constraints  = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First]]
            , constructors = Just [
                                    defaultConstructor'  
                                    { constructorName      = "DataType"
@@ -1305,7 +1298,6 @@ t92       = dt
             , author        = Just personLars
             , structure     = v2 $ (dt' :: Type' (Succ (Succ Zero)))
             { semantics     = "The concrete kind."
-            , constraints   = S.fromList [Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable First], Constraint "c6ebaa9f4cdc4068894d1ffaef5a7a83" [Variable (Next First)]]
             , constructors  = Just [ 
                                      defaultConstructor''
                                      { constructorName      = "First"
@@ -1498,7 +1490,7 @@ t29       = dt {
                                                                 ,  fieldType = DataType "6716d098-a587-4337-9e54-c12f249cdc0c"  
                                                                  }
                                                          , defaultField {
-                                                                   fieldName = "rest" 
+                                                                   fieldName = "subsequent" 
                                                                 ,  fieldType = list $ DataType "1566edb1-a4de-4aab-8106-e63293e9bfcf"
                                                                  }
                                                          ]
@@ -1513,7 +1505,7 @@ t31       = dt {
              identifier   = "7af30cce-9372-4981-a16a-80f3f193dc33"
            , name         = "Set"
            , structure    = v1 $ dt'
-           { semantics    = "A set. Elements are unique and unordered"
+           { semantics    = "A set. Elements are unique and unordered."
            , constructors = Nothing
            }
           }         
@@ -1553,7 +1545,6 @@ t40       = dt {
            , name         = "Time"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = "This type is used for noting a point in time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
-           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [Variable First]]
            , constructors = Just [
                                   defaultConstructor 
                                     { constructorName = "Time"
@@ -1575,7 +1566,6 @@ t50       = dt {
            , name         = "Date"
            , structure    = v1 $ (dt' :: Type' (Succ Zero))
            { semantics    = "This type is used for noting a day time. It is polymorphic in the timescale used. See http://en.wikipedia.org/wiki/Time_standard for details on this issue."
-           , constraints  = S.fromList [Constraint "882f4a6a-ffa2-4579-830e-0a850acad145" [Variable First]]
            , constructors = Just [
                                   defaultConstructor' 
                                     { constructorName = "Time"
