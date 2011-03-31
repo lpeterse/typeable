@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Either (a :: *) (b :: *) = Left{left :: a}
                               | Right{right :: b}
@@ -25,17 +25,16 @@ deriving instance (Prelude.Ord a, Prelude.Ord b) => Prelude.Ord
 deriving instance (Prelude.Show a, Prelude.Show b) => Prelude.Show
          (Either a b)
  
-instance (Typeable.Internal.EBF.EBF a,
-          Typeable.Internal.EBF.EBF b) =>
-         Typeable.Internal.EBF.EBF (Either a b) where
+instance (Data.EBF.EBF a, Data.EBF.EBF b) => Data.EBF.EBF
+         (Either a b) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Left a0))
-                   1 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Right a0))
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (Left a0))
+                   1 -> (>>=) Data.EBF.get (\ a0 -> return (Right a0))
         put (Left a)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a
         put (Right a)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a

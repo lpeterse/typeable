@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Http
  
@@ -24,7 +24,7 @@ instance Prelude.Ord Http where
 instance Prelude.Show Http where
         show = undefined
  
-instance Typeable.Internal.EBF.EBF Http where
+instance Data.EBF.EBF Http where
         get = undefined
         put = undefined
  

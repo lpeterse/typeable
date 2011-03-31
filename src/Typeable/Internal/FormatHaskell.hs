@@ -98,7 +98,7 @@ typeModule b x
                               , impDecl (ModuleName "Data.Binary")
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
-                              , impDecl (ModuleName "Typeable.Internal.EBF")
+                              , impDecl (ModuleName "Data.EBF")
                               ]
                   let decls = [dd, iEq, iOrd, iShow, iBinary] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
                   let mn    = ModuleName $ "Typeable.T"++(show' $ identifier x)
@@ -223,7 +223,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
                (BDecls [])
              where
               fis = map (Ident . return) $ zipWith const ['a'..] xs
-              zs  = map (\x->Qualifier $ App (Var (Qual (ModuleName "Typeable.Internal.EBF") $ Ident "put")) (Var $ UnQual x)) fis
+              zs  = map (\x->Qualifier $ App (Var (Qual (ModuleName "Data.EBF") $ Ident "put")) (Var $ UnQual x)) fis
               e   | length cs <= 1     = if null zs 
                                            then App (Var (UnQual $ Ident "return")) (Tuple [])
                                            else Do zs
@@ -240,8 +240,8 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
              where
               e   | length cs == 0     = Var $ UnQual $ Ident "undefined"
                   | length cs == 1     = Do $ (Generator sl (PVar $ Ident "index") $ App (Var $ UnQual $ Ident "return") (Lit $ Int 0)):zs
-                  | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord8")             :zs
-                  | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord16be")            :zs
+                  | length cs <= 255   = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord8"):zs
+                  | length cs <= 65535 = Do $ (Generator sl (PVar $ Ident "index") $      Var $ Qual (ModuleName "Data.Binary.Get") $ Ident "getWord16be"):zs
                   | otherwise          = error "instanceBinary: too many constructors"
               f i = Alt sl (PLit $ Int $ fromIntegral i) (UnGuardedAlt $ g (cs !! i)) (BDecls [])
               g (QualConDecl _ _ _ (RecDecl n xs)) 
@@ -251,7 +251,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
                           $ foldl App (Con $ UnQual n) (map (Var . UnQual) ns)
               h [] x = x
               h (n:ns) x  = App
-                             (App (Var $ UnQual $ Symbol ">>=") (Var $ Qual (ModuleName "Typeable.Internal.EBF") $ Ident "get"))
+                             (App (Var $ UnQual $ Symbol ">>=") (Var $ Qual (ModuleName "Data.EBF") $ Ident "get"))
                              (Lambda sl [PVar n] $ h ns x)  
               zs  = return $ Qualifier $ Case 
                       (Var $ UnQual $ Ident "index")
@@ -260,7 +260,7 @@ instanceBinary b (DataDecl _ _ _ n vs cs _)
                 | otherwise = map u $ zip [0..] cs
        return $ InstDecl 
                   sl 
-                  (map (\t-> ClassA (Qual (ModuleName "Typeable.Internal.EBF") (Ident "EBF")) [t]) ctxTypes)
-                  (Qual (ModuleName "Typeable.Internal.EBF") (Ident "EBF"))
+                  (map (\t-> ClassA (Qual (ModuleName "Data.EBF") (Ident "EBF")) [t]) ctxTypes)
+                  (Qual (ModuleName "Data.EBF") (Ident "EBF"))
                   [foldl TyApp (TyCon $ UnQual n) vs']
                   (if b then [] else get:puts)

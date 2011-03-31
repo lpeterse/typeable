@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
  
@@ -25,10 +25,9 @@ deriving instance Prelude.Ord AbsolutePath
  
 deriving instance Prelude.Show AbsolutePath
  
-instance Typeable.Internal.EBF.EBF AbsolutePath where
+instance Data.EBF.EBF AbsolutePath where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 -> return (AbsolutePath a0))
-        put (AbsolutePath a) = do Typeable.Internal.EBF.put a
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (AbsolutePath a0))
+        put (AbsolutePath a) = do Data.EBF.put a

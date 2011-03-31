@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Maybe (a :: *)
  
@@ -21,5 +21,4 @@ instance (Prelude.Ord a) => Prelude.Ord (Maybe a)
  
 instance (Prelude.Show a) => Prelude.Show (Maybe a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Maybe a)
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Maybe a)

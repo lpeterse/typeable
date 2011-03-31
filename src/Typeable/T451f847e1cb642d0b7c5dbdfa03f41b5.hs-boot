@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Definition (a :: * -> *)
  
@@ -21,4 +21,4 @@ instance Prelude.Ord (Definition a)
  
 instance Prelude.Show (Definition a)
  
-instance Typeable.Internal.EBF.EBF (Definition a)
+instance Data.EBF.EBF (Definition a)

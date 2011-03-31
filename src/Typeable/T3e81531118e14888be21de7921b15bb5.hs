@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.Tf8f49ef6bbe874a42926fa23d5b3bc19
 import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245
 import qualified Typeable.Tb0221a43509e4eddb062101bfd794bc4
@@ -39,23 +39,20 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Type a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Type a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Type a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Type a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (Type a0 a1)))
+                   1 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get (\ a1 -> return (Type a0 a1)))
-                   1 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (Quantification a0 a1)))
+                             (>>=) Data.EBF.get (\ a1 -> return (Quantification a0 a1)))
         put (Type a b)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+               Data.EBF.put a
+               Data.EBF.put b
         put (Quantification a b)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+               Data.EBF.put a
+               Data.EBF.put b

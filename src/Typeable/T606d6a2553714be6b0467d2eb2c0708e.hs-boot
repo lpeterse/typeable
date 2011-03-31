@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Concrete
  
@@ -21,6 +21,6 @@ instance Prelude.Ord Concrete
  
 instance Prelude.Show Concrete
  
-instance Typeable.Internal.EBF.EBF Concrete
+instance Data.EBF.EBF Concrete
  
 instance Prelude.Enum Concrete

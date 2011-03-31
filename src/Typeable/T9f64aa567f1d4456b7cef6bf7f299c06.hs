@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.Ta9c059006c8d4849af902d3ad12ee3cc
  
@@ -25,15 +25,15 @@ deriving instance Prelude.Ord Host
  
 deriving instance Prelude.Show Host
  
-instance Typeable.Internal.EBF.EBF Host where
+instance Data.EBF.EBF Host where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (IP a0))
-                   1 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (RegName a0))
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (IP a0))
+                   1 -> (>>=) Data.EBF.get (\ a0 -> return (RegName a0))
         put (IP a)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a
         put (RegName a)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a

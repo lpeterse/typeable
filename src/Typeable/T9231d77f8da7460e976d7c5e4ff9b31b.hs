@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Pattern = MatchAll{}
              | Constructor{}
@@ -22,7 +22,7 @@ deriving instance Prelude.Ord Pattern
  
 deriving instance Prelude.Show Pattern
  
-instance Typeable.Internal.EBF.EBF Pattern where
+instance Data.EBF.EBF Pattern where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

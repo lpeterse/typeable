@@ -39,17 +39,16 @@ Library
                   filepath,
                   text,
                   blaze-html,
-                  url,
                   happstack-server >= 0.5.0.4, 
                   old-locale,     
                   parsec >= 3.0.0
  hs-source-dirs:  src
- Exposed-Modules: Typeable.Internal.FormatHtml, 
+ Exposed-Modules: Data.EBF
+                  Typeable.Internal.FormatHtml, 
                   Typeable.Internal.Types, 
                   Typeable.Internal.Classes, 
                   Typeable.Internal.TypesDefault, 
                   Typeable.Internal.InternalTypeDefs, 
-                  Typeable.Internal.EBF,
                   Typeable.Internal.FormatHaskell, 
                   Typeable.Internal.Context, 
                   Typeable.Internal.NamespaceParser,

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data SimpleDialog (a :: *)
  
@@ -21,5 +21,4 @@ instance (Prelude.Ord a) => Prelude.Ord (SimpleDialog a)
  
 instance (Prelude.Show a) => Prelude.Show (SimpleDialog a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (SimpleDialog a)
+instance (Data.EBF.EBF a) => Data.EBF.EBF (SimpleDialog a)

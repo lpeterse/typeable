@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Ordering = LT{}
               | EQ{}
@@ -23,7 +23,7 @@ deriving instance Prelude.Ord Ordering
  
 deriving instance Prelude.Show Ordering
  
-instance Typeable.Internal.EBF.EBF Ordering where
+instance Data.EBF.EBF Ordering where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

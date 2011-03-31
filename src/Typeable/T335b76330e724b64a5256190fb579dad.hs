@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.Tf8f49ef6bbe874a42926fa23d5b3bc19
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.T62d2d5371f08461aa328bc06561594f6
@@ -30,17 +30,15 @@ deriving instance Prelude.Ord Authority
  
 deriving instance Prelude.Show Authority
  
-instance Typeable.Internal.EBF.EBF Authority where
+instance Data.EBF.EBF Authority where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 ->
-                                  (>>=) Typeable.Internal.EBF.get
-                                    (\ a2 -> return (Authority a0 a1 a2))))
+                             (>>=) Data.EBF.get
+                               (\ a1 -> (>>=) Data.EBF.get (\ a2 -> return (Authority a0 a1 a2))))
         put (Authority a b c)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
-               Typeable.Internal.EBF.put c
+          = do Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c

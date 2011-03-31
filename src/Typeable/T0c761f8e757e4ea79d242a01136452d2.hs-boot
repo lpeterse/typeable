@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data SimpleMeta
  
@@ -21,4 +21,4 @@ instance Prelude.Ord SimpleMeta
  
 instance Prelude.Show SimpleMeta
  
-instance Typeable.Internal.EBF.EBF SimpleMeta
+instance Data.EBF.EBF SimpleMeta

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Time (a :: *)
  
@@ -21,5 +21,4 @@ instance (Prelude.Ord a) => Prelude.Ord (Time a)
  
 instance (Prelude.Show a) => Prelude.Show (Time a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Time a)
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Time a)

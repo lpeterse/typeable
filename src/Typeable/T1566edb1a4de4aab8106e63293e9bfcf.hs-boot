@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Symbol
  
@@ -21,4 +21,4 @@ instance Prelude.Ord Symbol
  
 instance Prelude.Show Symbol
  
-instance Typeable.Internal.EBF.EBF Symbol
+instance Data.EBF.EBF Symbol

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Kind = KindStar{}
           | KindApplication{function ::
@@ -24,17 +24,16 @@ deriving instance Prelude.Ord Kind
  
 deriving instance Prelude.Show Kind
  
-instance Typeable.Internal.EBF.EBF Kind where
+instance Data.EBF.EBF Kind where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
                    0 -> return KindStar
-                   1 -> (>>=) Typeable.Internal.EBF.get
+                   1 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (KindApplication a0 a1)))
+                             (>>=) Data.EBF.get (\ a1 -> return (KindApplication a0 a1)))
         put KindStar = do Data.Binary.Put.putWord8 0
         put (KindApplication a b)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+               Data.EBF.put a
+               Data.EBF.put b

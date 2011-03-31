@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
  
 data SimpleMeta = SimpleMeta{name ::
@@ -24,14 +24,12 @@ deriving instance Prelude.Ord SimpleMeta
  
 deriving instance Prelude.Show SimpleMeta
  
-instance Typeable.Internal.EBF.EBF SimpleMeta where
+instance Data.EBF.EBF SimpleMeta where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (SimpleMeta a0 a1)))
+                   0 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (SimpleMeta a0 a1)))
         put (SimpleMeta a b)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+          = do Data.EBF.put a
+               Data.EBF.put b

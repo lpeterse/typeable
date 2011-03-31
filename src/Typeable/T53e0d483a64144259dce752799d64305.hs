@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.Tf18ae792e5324a68a16f11ea5c61442a
 import qualified Typeable.Td847a61a1a944723ab4bfcfb214bd8aa
 import qualified Typeable.T1ea5eae4702844f7acbc3c65b2a40093
@@ -33,19 +33,19 @@ deriving instance Prelude.Ord ContactInformation
  
 deriving instance Prelude.Show ContactInformation
  
-instance Typeable.Internal.EBF.EBF ContactInformation where
+instance Data.EBF.EBF ContactInformation where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Email a0))
-                   1 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Phone a0))
-                   2 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Website a0))
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (Email a0))
+                   1 -> (>>=) Data.EBF.get (\ a0 -> return (Phone a0))
+                   2 -> (>>=) Data.EBF.get (\ a0 -> return (Website a0))
         put (Email a)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a
         put (Phone a)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a
         put (Website a)
           = do Data.Binary.Put.putWord8 2
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a

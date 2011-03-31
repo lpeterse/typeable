@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Host
  
@@ -21,4 +21,4 @@ instance Prelude.Ord Host
  
 instance Prelude.Show Host
  
-instance Typeable.Internal.EBF.EBF Host
+instance Data.EBF.EBF Host

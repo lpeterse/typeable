@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Field (a :: *)
  
@@ -21,5 +21,4 @@ instance (Prelude.Ord a) => Prelude.Ord (Field a)
  
 instance (Prelude.Show a) => Prelude.Show (Field a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Field a)
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Field a)

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.Te590e9ce9cea4dfe86a413e9270dd1c2
 import qualified Typeable.T2a94a7a8d4e049759d8dd546e72293ff
 import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
@@ -42,27 +42,23 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Class a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Class a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Class a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Class a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 ->
-                                  (>>=) Typeable.Internal.EBF.get
-                                    (\ a2 -> return (Class a0 a1 a2))))
-                   1 -> (>>=) Typeable.Internal.EBF.get
+                             (>>=) Data.EBF.get
+                               (\ a1 -> (>>=) Data.EBF.get (\ a2 -> return (Class a0 a1 a2))))
+                   1 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (Quantification a0 a1)))
+                             (>>=) Data.EBF.get (\ a1 -> return (Quantification a0 a1)))
         put (Class a b c)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
-               Typeable.Internal.EBF.put c
+               Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c
         put (Quantification a b)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+               Data.EBF.put a
+               Data.EBF.put b

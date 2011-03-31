@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Gender
  
@@ -21,6 +21,6 @@ instance Prelude.Ord Gender
  
 instance Prelude.Show Gender
  
-instance Typeable.Internal.EBF.EBF Gender
+instance Data.EBF.EBF Gender
  
 instance Prelude.Enum Gender

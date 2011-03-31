@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Unit = Unit{}
  
@@ -21,7 +21,7 @@ deriving instance Prelude.Ord Unit
  
 deriving instance Prelude.Show Unit
  
-instance Typeable.Internal.EBF.EBF Unit where
+instance Data.EBF.EBF Unit where
         get
           = do index <- return 0
                case index of

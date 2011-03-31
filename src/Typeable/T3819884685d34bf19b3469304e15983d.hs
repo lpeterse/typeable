@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.T53e0d483a64144259dce752799d64305
 import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
@@ -28,13 +28,12 @@ deriving instance Prelude.Ord Person
  
 deriving instance Prelude.Show Person
  
-instance Typeable.Internal.EBF.EBF Person where
+instance Data.EBF.EBF Person where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get (\ a1 -> return (Person a0 a1)))
+                   0 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (Person a0 a1)))
         put (Person a b)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+          = do Data.EBF.put a
+               Data.EBF.put b

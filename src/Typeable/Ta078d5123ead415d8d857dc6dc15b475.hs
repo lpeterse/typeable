@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
  
@@ -25,10 +25,9 @@ deriving instance Prelude.Ord RootlessPath
  
 deriving instance Prelude.Show RootlessPath
  
-instance Typeable.Internal.EBF.EBF RootlessPath where
+instance Data.EBF.EBF RootlessPath where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 -> return (RootlessPath a0))
-        put (RootlessPath a) = do Typeable.Internal.EBF.put a
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (RootlessPath a0))
+        put (RootlessPath a) = do Data.EBF.put a

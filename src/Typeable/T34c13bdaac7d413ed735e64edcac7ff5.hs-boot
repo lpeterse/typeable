@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Tuple (a :: *) (b :: *)
  
@@ -22,6 +22,5 @@ instance (Prelude.Ord a, Prelude.Ord b) => Prelude.Ord (Tuple a b)
 instance (Prelude.Show a, Prelude.Show b) => Prelude.Show
          (Tuple a b)
  
-instance (Typeable.Internal.EBF.EBF a,
-          Typeable.Internal.EBF.EBF b) =>
-         Typeable.Internal.EBF.EBF (Tuple a b)
+instance (Data.EBF.EBF a, Data.EBF.EBF b) => Data.EBF.EBF
+         (Tuple a b)

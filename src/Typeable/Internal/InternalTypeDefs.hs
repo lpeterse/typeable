@@ -31,7 +31,7 @@ import Data.Time.Calendar
 import Data.Time.Clock
 import System.Locale
 
-import Typeable.Internal.EBF
+import Data.EBF
 
 class (Ord a, Enum a) => PeanoNumber a where
   domain :: [a]

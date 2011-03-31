@@ -1,4 +1,4 @@
-module Typeable.Internal.EBF where
+module Data.EBF where
 
 import qualified Data.Binary as B
 import qualified Data.Binary.Put as BP

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Language
  
@@ -21,6 +21,6 @@ instance Prelude.Ord Language
  
 instance Prelude.Show Language
  
-instance Typeable.Internal.EBF.EBF Language
+instance Data.EBF.EBF Language
  
 instance Prelude.Enum Language

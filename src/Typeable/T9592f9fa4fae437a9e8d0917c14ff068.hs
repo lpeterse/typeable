@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T0219c59f732a8ef507215fbdb4cceacd
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
  
@@ -29,30 +29,28 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (TextElement a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (TextElement a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (TextElement a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (TextElement a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
+                             (>>=) Data.EBF.get
                                (\ a1 ->
-                                  (>>=) Typeable.Internal.EBF.get
+                                  (>>=) Data.EBF.get
                                     (\ a2 ->
-                                       (>>=) Typeable.Internal.EBF.get
+                                       (>>=) Data.EBF.get
                                          (\ a3 ->
-                                            (>>=) Typeable.Internal.EBF.get
+                                            (>>=) Data.EBF.get
                                               (\ a4 -> return (Plaintext a0 a1 a2 a3 a4))))))
-                   1 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 -> return (Extension a0))
+                   1 -> (>>=) Data.EBF.get (\ a0 -> return (Extension a0))
         put (Plaintext a b c d e)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
-               Typeable.Internal.EBF.put c
-               Typeable.Internal.EBF.put d
-               Typeable.Internal.EBF.put e
+               Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c
+               Data.EBF.put d
+               Data.EBF.put e
         put (Extension a)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a

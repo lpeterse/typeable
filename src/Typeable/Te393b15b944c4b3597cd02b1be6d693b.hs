@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.T6e2f1233f1c84e6b9bb37c405c666234
 import qualified Typeable.T8068cbdaf35e4618a7e798c67ff9bee0
@@ -28,20 +28,19 @@ deriving instance Prelude.Ord URI
  
 deriving instance Prelude.Show URI
  
-instance Typeable.Internal.EBF.EBF URI where
+instance Data.EBF.EBF URI where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
+                             (>>=) Data.EBF.get
                                (\ a1 ->
-                                  (>>=) Typeable.Internal.EBF.get
+                                  (>>=) Data.EBF.get
                                     (\ a2 ->
-                                       (>>=) Typeable.Internal.EBF.get
-                                         (\ a3 -> return (URI a0 a1 a2 a3)))))
+                                       (>>=) Data.EBF.get (\ a3 -> return (URI a0 a1 a2 a3)))))
         put (URI a b c d)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
-               Typeable.Internal.EBF.put c
-               Typeable.Internal.EBF.put d
+          = do Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c
+               Data.EBF.put d

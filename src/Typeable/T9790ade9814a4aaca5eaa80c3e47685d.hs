@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T1566edb1a4de4aab8106e63293e9bfcf
 import qualified Typeable.T6716d098a58743379e54c12f249cdc0c
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
@@ -28,14 +28,12 @@ deriving instance Prelude.Ord Designator
  
 deriving instance Prelude.Show Designator
  
-instance Typeable.Internal.EBF.EBF Designator where
+instance Data.EBF.EBF Designator where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (Designator a0 a1)))
+                   0 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (Designator a0 a1)))
         put (Designator a b)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+          = do Data.EBF.put a
+               Data.EBF.put b

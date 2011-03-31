@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.Tf8f49ef6bbe874a42926fa23d5b3bc19
 import qualified Typeable.T3819884685d34bf19b3469304e15983d
 import qualified Typeable.T421496848904471ea3197f25e2a02b72
@@ -55,37 +55,37 @@ deriving instance
             (a Typeable.T421496848904471ea3197f25e2a02b72.Zero)) =>
          Prelude.Show (Definition a)
  
-instance (Typeable.Internal.EBF.EBF
+instance (Data.EBF.EBF
             (a Typeable.T421496848904471ea3197f25e2a02b72.Zero)) =>
-         Typeable.Internal.EBF.EBF (Definition a) where
+         Data.EBF.EBF (Definition a) where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
+                             (>>=) Data.EBF.get
                                (\ a1 ->
-                                  (>>=) Typeable.Internal.EBF.get
+                                  (>>=) Data.EBF.get
                                     (\ a2 ->
-                                       (>>=) Typeable.Internal.EBF.get
+                                       (>>=) Data.EBF.get
                                          (\ a3 ->
-                                            (>>=) Typeable.Internal.EBF.get
+                                            (>>=) Data.EBF.get
                                               (\ a4 ->
-                                                 (>>=) Typeable.Internal.EBF.get
+                                                 (>>=) Data.EBF.get
                                                    (\ a5 ->
-                                                      (>>=) Typeable.Internal.EBF.get
+                                                      (>>=) Data.EBF.get
                                                         (\ a6 ->
-                                                           (>>=) Typeable.Internal.EBF.get
+                                                           (>>=) Data.EBF.get
                                                              (\ a7 ->
                                                                 return
                                                                   (Definition a0 a1 a2 a3 a4 a5 a6
                                                                      a7)))))))))
         put (Definition a b c d e f g h)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
-               Typeable.Internal.EBF.put c
-               Typeable.Internal.EBF.put d
-               Typeable.Internal.EBF.put e
-               Typeable.Internal.EBF.put f
-               Typeable.Internal.EBF.put g
-               Typeable.Internal.EBF.put h
+          = do Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c
+               Data.EBF.put d
+               Data.EBF.put e
+               Data.EBF.put f
+               Data.EBF.put g
+               Data.EBF.put h

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data LatinAlphabet = A{}
                    | B{}
@@ -46,7 +46,7 @@ deriving instance Prelude.Ord LatinAlphabet
  
 deriving instance Prelude.Show LatinAlphabet
  
-instance Typeable.Internal.EBF.EBF LatinAlphabet where
+instance Data.EBF.EBF LatinAlphabet where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Hierarchy
  
@@ -21,4 +21,4 @@ instance Prelude.Ord Hierarchy
  
 instance Prelude.Show Hierarchy
  
-instance Typeable.Internal.EBF.EBF Hierarchy
+instance Data.EBF.EBF Hierarchy

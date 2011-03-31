@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Gender = Male{}
             | Female{}
@@ -22,7 +22,7 @@ deriving instance Prelude.Ord Gender
  
 deriving instance Prelude.Show Gender
  
-instance Typeable.Internal.EBF.EBF Gender where
+instance Data.EBF.EBF Gender where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

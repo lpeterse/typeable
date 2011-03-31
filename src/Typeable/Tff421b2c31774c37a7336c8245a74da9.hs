@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data DecimalAlphabet = Zero{}
                      | One{}
@@ -30,7 +30,7 @@ deriving instance Prelude.Ord DecimalAlphabet
  
 deriving instance Prelude.Show DecimalAlphabet
  
-instance Typeable.Internal.EBF.EBF DecimalAlphabet where
+instance Data.EBF.EBF DecimalAlphabet where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

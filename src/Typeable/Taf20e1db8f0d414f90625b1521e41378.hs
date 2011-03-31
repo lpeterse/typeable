@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Language = AAR{}
               | ABK{}
@@ -505,7 +505,7 @@ deriving instance Prelude.Ord Language
  
 deriving instance Prelude.Show Language
  
-instance Typeable.Internal.EBF.EBF Language where
+instance Data.EBF.EBF Language where
         get
           = do index <- Data.Binary.Get.getWord16be
                case index of

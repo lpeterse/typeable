@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Path
  
@@ -21,4 +21,4 @@ instance Prelude.Ord Path
  
 instance Prelude.Show Path
  
-instance Typeable.Internal.EBF.EBF Path
+instance Data.EBF.EBF Path

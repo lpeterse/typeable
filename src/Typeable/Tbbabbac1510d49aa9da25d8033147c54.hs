@@ -6,7 +6,7 @@ import Data.LargeWord
 import Data.Binary
 import Data.Binary.Put
 import Data.Binary.Get
-import Typeable.Internal.EBF
+import Data.EBF
 
 instance Read (LargeKey Word64 Word64) where
   readsPrec = error "Word128: no Read instance" 

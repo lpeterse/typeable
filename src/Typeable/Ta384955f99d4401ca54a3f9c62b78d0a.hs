@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Numerus = Singularis{}
              | Pluralis{}
@@ -22,7 +22,7 @@ deriving instance Prelude.Ord Numerus
  
 deriving instance Prelude.Show Numerus
  
-instance Typeable.Internal.EBF.EBF Numerus where
+instance Data.EBF.EBF Numerus where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

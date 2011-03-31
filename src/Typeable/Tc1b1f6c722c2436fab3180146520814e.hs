@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data UTC
  
@@ -24,7 +24,7 @@ instance Prelude.Ord UTC where
 instance Prelude.Show UTC where
         show = undefined
  
-instance Typeable.Internal.EBF.EBF UTC where
+instance Data.EBF.EBF UTC where
         get = undefined
         put = undefined
  

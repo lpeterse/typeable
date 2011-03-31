@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data DecimalAlphabet
  
@@ -21,6 +21,6 @@ instance Prelude.Ord DecimalAlphabet
  
 instance Prelude.Show DecimalAlphabet
  
-instance Typeable.Internal.EBF.EBF DecimalAlphabet
+instance Data.EBF.EBF DecimalAlphabet
  
 instance Prelude.Enum DecimalAlphabet

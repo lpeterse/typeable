@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data UTC
  
@@ -21,6 +21,6 @@ instance Prelude.Ord UTC
  
 instance Prelude.Show UTC
  
-instance Typeable.Internal.EBF.EBF UTC
+instance Data.EBF.EBF UTC
  
 instance Prelude.Enum UTC

@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T6716d098a58743379e54c12f249cdc0c
 import qualified Typeable.Tf2c4f6ddd939444ba209fbdf2152eb54
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
@@ -28,14 +28,12 @@ deriving instance Prelude.Ord SchemeName
  
 deriving instance Prelude.Show SchemeName
  
-instance Typeable.Internal.EBF.EBF SchemeName where
+instance Data.EBF.EBF SchemeName where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (SchemeName a0 a1)))
+                   0 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (SchemeName a0 a1)))
         put (SchemeName a b)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+          = do Data.EBF.put a
+               Data.EBF.put b

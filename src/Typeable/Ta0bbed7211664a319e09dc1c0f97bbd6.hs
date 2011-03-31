@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data Casus = Nominativus{}
            | Genetivus{}
@@ -26,7 +26,7 @@ deriving instance Prelude.Ord Casus
  
 deriving instance Prelude.Show Casus
  
-instance Typeable.Internal.EBF.EBF Casus where
+instance Data.EBF.EBF Casus where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of

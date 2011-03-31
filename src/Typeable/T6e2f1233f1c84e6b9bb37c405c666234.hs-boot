@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data SchemeName
  
@@ -21,4 +21,4 @@ instance Prelude.Ord SchemeName
  
 instance Prelude.Show SchemeName
  
-instance Typeable.Internal.EBF.EBF SchemeName
+instance Data.EBF.EBF SchemeName

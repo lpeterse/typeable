@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import {-# SOURCE #-} qualified
        Typeable.T2a94a7a8d4e049759d8dd546e72293ff
 import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
@@ -39,31 +39,27 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (DataType a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (DataType a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (DataType a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (DataType a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (DataType a0))
-                   1 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Variable a0))
-                   2 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (Application a0 a1)))
-                   3 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get (\ a1 -> return (Forall a0 a1)))
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (DataType a0))
+                   1 -> (>>=) Data.EBF.get (\ a0 -> return (Variable a0))
+                   2 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (Application a0 a1)))
+                   3 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (Forall a0 a1)))
         put (DataType a)
           = do Data.Binary.Put.putWord8 0
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a
         put (Variable a)
           = do Data.Binary.Put.putWord8 1
-               Typeable.Internal.EBF.put a
+               Data.EBF.put a
         put (Application a b)
           = do Data.Binary.Put.putWord8 2
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+               Data.EBF.put a
+               Data.EBF.put b
         put (Forall a b)
           = do Data.Binary.Put.putWord8 3
-               Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+               Data.EBF.put a
+               Data.EBF.put b

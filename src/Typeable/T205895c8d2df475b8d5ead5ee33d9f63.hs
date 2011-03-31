@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245
 import qualified Typeable.T9790ade9814a4aaca5eaa80c3e47685d
 import qualified Typeable.Tb0221a43509e4eddb062101bfd794bc4
@@ -30,18 +30,15 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Field a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Field a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Field a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Field a) where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
+                   0 -> (>>=) Data.EBF.get
                           (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 ->
-                                  (>>=) Typeable.Internal.EBF.get
-                                    (\ a2 -> return (Field a0 a1 a2))))
+                             (>>=) Data.EBF.get
+                               (\ a1 -> (>>=) Data.EBF.get (\ a2 -> return (Field a0 a1 a2))))
         put (Field a b c)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
-               Typeable.Internal.EBF.put c
+          = do Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c

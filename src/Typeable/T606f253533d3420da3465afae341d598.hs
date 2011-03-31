@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.Tc211e54d6eef4234a7b675d5f696efe5
  
 data Time (a :: *) = Time{seconds ::
@@ -23,10 +23,9 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Time a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Time a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Time a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Time a) where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get (\ a0 -> return (Time a0))
-        put (Time a) = do Typeable.Internal.EBF.put a
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (Time a0))
+        put (Time a) = do Data.EBF.put a

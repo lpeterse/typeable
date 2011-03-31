@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data HexadecimalAlphabet
  
@@ -21,6 +21,6 @@ instance Prelude.Ord HexadecimalAlphabet
  
 instance Prelude.Show HexadecimalAlphabet
  
-instance Typeable.Internal.EBF.EBF HexadecimalAlphabet
+instance Data.EBF.EBF HexadecimalAlphabet
  
 instance Prelude.Enum HexadecimalAlphabet

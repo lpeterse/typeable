@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
 import qualified Typeable.T346674042a7248b4a94abff0726d0c43
 import {-# SOURCE #-} qualified
        Typeable.T0174bd2264004820bfe34e211cb35a7d
@@ -26,15 +26,12 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Constraint a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Constraint a)
  
-instance (Typeable.Internal.EBF.EBF a) => Typeable.Internal.EBF.EBF
-         (Constraint a) where
+instance (Data.EBF.EBF a) => Data.EBF.EBF (Constraint a) where
         get
           = do index <- return 0
                case index of
-                   0 -> (>>=) Typeable.Internal.EBF.get
-                          (\ a0 ->
-                             (>>=) Typeable.Internal.EBF.get
-                               (\ a1 -> return (Constraint a0 a1)))
+                   0 -> (>>=) Data.EBF.get
+                          (\ a0 -> (>>=) Data.EBF.get (\ a1 -> return (Constraint a0 a1)))
         put (Constraint a b)
-          = do Typeable.Internal.EBF.put a
-               Typeable.Internal.EBF.put b
+          = do Data.EBF.put a
+               Data.EBF.put b

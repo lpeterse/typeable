@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data TAI
  
@@ -24,7 +24,7 @@ instance Prelude.Ord TAI where
 instance Prelude.Show TAI where
         show = undefined
  
-instance Typeable.Internal.EBF.EBF TAI where
+instance Data.EBF.EBF TAI where
         get = undefined
         put = undefined
  

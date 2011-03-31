@@ -11,7 +11,7 @@ import qualified Prelude
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
-import qualified Typeable.Internal.EBF
+import qualified Data.EBF
  
 data HexadecimalAlphabet = Zero{}
                          | One{}
@@ -36,7 +36,7 @@ deriving instance Prelude.Ord HexadecimalAlphabet
  
 deriving instance Prelude.Show HexadecimalAlphabet
  
-instance Typeable.Internal.EBF.EBF HexadecimalAlphabet where
+instance Data.EBF.EBF HexadecimalAlphabet where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
