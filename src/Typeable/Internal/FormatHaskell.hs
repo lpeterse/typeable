@@ -162,8 +162,10 @@ dataField x             = do t <- dataType (Field.type_ x)
                           where
                             g (x:xs) = (toLower x):xs
 
-haskape x | x `elem` ["type", "class", "if", "then", "else", "where", "let", "in", "do"] = x++"_"
-          | otherwise                                                                    = x
+haskape x | x `elem` ["case", "class", "data", "default", "deriving", "do", "else", "if", "import", "in"
+                     , "infix", "infixl", "infixr", "instance", "let", "module", "newtype", "of", "then", "type", "where"
+                     ] = x ++ "_"
+          | otherwise  = x
 
 dataType                  :: (PeanoNumber a, Monad m) => DataType a -> Context m Syntax.Type
 dataType (DataType u)      = do n <- humanify u
