@@ -14,6 +14,12 @@ import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
 import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
 import qualified Typeable.T3819884685d34bf19b3469304e15983d as Person
+import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field
+import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor
+import qualified Typeable.Te590e9ce9cea4dfe86a413e9270dd1c2 as Method --Method
+import qualified Typeable.T4e0b8f8ea2b145228fa4ec74b559bf6a as Class --Class
+import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type --Type
+import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
@@ -34,7 +40,7 @@ import qualified Data.Text            as T
 import qualified Data.ByteString.Lazy as BS
 
 import Typeable.Internal.Context
-import Typeable.Internal.InternalTypeDefs hiding (kind)
+import Typeable.Internal.InternalTypeDefs 
 
 encapsulate  :: Html -> Html
 encapsulate t = H.docTypeHtml $ do 
@@ -52,9 +58,13 @@ encapsulate t = H.docTypeHtml $ do
 
 nbsp = preEscapedString "&nbsp;"
 
-kind               :: (PeanoNumber a) => Binding a K.Kind c -> K.Kind
-kind (Expression _) = K.KindStar
-kind (Bind k x    ) = K.KindApplication k (kind x) 
+kind               :: (PeanoNumber a) => Type.Type a -> K.Kind
+kind (Type.Quantification k x) = K.KindApplication k (kind x) 
+kind _                         = K.KindStar
+                              
+kind'               :: (PeanoNumber a) => Class.Class a -> K.Kind
+kind' (Class.Quantification k x) = K.KindApplication k (kind' x) 
+kind' _                          = K.KindStar
                               
 variables          :: K.Kind -> [Html]
 variables x         = f 0 x
@@ -95,7 +105,7 @@ instance Htmlize Namespace where
                  cs' <- mapM humanify cs        >>= return . L.sortBy (compare `on` snd) . zip cs
                  return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show' u)) $ H.span ! A.class_ "class" $ string n) cs'
                                     mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show' u))  $ H.span ! A.class_ "type"  $ string n) ts'
-                                    mconcat $ map (\(f,s)-> H.li (string (show f) >> s)) ns' 
+                                    mconcat $ map (\(f,s)-> H.li (string (show' f) >> s)) ns' 
 
     where
       ts = S.toList (nstypes   x)
@@ -113,26 +123,27 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
                                              nbsp
                                              ts'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Field k) where
-  htmlize (Field n s t) = do t' <- htmlize t
-                             s' <- htmlize s
-                             return $ H.tr $ do H.td ! A.class_ "function"   $ string (let g (x:xs)=(toLower x):xs in g $ show' n)
-                                                H.td ! A.class_ "type"       $ t'
-                                                H.td ! A.class_ "annotation" $ s'
+instance (PeanoNumber k, Htmlize k) => Htmlize (Field.Field k) where
+  htmlize (Field.Field n s t) = do t' <- htmlize t
+                                   s' <- htmlize s
+                                   return $ H.tr $ do H.td ! A.class_ "function"   $ string (let g (x:xs)=(toLower x):xs in g $ show' n)
+                                                      H.td ! A.class_ "type"       $ t'
+                                                      H.td ! A.class_ "annotation" $ s'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Method k) where
-  htmlize (Method n t s) = do t' <- htmlize t
+instance (PeanoNumber k, Htmlize k) => Htmlize (Method.Method k) where
+  htmlize (Method.Method n t s)
+                         = do t' <- htmlize t
                               s' <- htmlize s
                               return $ H.tr $ do H.td ! A.class_ "function" $ string (let g (x:xs)=(toLower x):xs in g $ show' n)
                                                  H.td ! A.class_ "type"       $ t'
                                                  H.td ! A.class_ "annotation" $ s'
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor k) where
-  htmlize (Constructor n s cs) = do s'  <- htmlize s
-                                    cs' <- htmlize cs
-                                    return $ do H.tr $ do H.td ! A.class_ "constructor" ! A.rowspan (stringValue $ show (P.length cs + 1)) $ string (show' n)
-                                                          H.td ! A.class_ "annotation"  ! A.colspan "3" $ s'
-                                                cs'
+instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor.Constructor k) where
+  htmlize (Constructor.Constructor n s cs) = do s'  <- htmlize s
+                                                cs' <- htmlize cs
+                                                return $ do H.tr $ do H.td ! A.class_ "constructor" ! A.rowspan (stringValue $ show (P.length cs + 1)) $ string (show' n)
+                                                                      H.td ! A.class_ "annotation"  ! A.colspan "3" $ s'
+                                                            cs'
 
 instance (PeanoNumber k, Htmlize k) => Htmlize (DataType k) where
   htmlize x = htmlize' x False
@@ -188,7 +199,7 @@ instance Htmlize Person.Person where
 instance Htmlize T.Text where
   htmlize = return . text
 
-instance Htmlize (Definition Type) where
+instance Htmlize (Definition Type.Type) where
   htmlize x  = do (semantics', constructors') <- toHtml (structure x)
                   kind' <- htmlize $ kind $ structure x
                   mp                                        <- metaPart x semantics'
@@ -204,15 +215,16 @@ instance Htmlize (Definition Type) where
                                                      kind'
                                     constructors'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Type -> Context m (Html, Html)
-      toHtml (Expression x) = do a  <- htmlize $ semantics x 
-                                 c  <- case constructors x of
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Type.Type a -> Context m (Html, Html)
+      toHtml (Type.Type s mc)
+                            = do a  <- htmlize s 
+                                 c  <- case mc of
                                          Nothing -> return $ H.tr $ H.td ! A.colspan "4" $ "This is an abstract type. Its possible values are described above."
                                          Just y  -> htmlize y
                                  return (a,c)
-      toHtml (Bind _ x)     = toHtml x
+      toHtml (Type.Quantification _ x) = toHtml x
 
-instance Htmlize (Definition Class) where
+instance Htmlize (Definition Class.Class) where
   htmlize x  = do (semantics', constraints', methods') <- toHtml (structure x)
                   mp <- metaPart x semantics'
                   return $     do mp
@@ -222,17 +234,17 @@ instance Htmlize (Definition Class) where
                                                 $ do H.a ! A.href "" 
                                                          $ H.span ! A.class_ "class" $ string $ show' (name x)
                                                      nbsp
-                                                     mconcat (L.intersperse nbsp (variables $ kind $ structure x))
+                                                     mconcat (L.intersperse nbsp (variables $ kind' $ structure x))
                                     H.tr $ H.td ! A.colspan "3" ! A.class_ "constraints" $ constraints'
                                     methods'
     where
-      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Binding a K.Kind Class -> Context m (Html, Html, Html)
-      toHtml (Expression x) = do a  <- htmlize $ classSemantics x 
-                                 bs <- mapM htmlize $ S.toList $ classConstraints x
+      toHtml               :: (PeanoNumber a, Htmlize a, Monad m) => Class.Class a -> Context m (Html, Html, Html)
+      toHtml (Class.Quantification _ x) = toHtml x
+      toHtml x              = do a  <- htmlize $ Class.semantics x 
+                                 bs <- mapM htmlize $ S.toList $ Class.constraints x
                                  let b = mconcat $ L.intersperse (string "|") bs
-                                 ms <- mapM htmlize (classMethods x)
+                                 ms <- mapM htmlize (Class.methods x)
                                  return (a,b,mconcat ms)
-      toHtml (Bind _ x)     = toHtml x
 
 metaPart  :: (Monad m) => Definition a -> Html -> Context m Html
 metaPart x s = do author'              <- case author x of

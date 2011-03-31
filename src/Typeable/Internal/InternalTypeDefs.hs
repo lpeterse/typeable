@@ -1,4 +1,4 @@
-{-# OPTIONS -XEmptyDataDecls -XDeriveDataTypeable -XStandaloneDeriving -XFlexibleInstances -XOverloadedStrings #-}
+{-# OPTIONS -XFlexibleInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Typeable.Internal.InternalTypeDefs where
 
@@ -16,9 +16,6 @@ import Typeable.T606f253533d3420da3465afae341d598 --Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e --UTC
 import Typeable.T1660b01f08dc4aedbe4c0941584541cb --Kind
 import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
-import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
-import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
-import Typeable.T3819884685d34bf19b3469304e15983d --Person
 
 import Numeric
 import Data.Word
@@ -52,60 +49,6 @@ instance PeanoNumber k => Enum (Succ k) where
   fromEnum (Next x)   = 1 + (fromEnum x)
   toEnum 0            = First
   toEnum n            = Next (toEnum (n-1))
-
-data Definition a = Definition
-                    { identifier       :: UUID
-                    , antecedent       :: Maybe UUID
-                    , name             :: Designator
-                    , creationTime     :: Time UTC 
-                    , modificationTime :: Time UTC
-                    , author           :: Maybe Person
-                    , maintainer       :: Person
-                    , structure        :: Binding Zero Kind a
-                    }
-
-data Type a       = Type
-                    { semantics        :: T.Text
-                    , constructors     :: Maybe [Constructor a]
-                    }
-                  | Quantification 
-                    { kind             :: Kind
-                    , quantified       :: Type (Succ a)
-                    }
-
-data Class k = Class
-                        { classSemantics       :: Annotation k
-                        , classConstraints     :: S.Set (Constraint k)
-                        , classMethods         :: [Method k]
-                        }
-                        deriving (Eq, Ord, Show)
-
-data Method k = Method
-                        { methodName      :: Designator
-                        , methodSignature :: DataType k
-                        , methodSemantics :: Annotation k
-                        }
-                        deriving (Eq, Ord, Show)
-
-data Constructor k = Constructor
-                        { constructorName      :: Designator
-                        , constructorSemantics :: Annotation k
-                        , constructorFields    :: [Field k] 
-                        }
-                        deriving (Eq, Ord, Show)
-
-data Field k = Field
-                        { fieldName      :: Designator
-                        , fieldSemantics :: Annotation k
-                        , fieldType      :: DataType k
-                        }
-                        deriving (Eq, Ord, Show)
-
-data Binding a b c = Bind { associated :: b, bound :: (Binding (Succ a) b c) }
-                   | Expression { expression :: c a }
-
-type Annotation a = StructuredText (Extension a)
-
 
 -- Show' instances
 ---------------------------------------------------------------------------------------------------

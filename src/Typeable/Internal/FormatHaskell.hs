@@ -6,6 +6,10 @@ import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
 import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
+import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field --Field
+import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor --Constructor
+import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type --Type
+import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 
 import Data.List
 import Data.String
@@ -26,45 +30,43 @@ sl = SrcLoc "" 0 0
 importMapping  :: (Monad m) => Context m (M.Map UUID (S.Set UUID))
 importMapping   = getTypes >>= return . M.map imports 
                   where
-                    imports                       :: Definition Type -> S.Set UUID
+                    imports                       :: Definition Type.Type -> S.Set UUID
                     imports                        = imports' . structure
-                    imports'                      :: (PeanoNumber a) => Binding a b Type -> S.Set UUID
-                    imports' (Bind _ x)            = imports'  x
-                    imports' (Expression x)        = imports''  x
-                    imports''                     :: (PeanoNumber a) => Type a -> S.Set UUID
-                    imports'' x                    = case constructors x of
+                    imports'                      :: (PeanoNumber a) => Type.Type a -> S.Set UUID
+                    imports' (Type.Quantification _ x)  = imports'  x
+                    imports' (Type.Type _ x)       = case x of
                                                        Nothing -> S.empty
                                                        Just cs -> foldr (S.union . imports''') S.empty cs
-                    imports'''                    :: (PeanoNumber a) => Constructor a -> S.Set UUID
-                    imports'''                     = (foldr (S.union . imports'''') S.empty) . constructorFields
-                    imports''''                   :: (PeanoNumber a) => Field a -> S.Set UUID
-                    imports''''                    = imports''''' . fieldType
+                    imports'''                    :: (PeanoNumber a) => Constructor.Constructor a -> S.Set UUID
+                    imports'''                     = (foldr (S.union . imports'''') S.empty) . Constructor.fields
+                    imports''''                   :: (PeanoNumber a) => Field.Field a -> S.Set UUID
+                    imports''''                    = imports''''' . Field.type_
                     imports'''''                  :: (PeanoNumber a) => DataType a -> S.Set UUID
                     imports''''' (DataType u)      = S.singleton u
                     imports''''' (Application a b) = imports''''' a `S.union` imports''''' b
                     imports'''''  _                = S.empty
 
-constructorCount :: Definition Type -> Maybe Int
+constructorCount :: Definition Type.Type -> Maybe Int
 constructorCount  = f . structure
                     where
-                      f :: (PeanoNumber a) => Binding a b Type -> Maybe Int
-                      f (Bind _ x)     = f x
-                      f (Expression x) = case constructors x of
-                                           Nothing -> Nothing
-                                           Just cs -> Just $ length cs
+                      f :: (PeanoNumber a) => Type.Type a -> Maybe Int
+                      f (Type.Quantification _ x) = f x
+                      f (Type.Type _ x)      = case x of
+                                                 Nothing -> Nothing
+                                                 Just cs -> Just $ length cs
 
-nonNullaryConstructors :: Definition Type -> Bool
+nonNullaryConstructors :: Definition Type.Type -> Bool
 nonNullaryConstructors  = f . structure
                     where
-                      f :: (PeanoNumber a) => Binding a b Type -> Bool
-                      f (Bind _ x)     = f x
-                      f (Expression x) = case constructors x of
-                                           Nothing -> False
-                                           Just cs -> or $ map g cs
-                      g :: (PeanoNumber a) => Constructor a -> Bool
-                      g = not . null . constructorFields
+                      f :: (PeanoNumber a) => Type.Type a -> Bool
+                      f (Type.Quantification _ x) = f x
+                      f (Type.Type _ x)      = case x of
+                                                 Nothing -> False
+                                                 Just cs -> or $ map g cs
+                      g :: (PeanoNumber a) => Constructor.Constructor a -> Bool
+                      g = not . null . Constructor.fields
 
-typeModule  :: (Monad m) => Bool -> Definition Type -> Context m Module
+typeModule  :: (Monad m) => Bool -> Definition Type.Type -> Context m Module
 typeModule b x 
              = do dd      <- dataDecl b x
                   iEq     <- instanceOf (Qual (ModuleName "Prelude") (Ident "Eq"))   [Symbol "=="]                                                   b dd
@@ -117,16 +119,16 @@ typeModule b x
                              (nub $ imps1 ++ imps2)      -- [ImportDecl]
                              decls
 
-variables :: (PeanoNumber a) => Binding a K.Kind b -> [TyVarBind]
+variables :: (PeanoNumber a) => Type.Type a -> [TyVarBind]
 variables  = f 0
              where
-               f                 :: (PeanoNumber a) => Int -> Binding a K.Kind b -> [TyVarBind]
-               f n (Bind y x)     = (KindedVar (Ident [toEnum ((fromEnum 'a') + n)]) (k y)):(f (n+1) x)
-               f _ (Expression _) = []
-               k K.KindStar          = KindStar
+               f                 :: (PeanoNumber a) => Int -> Type.Type a -> [TyVarBind]
+               f n (Type.Quantification y x)  = (KindedVar (Ident [toEnum ((fromEnum 'a') + n)]) (k y)):(f (n+1) x)
+               f _ (Type.Type _ _)            = []
+               k K.KindStar              = KindStar
                k (K.KindApplication x y) = KindFn (k x) (k y)
 
-dataDecl                   :: (Monad m) => Bool -> Definition Type -> Context m Decl
+dataDecl                   :: (Monad m) => Bool -> Definition Type.Type -> Context m Decl
 dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Name
                                  cs <- dataConstructors (structure t)
                                  return $ DataDecl 
@@ -138,25 +140,25 @@ dataDecl b t                = do let typeName     = Ident $ show' $ name t :: Na
                                             (if not b then cs else [])
                                             []
 
-dataConstructors                   :: (PeanoNumber a, Monad m) => Binding a K.Kind Type -> Context m [QualConDecl]
-dataConstructors (Bind _ x)         = dataConstructors x
-dataConstructors (Expression x)     = case constructors x of
+dataConstructors                   :: (PeanoNumber a, Monad m) => Type.Type a -> Context m [QualConDecl]
+dataConstructors (Type.Quantification _ x)  = dataConstructors x
+dataConstructors (Type.Type s c)    = case c of
                                         Nothing -> fail "cannot haskellize abstract type"
                                         Just cs -> mapM f cs
                                       where
-                                        f  :: (PeanoNumber a, Monad m) => Constructor a -> Context m QualConDecl
-                                        f c = do fs <- mapM dataField (constructorFields c)
+                                        f  :: (PeanoNumber a, Monad m) => Constructor.Constructor a -> Context m QualConDecl
+                                        f c = do fs <- mapM dataField (Constructor.fields c)
                                                  return $ QualConDecl
                                                             sl
                                                             []  -- [TyVarBind]
                                                             []  -- Context
                                                             $ RecDecl
-                                                                (Ident $ show' $ constructorName c)
+                                                                (Ident $ show' $ Constructor.name c)
                                                                 fs  -- [([Name], BangType)]
 
-dataField              :: (PeanoNumber a, Monad m) => Field a -> Context m ([Name], BangType)
-dataField x             = do t <- dataType (fieldType x) 
-                             return ([Ident $ haskape $ g $ show' $ fieldName x], UnBangedTy t)
+dataField              :: (PeanoNumber a, Monad m) => Field.Field a -> Context m ([Name], BangType)
+dataField x             = do t <- dataType (Field.type_ x) 
+                             return ([Ident $ haskape $ g $ show' $ Field.name x], UnBangedTy t)
                           where
                             g (x:xs) = (toLower x):xs
 

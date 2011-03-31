@@ -2,6 +2,9 @@
 module Typeable.Internal.Context where
 
 import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
+import qualified Typeable.T4e0b8f8ea2b145228fa4ec74b559bf6a as Class --Class
+import Typeable.T3e81531118e14888be21de7921b15bb5 -- Type
+import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 
 import Typeable.Internal.InternalTypeDefs
 import qualified Data.Map as M
@@ -13,7 +16,7 @@ import Happstack.Server.SimpleHTTP
 type Context m a = ReaderT Static m a
 
 data Static = Static { typeMap  :: M.Map UUID (Definition Type)
-                     , classMap :: M.Map UUID (Definition Class)
+                     , classMap :: M.Map UUID (Definition Class.Class)
                      }
 
 runContext = runReaderT

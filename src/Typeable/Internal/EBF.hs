@@ -23,6 +23,17 @@ instance EBF Bool where
                                      0 -> return False
                                      1 -> return True
 
+instance (EBF a) => EBF (Maybe a) where
+        get
+          = do index <- BG.getWord8
+               case index of
+                   0 -> return Nothing
+                   1 -> (>>=) get (\ a0 -> return (Just a0))
+        put Nothing = do BP.putWord8 0
+        put (Just a)
+          = do BP.putWord8 1
+               put a
+
 instance (EBF a) => EBF [a] where
   put []     = BP.putWord8 1
   put (x:xs) = BP.putWord8 0 >> put x >> put xs 
