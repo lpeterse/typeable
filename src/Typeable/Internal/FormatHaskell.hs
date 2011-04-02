@@ -74,7 +74,7 @@ typeModule b x
                   iEnum   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Enum")) [Ident "succ", Ident "pred", Ident "toEnum", Ident "fromEnum"]  b dd
                   iShow   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Show")) [Ident "show"]                                                  b dd
                   iRead   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Read")) [Ident "readsPrec"]  b dd
-                  iBinary <- instanceBinary b dd
+                  iBinary <- instanceBinary b x dd
                   im <- importMapping
                   let impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
                   let imps2  = [ let s = identifier x `S.member` runGraph (successorsToDepth 5 z) im
@@ -202,7 +202,7 @@ instanceOf cn cms b (DataDecl _ _ _ n vs cs _)
                             else map (\cm-> InsDecl $ FunBind $ return $ Match sl cm [] Nothing (UnGuardedRhs $ Var $ UnQual $ Ident "undefined") (BDecls [])) cms
                          )
 
-instanceBinary b (DataDecl _ _ _ n vs cs _) 
+instanceBinary b x (DataDecl _ _ _ n vs cs _) 
   = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 
        let vA (TyApp a b) = vA a
            vA (TyCon _  ) = False

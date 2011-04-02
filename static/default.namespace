@@ -47,6 +47,7 @@ Basic
     t-5cae969a657448ebbc2eaf7f31d7340f --Triple
     t-7af30cce93724981a16a80f3f193dc33 --Set
     t-43c6cd1333b04fc8a480668ecb24768e --Map
+    t-964f0abad1bd422faaf57b6d9938db31 --Tree
     
 Typelevel
   PeanoNumbers

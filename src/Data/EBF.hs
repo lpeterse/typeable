@@ -1,3 +1,4 @@
+{-# OPTIONS -XFlexibleInstances #-}
 module Data.EBF where
 
 import qualified Data.Binary as B
@@ -11,6 +12,7 @@ import Data.ByteString
 import Data.Word 
 import Data.Int
 import Data.Ratio
+import Data.LargeWord
 
 class (Ord a) => EBF a where
   put :: a -> B.Put
@@ -109,3 +111,6 @@ instance EBF Word64 where
   put = B.put
   get = B.get
 
+instance EBF (LargeKey Word64 Word64) where
+  put x = BP.putWord64be (hiHalf x) >> BP.putWord64be (loHalf x)
+  get   = BG.getWord64be >>= \h-> BG.getWord64be >>= \l-> return (fromIntegral (((fromIntegral h)*2^64+(fromIntegral l))::Integer))

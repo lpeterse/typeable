@@ -155,6 +155,7 @@ types   = [  t1
            , t100 -- SimpleMeta
            , t101 -- Turn
            , t102 -- SimpleSpeaker
+           , t103 -- SimpleSpeaker
         ]
 
 -----
@@ -195,6 +196,28 @@ t57      = dt {
                                                        , Constructor.fields = [ defaultField
                                                                                { Field.name = "previous"
                                                                                , Field.type_ = Variable First
+                                                                               }
+                                                                             ]
+                                                       }
+                                 ]
+           }
+           }
+
+t103      = dt {
+             identifier   = "964f0aba-d1bd-422f-aaf5-7b6d9938db31"
+           , author       = Nothing
+           , name         = "Tree"
+           , structure    = v1 $ (dt' :: Type (Succ Zero))
+           { semantics    = "Multi-way trees, also known as rose trees."
+           , constructors = Just [
+                                    defaultConstructor { Constructor.name   = "Tree"
+                                                       , Constructor.fields = [ defaultField
+                                                                               { Field.name = "rootLabel"
+                                                                               , Field.type_ = Variable First
+                                                                               }
+                                                                              , defaultField
+                                                                               { Field.name = "subForest"
+                                                                               , Field.type_ = list $ Application (DataType "964f0aba-d1bd-422f-aaf5-7b6d9938db31") (Variable First)
                                                                                }
                                                                              ]
                                                        }

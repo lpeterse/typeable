@@ -96,7 +96,10 @@ instance IsString UUID where
 
 instance PeanoNumber k => IsString (StructuredText (Extension k)) where
   fromString [] = Paragraph M.empty
-  fromString xs = Paragraph $ M.singleton ENG [Plaintext (T.pack xs) False False False False]
+  fromString xs = Paragraph $ M.singleton ENG $ [Plaintext (T.pack xs) False False False False]
+               --   where 
+               --     s = domain :: [k]
+               --     f ('$':x:' ':xs) | (fromEnum x)-(fromEnum 'a')) <= length s =  
 
 instance IsString Designator where
   fromString []     = error "Designator must consist of at least one letter."
