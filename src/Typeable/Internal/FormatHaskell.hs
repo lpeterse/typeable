@@ -74,8 +74,9 @@ typeModule b x
                   iEnum   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Enum")) [Ident "succ", Ident "pred", Ident "toEnum", Ident "fromEnum"]  b dd
                   iShow   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Show")) [Ident "show"]                                                  b dd
                   iRead   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Read")) [Ident "readsPrec"]  b dd
-                  iTypeable <- instanceTypeable b x dd
-                  iBinary   <- instanceBinary   b x dd
+                  iTypeable  <- instanceTypeable   b x dd
+                  iTypeIdent <- instanceTypeIdent b x dd
+                  iBinary    <- instanceBinary     b x dd
                   im <- importMapping
                   let impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
                   let imps2  = [ let s = identifier x `S.member` runGraph (successorsToDepth 5 z) im
@@ -96,14 +97,16 @@ typeModule b x
                                                                                               ])
                                                                  }
                               , impDecl (ModuleName "Prelude")
+                              , impDecl (ModuleName "Data.Tree")
                               , impDecl (ModuleName "Data.Typeable")
                               , impDecl (ModuleName "Data.Typeable.Extra")
                               , impDecl (ModuleName "Data.Binary")
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               , impDecl (ModuleName "Data.EBF")
-                              ]
-                  let decls = [dd, iEq, iOrd, iShow, iBinary, iTypeable] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
+                              , (impDecl $ ModuleName "Typeable.T346674042a7248b4a94abff0726d0c43") { importAs = Just (ModuleName "UUID") }
+                              ] 
+                  let decls = [dd, iEq, iOrd, iShow, iBinary, iTypeable, iTypeIdent] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
                   let mn    = ModuleName $ "Typeable.T"++(show' $ identifier x)
                   return $ Module
                              sl
@@ -231,13 +234,45 @@ instanceTypeable b x (DataDecl _ _ _ n vs cs _)
                                  (Var (dt "mkTyConApp"))
                                  (App
                                    (Var (dt "mkTyCon"))
-                                   (Lit $ String $ "Typeable.T"++(show' $ identifier x))
+                                   (Lit $ String $ "Typeable.T"++(show' $ identifier x)++"."++(show' $ name x))
                                  )
                                )
                                (List []) 
                            )
                            (BDecls [])
                   )       
+
+instanceTypeIdent b x (DataDecl _ _ _ n vs cs _) 
+  = do let k KindStar     = "S"
+           k (KindFn a b) = "A"++(k a)++(k b)
+       let order = concatMap (\(KindedVar _ y)-> k y) vs
+       let dt  x = Qual (ModuleName "Data.EBF") (Ident x)
+       return $ InstDecl 
+                  sl 
+                  []
+                  (dt $ "TypeIdent" ++ order)
+                  [TyCon $ UnQual n]
+                  (if b 
+                    then [] 
+                    else return $ InsDecl $ FunBind $ return $ Match
+                           sl
+                           (Ident $ "typeOf" ++ order)
+                           [PWildCard]
+                           Nothing
+                           (UnGuardedRhs $
+                             App
+                               (App
+                                 (Var $ Qual (ModuleName "Data.Tree") (Ident "Node"))
+                                 (App
+                                   (Var $ Qual (ModuleName "UUID") (Ident "UUID"))
+                                   (Lit $ Int $ toInteger $ uuid $ identifier x)
+                                 )
+                               )
+                               (List []) 
+                           )
+                           (BDecls [])
+                  )       
+
 
 
 instanceBinary b x (DataDecl _ _ _ n vs cs _) 

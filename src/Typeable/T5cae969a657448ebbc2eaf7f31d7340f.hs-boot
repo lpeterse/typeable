@@ -8,12 +8,14 @@ module Typeable.T5cae969a657448ebbc2eaf7f31d7340f where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
  
 data Triple (a :: *) (b :: *) (c :: *)
  
@@ -30,3 +32,5 @@ instance (Data.EBF.EBF a, Data.EBF.EBF b, Data.EBF.EBF c) =>
          Data.EBF.EBF (Triple a b c)
  
 instance Data.Typeable.Typeable3 Triple
+ 
+instance Data.EBF.TypeIdentSSS Triple

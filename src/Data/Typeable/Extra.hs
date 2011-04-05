@@ -10,14 +10,6 @@ import Data.Typeable
 
 data Dummy
 
-typeOf_0       = typeOf1
-typeOf_00      = typeOf2
-typeOf_000     = typeOf3
-typeOf_0000    = typeOf4
-typeOf_00000   = typeOf5
-typeOf_000000  = typeOf6
-typeOf_0000000 = typeOf7
-
 --------------------------------------------------------
 
 class Typeable_1 t where

@@ -8,12 +8,14 @@ module Typeable.Td9eef038b47d0820c160ceb8b6a89943 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
  
 data Either (a :: *) (b :: *) = Left{left :: a}
                               | Right{right :: b}
@@ -45,5 +47,11 @@ instance Data.Typeable.Typeable2 Either where
         typeOf2 _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.Td9eef038b47d0820c160ceb8b6a89943")
+                 "Typeable.Td9eef038b47d0820c160ceb8b6a89943.Either")
+              []
+ 
+instance Data.EBF.TypeIdentSS Either where
+        typeOfSS _
+          = Data.Tree.Node
+              (UUID.UUID 289683114008598466473877021658943363395)
               []

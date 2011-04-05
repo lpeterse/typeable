@@ -8,12 +8,14 @@ module Typeable.T1660b01f08dc4aedbe4c0941584541cb where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
  
 data Kind = KindStar{}
           | KindApplication{function ::
@@ -44,5 +46,10 @@ instance Data.Typeable.Typeable Kind where
         typeOf _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.T1660b01f08dc4aedbe4c0941584541cb")
+                 "Typeable.T1660b01f08dc4aedbe4c0941584541cb.Kind")
+              []
+ 
+instance Data.EBF.TypeIdent Kind where
+        typeOf _
+          = Data.Tree.Node (UUID.UUID 29745048568592970892008165022699438539)
               []

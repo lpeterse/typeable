@@ -8,12 +8,14 @@ module Typeable.T34c13bdaac7d413ed735e64edcac7ff5 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
  
 data Tuple (a :: *) (b :: *) = Tuple{fst :: a, snd :: b}
  
@@ -41,5 +43,10 @@ instance Data.Typeable.Typeable2 Tuple where
         typeOf2 _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.T34c13bdaac7d413ed735e64edcac7ff5")
+                 "Typeable.T34c13bdaac7d413ed735e64edcac7ff5.Tuple")
+              []
+ 
+instance Data.EBF.TypeIdentSS Tuple where
+        typeOfSS _
+          = Data.Tree.Node (UUID.UUID 70123183061801736211235214889260449781)
               []

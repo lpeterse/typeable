@@ -8,12 +8,14 @@ module Typeable.Ta0bbed7211664a319e09dc1c0f97bbd6 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
  
 data Casus = Nominativus{}
            | Genetivus{}
@@ -49,7 +51,13 @@ instance Data.Typeable.Typeable Casus where
         typeOf _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.Ta0bbed7211664a319e09dc1c0f97bbd6")
+                 "Typeable.Ta0bbed7211664a319e09dc1c0f97bbd6.Casus")
+              []
+ 
+instance Data.EBF.TypeIdent Casus where
+        typeOf _
+          = Data.Tree.Node
+              (UUID.UUID 213652254806604050474130919076501371862)
               []
  
 deriving instance Prelude.Enum Casus

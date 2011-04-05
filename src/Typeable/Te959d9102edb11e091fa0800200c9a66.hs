@@ -8,12 +8,14 @@ module Typeable.Te959d9102edb11e091fa0800200c9a66 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
 import qualified Typeable.T0c761f8e757e4ea79d242a01136452d2
 import qualified Typeable.Tdd9cf67a3e2b488daeb9df9c29566a99
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
@@ -44,5 +46,11 @@ instance Data.Typeable.Typeable1 SimpleDialog where
         typeOf1 _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.Te959d9102edb11e091fa0800200c9a66")
+                 "Typeable.Te959d9102edb11e091fa0800200c9a66.SimpleDialog")
+              []
+ 
+instance Data.EBF.TypeIdentS SimpleDialog where
+        typeOfS _
+          = Data.Tree.Node
+              (UUID.UUID 310176640003330740315334744190669855334)
               []

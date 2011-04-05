@@ -8,12 +8,14 @@ module Typeable.Ta9c059006c8d4849af902d3ad12ee3cc where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
 import qualified Typeable.Tbbabbac1510d49aa9da25d8033147c54
 import qualified Typeable.T1a55145e5bd21e8adc14067707192552
  
@@ -44,5 +46,11 @@ instance Data.Typeable.Typeable IP where
         typeOf _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.Ta9c059006c8d4849af902d3ad12ee3cc")
+                 "Typeable.Ta9c059006c8d4849af902d3ad12ee3cc.IP")
+              []
+ 
+instance Data.EBF.TypeIdent IP where
+        typeOf _
+          = Data.Tree.Node
+              (UUID.UUID 225638257452539375395009655003040113612)
               []

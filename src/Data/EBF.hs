@@ -1,5 +1,8 @@
-{-# OPTIONS -XFlexibleInstances #-}
+{-# OPTIONS -XFlexibleInstances -XKindSignatures -XStandaloneDeriving #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Data.EBF where
+
+import Typeable.T346674042a7248b4a94abff0726d0c43
 
 import qualified Data.Binary as B
 import qualified Data.Binary.Put as BP
@@ -11,6 +14,7 @@ import Data.Text.Encoding
 import Data.ByteString
 import Data.Word 
 import Data.Int
+import Data.Tree
 import Data.Ratio
 import Data.LargeWord
 
@@ -18,6 +22,21 @@ class (Ord a) => EBF a where
   put :: a -> B.Put
   get :: B.Get a
 
+deriving instance (Ord a) => Ord (Tree a)
+
+---------------------------------------
+
+instance EBF UUID where
+        get
+          = do index <- return 0
+               case index of
+                   0 -> (>>=) get (\ a0 -> return (UUID a0))
+        put (UUID a) = do put a
+
+instance (EBF a) => EBF (Tree a) where
+  put (Node a b) = put a >> put b
+  get            = get >>= \a-> get >>= \b-> return (Node a b) 
+ 
 instance EBF Bool where
   put False = BP.putWord8 0
   put True  = BP.putWord8 1
@@ -114,3 +133,112 @@ instance EBF Word64 where
 instance EBF (LargeKey Word64 Word64) where
   put x = BP.putWord64be (hiHalf x) >> BP.putWord64be (loHalf x)
   get   = BG.getWord64be >>= \h-> BG.getWord64be >>= \l-> return (fromIntegral (((fromIntegral h)*2^64+(fromIntegral l))::Integer))
+
+-------------------------------------------
+
+applyTo    :: Tree a -> Tree a -> Tree a
+applyTo x y = x { subForest = (subForest x) ++ [y] } 
+
+class TypeIdent a where
+  typeOf :: a -> Tree UUID
+
+class TypeIdentS t where
+  typeOfS :: t a -> Tree UUID
+
+class TypeIdentASS t where
+  typeOfASS :: t (a :: * -> * ) -> Tree UUID
+
+class TypeIdentSS t where
+  typeOfSS :: t a b -> Tree UUID
+
+class TypeIdentSSS t where
+  typeOfSSS :: t a b c -> Tree UUID
+
+class TypeIdentSSSS t where
+  typeOfSSSS :: t a b c d -> Tree UUID
+
+class TypeIdentSSSSS t where
+  typeOfSSSSS :: t a b c d e -> Tree UUID
+
+class TypeIdentSSSSSS t where
+  typeOfSSSSSS :: t a b c d e f -> Tree UUID
+
+class TypeIdentSSSSSSS t where
+  typeOfSSSSSSS :: t a b c d e f g -> Tree UUID
+
+-----------------------------------------------
+
+typeOfSDefault :: forall t a. (TypeIdentS t, TypeIdent a) => t a -> Tree UUID
+typeOfSDefault = \_ -> rep
+ where
+   rep = typeOfS (undefined :: t a) `applyTo` 
+         typeOf  (undefined :: a)
+
+typeOfASSDefault :: forall t a. (TypeIdentASS t, TypeIdentS a) => t a -> Tree UUID
+typeOfASSDefault = \_ -> rep
+ where
+   rep = typeOfASS (undefined :: t a) `applyTo` 
+         typeOfS  (undefined :: a ())
+
+typeOfSSDefault :: forall t a b. (TypeIdentSS t, TypeIdent a) => t a b -> Tree UUID
+typeOfSSDefault = \_ -> rep 
+ where
+   rep = typeOfSS (undefined :: t a b) `applyTo` 
+         typeOf  (undefined :: a)
+
+typeOfSSSDefault :: forall t a b c. (TypeIdentSSS t, TypeIdent a) => t a b c -> Tree UUID
+typeOfSSSDefault = \_ -> rep 
+ where
+   rep = typeOfSSS (undefined :: t a b c) `applyTo` 
+         typeOf  (undefined :: a)
+
+typeOfSSSSDefault :: forall t a b c d. (TypeIdentSSSS t, TypeIdent a) => t a b c d -> Tree UUID
+typeOfSSSSDefault = \_ -> rep
+ where
+   rep = typeOfSSSS (undefined :: t a b c d) `applyTo` 
+         typeOf  (undefined :: a)
+   
+typeOfSSSSSDefault :: forall t a b c d e. (TypeIdentSSSSS t, TypeIdent a) => t a b c d e -> Tree UUID
+typeOfSSSSSDefault = \_ -> rep 
+ where
+   rep = typeOfSSSSS (undefined :: t a b c d e) `applyTo` 
+         typeOf  (undefined :: a)
+
+typeOfSSSSSSDefault :: forall t a b c d e f. (TypeIdentSSSSSS t, TypeIdent a) => t a b c d e f -> Tree UUID
+typeOfSSSSSSDefault = \_ -> rep
+ where
+   rep = typeOfSSSSSS (undefined :: t a b c d e f) `applyTo` 
+         typeOf  (undefined :: a)
+
+typeOfSSSSSSSDefault :: forall t a b c d e f g. (TypeIdentSSSSSSS t, TypeIdent a) => t a b c d e f g -> Tree UUID
+typeOfSSSSSSSDefault = \_ -> rep
+ where
+   rep = typeOfSSSSSSS (undefined :: t a b c d e f g) `applyTo` 
+         typeOf  (undefined :: a)
+
+----------------------------------
+
+instance (TypeIdentS s, TypeIdent a) => TypeIdent (s a) where
+  typeOf = typeOfSDefault
+
+instance (TypeIdentASS s, TypeIdentS a) => TypeIdent (s a) where
+  typeOf = typeOfASSDefault
+
+instance (TypeIdentSS s, TypeIdent a) => TypeIdentS (s a) where
+  typeOfS = typeOfSSDefault
+
+instance (TypeIdentSSS s, TypeIdent a) => TypeIdentSS (s a) where
+  typeOfSS = typeOfSSSDefault
+
+instance (TypeIdentSSSS s, TypeIdent a) => TypeIdentSSS (s a) where
+  typeOfSSS = typeOfSSSSDefault
+
+instance (TypeIdentSSSSS s, TypeIdent a) => TypeIdentSSSS (s a) where
+  typeOfSSSS = typeOfSSSSSDefault
+
+instance (TypeIdentSSSSSS s, TypeIdent a) => TypeIdentSSSSS (s a) where
+  typeOfSSSSS = typeOfSSSSSSDefault
+
+instance (TypeIdentSSSSSSS s, TypeIdent a) => TypeIdentSSSSSS (s a) where
+  typeOfSSSSSS = typeOfSSSSSSSDefault
+

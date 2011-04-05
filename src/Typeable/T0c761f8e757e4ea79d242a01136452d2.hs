@@ -8,12 +8,14 @@ module Typeable.T0c761f8e757e4ea79d242a01136452d2 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
  
 data SimpleMeta = SimpleMeta{name ::
@@ -40,5 +42,10 @@ instance Data.Typeable.Typeable SimpleMeta where
         typeOf _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.T0c761f8e757e4ea79d242a01136452d2")
+                 "Typeable.T0c761f8e757e4ea79d242a01136452d2.SimpleMeta")
+              []
+ 
+instance Data.EBF.TypeIdent SimpleMeta where
+        typeOf _
+          = Data.Tree.Node (UUID.UUID 16564067020185332601215325944102015698)
               []

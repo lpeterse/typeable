@@ -8,12 +8,14 @@ module Typeable.T335b76330e724b64a5256190fb579dad where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
  
 data Authority
  
@@ -26,3 +28,5 @@ instance Prelude.Show Authority
 instance Data.EBF.EBF Authority
  
 instance Data.Typeable.Typeable Authority
+ 
+instance Data.EBF.TypeIdent Authority

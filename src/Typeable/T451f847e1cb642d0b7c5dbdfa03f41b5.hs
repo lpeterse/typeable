@@ -8,12 +8,14 @@ module Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Tree
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
 import qualified Typeable.Tf8f49ef6bbe874a42926fa23d5b3bc19
 import qualified Typeable.T3819884685d34bf19b3469304e15983d
 import qualified Typeable.T421496848904471ea3197f25e2a02b72
@@ -96,5 +98,10 @@ instance Data.Typeable.Extra.Typeable_1 Definition where
         typeOf_1 _
           = Data.Typeable.mkTyConApp
               (Data.Typeable.mkTyCon
-                 "Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5")
+                 "Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5.Definition")
+              []
+ 
+instance Data.EBF.TypeIdentASS Definition where
+        typeOfASS _
+          = Data.Tree.Node (UUID.UUID 91880380181475854005170023564383830453)
               []
