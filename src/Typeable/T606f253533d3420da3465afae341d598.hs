@@ -8,6 +8,8 @@ module Typeable.T606f253533d3420da3465afae341d598 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -29,3 +31,10 @@ instance (Data.EBF.EBF a) => Data.EBF.EBF (Time a) where
                case index of
                    0 -> (>>=) Data.EBF.get (\ a0 -> return (Time a0))
         put (Time a) = do Data.EBF.put a
+ 
+instance Data.Typeable.Typeable1 Time where
+        typeOf1 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T606f253533d3420da3465afae341d598")
+              []

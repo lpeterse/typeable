@@ -8,6 +8,8 @@ module Typeable.T6716d098a58743379e54c12f249cdc0c where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -102,5 +104,12 @@ instance Data.EBF.EBF LatinAlphabet where
         put X = do Data.Binary.Put.putWord8 23
         put Y = do Data.Binary.Put.putWord8 24
         put Z = do Data.Binary.Put.putWord8 25
+ 
+instance Data.Typeable.Typeable LatinAlphabet where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T6716d098a58743379e54c12f249cdc0c")
+              []
  
 deriving instance Prelude.Enum LatinAlphabet

@@ -8,6 +8,8 @@ module Typeable.Tf2c4f6ddd939444ba209fbdf2152eb54 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -47,3 +49,10 @@ instance Data.EBF.EBF SchemeSymbol where
         put Plus = do Data.Binary.Put.putWord8 2
         put Minus = do Data.Binary.Put.putWord8 3
         put FullStop = do Data.Binary.Put.putWord8 4
+ 
+instance Data.Typeable.Typeable SchemeSymbol where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Tf2c4f6ddd939444ba209fbdf2152eb54")
+              []

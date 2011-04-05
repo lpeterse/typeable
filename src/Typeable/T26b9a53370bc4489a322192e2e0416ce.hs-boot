@@ -8,6 +8,8 @@ module Typeable.T26b9a53370bc4489a322192e2e0416ce where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -22,3 +24,5 @@ instance Prelude.Ord SimpleSpeaker
 instance Prelude.Show SimpleSpeaker
  
 instance Data.EBF.EBF SimpleSpeaker
+ 
+instance Data.Typeable.Typeable SimpleSpeaker

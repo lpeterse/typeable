@@ -8,6 +8,8 @@ module Typeable.T5cae969a657448ebbc2eaf7f31d7340f where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -39,3 +41,10 @@ instance (Data.EBF.EBF a, Data.EBF.EBF b, Data.EBF.EBF c) =>
           = do Data.EBF.put a
                Data.EBF.put b
                Data.EBF.put c
+ 
+instance Data.Typeable.Typeable3 Triple where
+        typeOf3 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T5cae969a657448ebbc2eaf7f31d7340f")
+              []

@@ -8,6 +8,8 @@ module Typeable.T6ffbfb8682ad4f6a89d73e6d36c8fc7a where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -31,3 +33,10 @@ instance Data.EBF.EBF AbsolutePath where
                case index of
                    0 -> (>>=) Data.EBF.get (\ a0 -> return (AbsolutePath a0))
         put (AbsolutePath a) = do Data.EBF.put a
+ 
+instance Data.Typeable.Typeable AbsolutePath where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T6ffbfb8682ad4f6a89d73e6d36c8fc7a")
+              []

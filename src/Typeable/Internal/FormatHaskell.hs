@@ -74,7 +74,8 @@ typeModule b x
                   iEnum   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Enum")) [Ident "succ", Ident "pred", Ident "toEnum", Ident "fromEnum"]  b dd
                   iShow   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Show")) [Ident "show"]                                                  b dd
                   iRead   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Read")) [Ident "readsPrec"]  b dd
-                  iBinary <- instanceBinary b x dd
+                  iTypeable <- instanceTypeable b x dd
+                  iBinary   <- instanceBinary   b x dd
                   im <- importMapping
                   let impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
                   let imps2  = [ let s = identifier x `S.member` runGraph (successorsToDepth 5 z) im
@@ -95,12 +96,14 @@ typeModule b x
                                                                                               ])
                                                                  }
                               , impDecl (ModuleName "Prelude")
+                              , impDecl (ModuleName "Data.Typeable")
+                              , impDecl (ModuleName "Data.Typeable.Extra")
                               , impDecl (ModuleName "Data.Binary")
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               , impDecl (ModuleName "Data.EBF")
                               ]
-                  let decls = [dd, iEq, iOrd, iShow, iBinary] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
+                  let decls = [dd, iEq, iOrd, iShow, iBinary, iTypeable] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
                   let mn    = ModuleName $ "Typeable.T"++(show' $ identifier x)
                   return $ Module
                              sl
@@ -201,6 +204,41 @@ instanceOf cn cms b (DataDecl _ _ _ n vs cs _)
                             then [] 
                             else map (\cm-> InsDecl $ FunBind $ return $ Match sl cm [] Nothing (UnGuardedRhs $ Var $ UnQual $ Ident "undefined") (BDecls [])) cms
                          )
+
+instanceTypeable b x (DataDecl _ _ _ n vs cs _) 
+  = do let kindCount KindStar     = 0 :: Int
+           kindCount (KindFn _ k) = 1+(kindCount k)
+       let vcs   = map (\(KindedVar _ k)-> kindCount k) vs
+       let dt  x = Qual (ModuleName "Data.Typeable") (Ident x)
+       let dte x = Qual (ModuleName $ "Data.Typeable" ++ (if all (==0) vcs then "" else ".Extra")) (Ident x)
+       let order | all (==0) vcs = if null vcs then "" else show $ length vcs 
+                 | otherwise     = "_"++(concatMap show vcs)
+       return $ InstDecl 
+                  sl 
+                  []
+                  (dte $ "Typeable" ++ order)
+                  [TyCon $ UnQual n]
+                  (if b 
+                    then [] 
+                    else return $ InsDecl $ FunBind $ return $ Match
+                           sl
+                           (Ident $ "typeOf" ++ order)
+                           [PWildCard]
+                           Nothing
+                           (UnGuardedRhs $
+                             App
+                               (App
+                                 (Var (dt "mkTyConApp"))
+                                 (App
+                                   (Var (dt "mkTyCon"))
+                                   (Lit $ String $ "Typeable.T"++(show' $ identifier x))
+                                 )
+                               )
+                               (List []) 
+                           )
+                           (BDecls [])
+                  )       
+
 
 instanceBinary b x (DataDecl _ _ _ n vs cs _) 
   = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 

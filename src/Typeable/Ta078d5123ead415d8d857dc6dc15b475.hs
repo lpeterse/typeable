@@ -8,6 +8,8 @@ module Typeable.Ta078d5123ead415d8d857dc6dc15b475 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -31,3 +33,10 @@ instance Data.EBF.EBF RootlessPath where
                case index of
                    0 -> (>>=) Data.EBF.get (\ a0 -> return (RootlessPath a0))
         put (RootlessPath a) = do Data.EBF.put a
+ 
+instance Data.Typeable.Typeable RootlessPath where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Ta078d5123ead415d8d857dc6dc15b475")
+              []

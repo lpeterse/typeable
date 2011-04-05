@@ -8,6 +8,8 @@ module Typeable.T2c62454c586f4bdea5e2b17e432db245 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -48,3 +50,10 @@ instance (Data.EBF.EBF a) => Data.EBF.EBF (Extension a) where
         put Function = do Data.Binary.Put.putWord8 5
         put Constraint = do Data.Binary.Put.putWord8 6
         put Expression = do Data.Binary.Put.putWord8 7
+ 
+instance Data.Typeable.Typeable1 Extension where
+        typeOf1 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T2c62454c586f4bdea5e2b17e432db245")
+              []

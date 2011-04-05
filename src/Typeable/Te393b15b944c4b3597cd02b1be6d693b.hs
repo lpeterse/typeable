@@ -8,6 +8,8 @@ module Typeable.Te393b15b944c4b3597cd02b1be6d693b where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -44,3 +46,10 @@ instance Data.EBF.EBF URI where
                Data.EBF.put b
                Data.EBF.put c
                Data.EBF.put d
+ 
+instance Data.Typeable.Typeable URI where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Te393b15b944c4b3597cd02b1be6d693b")
+              []

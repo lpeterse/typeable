@@ -8,6 +8,8 @@ module Typeable.T9231d77f8da7460e976d7c5e4ff9b31b where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -30,5 +32,12 @@ instance Data.EBF.EBF Pattern where
                    1 -> return Constructor
         put MatchAll = do Data.Binary.Put.putWord8 0
         put Constructor = do Data.Binary.Put.putWord8 1
+ 
+instance Data.Typeable.Typeable Pattern where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T9231d77f8da7460e976d7c5e4ff9b31b")
+              []
  
 deriving instance Prelude.Enum Pattern

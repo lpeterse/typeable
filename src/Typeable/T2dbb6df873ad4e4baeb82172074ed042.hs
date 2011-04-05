@@ -8,6 +8,8 @@ module Typeable.T2dbb6df873ad4e4baeb82172074ed042 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -30,5 +32,12 @@ instance Data.EBF.EBF Gender where
                    1 -> return Female
         put Male = do Data.Binary.Put.putWord8 0
         put Female = do Data.Binary.Put.putWord8 1
+ 
+instance Data.Typeable.Typeable Gender where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T2dbb6df873ad4e4baeb82172074ed042")
+              []
  
 deriving instance Prelude.Enum Gender

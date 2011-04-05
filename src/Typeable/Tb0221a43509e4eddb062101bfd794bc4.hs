@@ -8,6 +8,8 @@ module Typeable.Tb0221a43509e4eddb062101bfd794bc4 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -77,3 +79,10 @@ instance (Data.EBF.EBF a) => Data.EBF.EBF (StructuredText a) where
         put (TitledList a)
           = do Data.Binary.Put.putWord8 4
                Data.EBF.put a
+ 
+instance Data.Typeable.Typeable1 StructuredText where
+        typeOf1 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Tb0221a43509e4eddb062101bfd794bc4")
+              []

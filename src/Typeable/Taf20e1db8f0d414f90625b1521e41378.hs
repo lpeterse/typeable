@@ -8,6 +8,8 @@ module Typeable.Taf20e1db8f0d414f90625b1521e41378 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -1479,5 +1481,12 @@ instance Data.EBF.EBF Language where
         put ZUN = do Data.Binary.Put.putWord16be 482
         put ZXX = do Data.Binary.Put.putWord16be 483
         put ZZA = do Data.Binary.Put.putWord16be 484
+ 
+instance Data.Typeable.Typeable Language where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Taf20e1db8f0d414f90625b1521e41378")
+              []
  
 deriving instance Prelude.Enum Language

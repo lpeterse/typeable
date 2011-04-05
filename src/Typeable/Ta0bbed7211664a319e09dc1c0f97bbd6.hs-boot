@@ -8,6 +8,8 @@ module Typeable.Ta0bbed7211664a319e09dc1c0f97bbd6 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -22,5 +24,7 @@ instance Prelude.Ord Casus
 instance Prelude.Show Casus
  
 instance Data.EBF.EBF Casus
+ 
+instance Data.Typeable.Typeable Casus
  
 instance Prelude.Enum Casus

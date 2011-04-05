@@ -8,6 +8,8 @@ module Typeable.T1566edb1a4de4aab8106e63293e9bfcf where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -50,3 +52,10 @@ instance Data.EBF.EBF Symbol where
                Data.EBF.put a
         put Underscore = do Data.Binary.Put.putWord8 3
         put Prime = do Data.Binary.Put.putWord8 4
+ 
+instance Data.Typeable.Typeable Symbol where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T1566edb1a4de4aab8106e63293e9bfcf")
+              []

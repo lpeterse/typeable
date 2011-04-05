@@ -8,6 +8,8 @@ module Typeable.Ta384955f99d4401ca54a3f9c62b78d0a where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -30,5 +32,12 @@ instance Data.EBF.EBF Numerus where
                    1 -> return Pluralis
         put Singularis = do Data.Binary.Put.putWord8 0
         put Pluralis = do Data.Binary.Put.putWord8 1
+ 
+instance Data.Typeable.Typeable Numerus where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Ta384955f99d4401ca54a3f9c62b78d0a")
+              []
  
 deriving instance Prelude.Enum Numerus

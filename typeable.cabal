@@ -43,7 +43,8 @@ Library
                   old-locale,     
                   parsec >= 3.0.0
  hs-source-dirs:  src
- Exposed-Modules: Data.EBF
+ Exposed-Modules: Data.EBF,
+                  Data.Typeable.Extra,
                   Typeable.Internal.FormatHtml, 
                   Typeable.Internal.Types, 
                   Typeable.Internal.Classes, 

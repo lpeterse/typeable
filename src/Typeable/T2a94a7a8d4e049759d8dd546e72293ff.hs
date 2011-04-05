@@ -8,6 +8,8 @@ module Typeable.T2a94a7a8d4e049759d8dd546e72293ff where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -35,3 +37,10 @@ instance (Data.EBF.EBF a) => Data.EBF.EBF (Constraint a) where
         put (Constraint a b)
           = do Data.EBF.put a
                Data.EBF.put b
+ 
+instance Data.Typeable.Typeable1 Constraint where
+        typeOf1 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T2a94a7a8d4e049759d8dd546e72293ff")
+              []

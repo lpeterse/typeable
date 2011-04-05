@@ -8,6 +8,8 @@ module Typeable.Ted098cc975df4cd0adb99a5b7dc48600 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -27,6 +29,13 @@ instance Prelude.Show Mailto where
 instance Data.EBF.EBF Mailto where
         get = undefined
         put = undefined
+ 
+instance Data.Typeable.Typeable Mailto where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Ted098cc975df4cd0adb99a5b7dc48600")
+              []
  
 instance Prelude.Enum Mailto where
         succ = undefined

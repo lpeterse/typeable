@@ -8,6 +8,8 @@ module Typeable.Ta9c059006c8d4849af902d3ad12ee3cc where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -37,3 +39,10 @@ instance Data.EBF.EBF IP where
         put (IPv4 a)
           = do Data.Binary.Put.putWord8 1
                Data.EBF.put a
+ 
+instance Data.Typeable.Typeable IP where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Ta9c059006c8d4849af902d3ad12ee3cc")
+              []

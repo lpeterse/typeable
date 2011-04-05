@@ -8,6 +8,8 @@ module Typeable.T2c62454c586f4bdea5e2b17e432db245 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -22,3 +24,5 @@ instance (Prelude.Ord a) => Prelude.Ord (Extension a)
 instance (Prelude.Show a) => Prelude.Show (Extension a)
  
 instance (Data.EBF.EBF a) => Data.EBF.EBF (Extension a)
+ 
+instance Data.Typeable.Typeable1 Extension

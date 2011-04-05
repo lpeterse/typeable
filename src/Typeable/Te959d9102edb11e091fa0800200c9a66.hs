@@ -8,6 +8,8 @@ module Typeable.Te959d9102edb11e091fa0800200c9a66 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -37,3 +39,10 @@ instance (Data.EBF.EBF a) => Data.EBF.EBF (SimpleDialog a) where
         put (SimpleDialog a b)
           = do Data.EBF.put a
                Data.EBF.put b
+ 
+instance Data.Typeable.Typeable1 SimpleDialog where
+        typeOf1 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Te959d9102edb11e091fa0800200c9a66")
+              []

@@ -8,6 +8,8 @@ module Typeable.Ta0bbed7211664a319e09dc1c0f97bbd6 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -42,5 +44,12 @@ instance Data.EBF.EBF Casus where
         put Accusativus = do Data.Binary.Put.putWord8 3
         put Ablativus = do Data.Binary.Put.putWord8 4
         put Vocativus = do Data.Binary.Put.putWord8 5
+ 
+instance Data.Typeable.Typeable Casus where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Ta0bbed7211664a319e09dc1c0f97bbd6")
+              []
  
 deriving instance Prelude.Enum Casus

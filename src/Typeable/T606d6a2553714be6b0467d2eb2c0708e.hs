@@ -8,6 +8,8 @@ module Typeable.T606d6a2553714be6b0467d2eb2c0708e where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -27,6 +29,13 @@ instance Prelude.Show Concrete where
 instance Data.EBF.EBF Concrete where
         get = undefined
         put = undefined
+ 
+instance Data.Typeable.Typeable Concrete where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T606d6a2553714be6b0467d2eb2c0708e")
+              []
  
 instance Prelude.Enum Concrete where
         succ = undefined

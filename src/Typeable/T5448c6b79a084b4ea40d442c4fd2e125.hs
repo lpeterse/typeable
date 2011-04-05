@@ -8,6 +8,8 @@ module Typeable.T5448c6b79a084b4ea40d442c4fd2e125 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -38,3 +40,10 @@ instance Data.EBF.EBF Path where
         put (RootlessPath a)
           = do Data.Binary.Put.putWord8 1
                Data.EBF.put a
+ 
+instance Data.Typeable.Typeable Path where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T5448c6b79a084b4ea40d442c4fd2e125")
+              []

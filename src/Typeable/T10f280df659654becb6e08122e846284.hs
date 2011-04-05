@@ -8,6 +8,8 @@ module Typeable.T10f280df659654becb6e08122e846284 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -27,5 +29,12 @@ instance Data.EBF.EBF Unit where
                case index of
                    0 -> return Unit
         put Unit = return ()
+ 
+instance Data.Typeable.Typeable Unit where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T10f280df659654becb6e08122e846284")
+              []
  
 deriving instance Prelude.Enum Unit

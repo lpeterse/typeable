@@ -17,13 +17,14 @@ main  = do args <- getArgs
              (x,      s) -> error $ "Can't download type listing: "++(show (x,s))
         where
           f h (n,x) = do writeFile ("src/Typeable/T"++n++".hs") x
+                         putStr $ "Download bootfile of type "++n++": "
                          (c,y) <- curlGetString ("http://"++h++"/type/"++n++"?format=haskell-boot") []
                          case c of 
-                           CurlOK -> writeFile ("src/Typeable/T"++n++".hs-boot") y
-                           _      -> return ()
+                           CurlOK -> writeFile ("src/Typeable/T"++n++".hs-boot") y >> putStrLn "OK"
+                           _      -> putStrLn "Not available"
 
 download   :: String -> [String] -> IO [String]
-download h xs = do ys <- mapM (\x->curlGetString ("http://"++h++"/type/"++x++"?format=haskell") []) xs
+download h xs = do ys <- mapM (\x->(putStrLn $ "Download sourcefile of type "++x++": ") >> curlGetString ("http://"++h++"/type/"++x++"?format=haskell") []) xs
                    if all ((==CurlOK) . fst) ys 
                      then return $ map snd ys
                      else (mapM_ f $ filter ((/=CurlOK) . fst . fst) (zip ys xs)) >> error ""

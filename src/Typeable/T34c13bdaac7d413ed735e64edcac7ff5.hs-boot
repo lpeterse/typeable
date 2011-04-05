@@ -8,6 +8,8 @@ module Typeable.T34c13bdaac7d413ed735e64edcac7ff5 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -24,3 +26,5 @@ instance (Prelude.Show a, Prelude.Show b) => Prelude.Show
  
 instance (Data.EBF.EBF a, Data.EBF.EBF b) => Data.EBF.EBF
          (Tuple a b)
+ 
+instance Data.Typeable.Typeable2 Tuple

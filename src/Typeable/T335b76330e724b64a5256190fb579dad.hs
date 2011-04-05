@@ -8,6 +8,8 @@ module Typeable.T335b76330e724b64a5256190fb579dad where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -42,3 +44,10 @@ instance Data.EBF.EBF Authority where
           = do Data.EBF.put a
                Data.EBF.put b
                Data.EBF.put c
+ 
+instance Data.Typeable.Typeable Authority where
+        typeOf _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.T335b76330e724b64a5256190fb579dad")
+              []

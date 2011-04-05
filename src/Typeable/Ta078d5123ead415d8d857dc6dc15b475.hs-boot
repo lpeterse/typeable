@@ -8,6 +8,8 @@ module Typeable.Ta078d5123ead415d8d857dc6dc15b475 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -22,3 +24,5 @@ instance Prelude.Ord RootlessPath
 instance Prelude.Show RootlessPath
  
 instance Data.EBF.EBF RootlessPath
+ 
+instance Data.Typeable.Typeable RootlessPath

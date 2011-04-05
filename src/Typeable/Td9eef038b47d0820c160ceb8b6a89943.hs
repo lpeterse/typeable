@@ -8,6 +8,8 @@ module Typeable.Td9eef038b47d0820c160ceb8b6a89943 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -38,3 +40,10 @@ instance (Data.EBF.EBF a, Data.EBF.EBF b) => Data.EBF.EBF
         put (Right a)
           = do Data.Binary.Put.putWord8 1
                Data.EBF.put a
+ 
+instance Data.Typeable.Typeable2 Either where
+        typeOf2 _
+          = Data.Typeable.mkTyConApp
+              (Data.Typeable.mkTyCon
+                 "Typeable.Td9eef038b47d0820c160ceb8b6a89943")
+              []

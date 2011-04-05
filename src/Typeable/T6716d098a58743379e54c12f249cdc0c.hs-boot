@@ -8,6 +8,8 @@ module Typeable.T6716d098a58743379e54c12f249cdc0c where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
+import qualified Data.Typeable
+import qualified Data.Typeable.Extra
 import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
@@ -22,5 +24,7 @@ instance Prelude.Ord LatinAlphabet
 instance Prelude.Show LatinAlphabet
  
 instance Data.EBF.EBF LatinAlphabet
+ 
+instance Data.Typeable.Typeable LatinAlphabet
  
 instance Prelude.Enum LatinAlphabet
