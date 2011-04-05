@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T34c13bdaac7d413ed735e64edcac7ff5 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Tuple (a :: *) (b :: *) = Tuple{fst :: a, snd :: b}
  
@@ -28,8 +29,9 @@ deriving instance (Prelude.Ord a, Prelude.Ord b) => Prelude.Ord
 deriving instance (Prelude.Show a, Prelude.Show b) => Prelude.Show
          (Tuple a b)
  
-instance (Data.EBF.EBF a, Data.EBF.EBF b) => Data.EBF.EBF
-         (Tuple a b) where
+instance (Data.EBF.EBF a, Data.EBF.EBF b, Data.EBF.TypeIdent a,
+          Data.EBF.TypeIdent b) =>
+         Data.EBF.EBF (Tuple a b) where
         get
           = do index <- return 0
                case index of
@@ -48,5 +50,4 @@ instance Data.Typeable.Typeable2 Tuple where
  
 instance Data.EBF.TypeIdentSS Tuple where
         typeOfSS _
-          = Data.Tree.Node (UUID.UUID 70123183061801736211235214889260449781)
-              []
+          = Data.Tree.Node "34c13bda-ac7d-413e-d735-e64edcac7ff5" []

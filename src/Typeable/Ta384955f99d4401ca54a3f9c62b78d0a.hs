@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Ta384955f99d4401ca54a3f9c62b78d0a where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Numerus = Singularis{}
              | Pluralis{}
@@ -43,9 +44,6 @@ instance Data.Typeable.Typeable Numerus where
               []
  
 instance Data.EBF.TypeIdent Numerus where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 217352576151582069020590052594798791946)
-              []
+        typeOf _ = Data.Tree.Node "a384955f-99d4-401c-a54a-3f9c62b78d0a" []
  
 deriving instance Prelude.Enum Numerus

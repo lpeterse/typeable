@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Ta9c059006c8d4849af902d3ad12ee3cc where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,9 +16,9 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-import qualified Typeable.Tbbabbac1510d49aa9da25d8033147c54
+import Data.String
 import qualified Typeable.T1a55145e5bd21e8adc14067707192552
+import qualified Typeable.Tbbabbac1510d49aa9da25d8033147c54
  
 data IP = IPv6{ipv6 ::
                Typeable.Tbbabbac1510d49aa9da25d8033147c54.Word128}
@@ -50,7 +51,4 @@ instance Data.Typeable.Typeable IP where
               []
  
 instance Data.EBF.TypeIdent IP where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 225638257452539375395009655003040113612)
-              []
+        typeOf _ = Data.Tree.Node "a9c05900-6c8d-4849-af90-2d3ad12ee3cc" []

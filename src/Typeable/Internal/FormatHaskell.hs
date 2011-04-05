@@ -4,7 +4,6 @@ module Typeable.Internal.FormatHaskell where
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
-import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
 import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field --Field
 import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor --Constructor
@@ -14,6 +13,7 @@ import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 import Data.List
 import Data.String
 import Data.Char
+import Data.UUID hiding (null)
 
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -104,7 +104,7 @@ typeModule b x
                               , impDecl (ModuleName "Data.Binary.Put")
                               , impDecl (ModuleName "Data.Binary.Get")
                               , impDecl (ModuleName "Data.EBF")
-                              , (impDecl $ ModuleName "Typeable.T346674042a7248b4a94abff0726d0c43") { importAs = Just (ModuleName "UUID") }
+                              , (impDecl $ ModuleName "Data.String") { importQualified = False }
                               ] 
                   let decls = [dd, iEq, iOrd, iShow, iBinary, iTypeable, iTypeIdent] ++[iEnum | not $ nonNullaryConstructors x, null $ variables $ structure x]
                   let mn    = ModuleName $ "Typeable.T"++(show' $ identifier x)
@@ -118,6 +118,7 @@ typeModule b x
                              , OptionsPragma sl Nothing "-XFlexibleContexts"
                              , OptionsPragma sl Nothing "-XUndecidableInstances"
                              , OptionsPragma sl Nothing "-XStandaloneDeriving"
+                             , OptionsPragma sl Nothing "-XOverloadedStrings"
                              --, OptionsPragma sl Nothing "-XGeneralizedNewtypeDeriving"
                              ]                           -- [OptionPragma]
                              Nothing                     -- Maybe WarningText
@@ -263,10 +264,7 @@ instanceTypeIdent b x (DataDecl _ _ _ n vs cs _)
                              App
                                (App
                                  (Var $ Qual (ModuleName "Data.Tree") (Ident "Node"))
-                                 (App
-                                   (Var $ Qual (ModuleName "UUID") (Ident "UUID"))
-                                   (Lit $ Int $ toInteger $ uuid $ identifier x)
-                                 )
+                                 (Lit $ String $ Data.UUID.toString $ identifier x)
                                )
                                (List []) 
                            )
@@ -331,9 +329,15 @@ instanceBinary b x (DataDecl _ _ _ n vs cs _)
                       (map f [0..((length cs)-1)])
        let puts | null cs   = return $ InsDecl $ FunBind $ return $ Match sl (Ident "put") [] Nothing (UnGuardedRhs $ Var $ UnQual $ Ident "undefined") (BDecls [])
                 | otherwise = map u $ zip [0..] cs
+
+       let k KindStar     = "S"
+           k (KindFn a b) = "A"++(k a)++(k b)
+           k' KindStar    = ""
+           k' (KindFn a _) = k a
+       let idents         = map (\(KindedVar n y)-> ClassA (Qual (ModuleName "Data.EBF") (Ident $ "TypeIdent" ++ (k' y))) [TyVar n]) vs
        return $ InstDecl 
                   sl 
-                  (map (\t-> ClassA (Qual (ModuleName "Data.EBF") (Ident "EBF")) [t]) ctxTypes)
+                  ((map (\t-> ClassA (Qual (ModuleName "Data.EBF") (Ident "EBF")) [t]) ctxTypes)++idents)
                   (Qual (ModuleName "Data.EBF") (Ident "EBF"))
                   [foldl TyApp (TyCon $ UnQual n) vs']
                   (if b then [] else get:puts)

@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Tf4b6d72c609d4003ba98917f8c56a678 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Ordering = LT{}
               | EQ{}
@@ -46,9 +47,6 @@ instance Data.Typeable.Typeable Ordering where
               []
  
 instance Data.EBF.TypeIdent Ordering where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 325280993233777411950462891736228603512)
-              []
+        typeOf _ = Data.Tree.Node "f4b6d72c-609d-4003-ba98-917f8c56a678" []
  
 deriving instance Prelude.Enum Ordering

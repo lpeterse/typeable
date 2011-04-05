@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T3819884685d34bf19b3469304e15983d where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
 import qualified Typeable.T53e0d483a64144259dce752799d64305
 import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
@@ -50,6 +51,4 @@ instance Data.Typeable.Typeable Person where
               []
  
 instance Data.EBF.TypeIdent Person where
-        typeOf _
-          = Data.Tree.Node (UUID.UUID 74569339180513080487520543472690239549)
-              []
+        typeOf _ = Data.Tree.Node "38198846-85d3-4bf1-9b34-69304e15983d" []

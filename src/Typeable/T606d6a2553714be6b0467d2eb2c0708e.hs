@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T606d6a2553714be6b0467d2eb2c0708e where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Concrete
  
@@ -40,10 +41,7 @@ instance Data.Typeable.Typeable Concrete where
               []
  
 instance Data.EBF.TypeIdent Concrete where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 128174000845616442980848154672613060750)
-              []
+        typeOf _ = Data.Tree.Node "606d6a25-5371-4be6-b046-7d2eb2c0708e" []
  
 instance Prelude.Enum Concrete where
         succ = undefined

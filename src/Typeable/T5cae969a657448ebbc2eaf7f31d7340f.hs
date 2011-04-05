@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T5cae969a657448ebbc2eaf7f31d7340f where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Triple (a :: *) (b :: *) (c :: *) = Triple{fst :: a, snd :: b,
                                                 thrd :: c}
@@ -30,7 +31,9 @@ deriving instance
          (Prelude.Show a, Prelude.Show b, Prelude.Show c) => Prelude.Show
          (Triple a b c)
  
-instance (Data.EBF.EBF a, Data.EBF.EBF b, Data.EBF.EBF c) =>
+instance (Data.EBF.EBF a, Data.EBF.EBF b, Data.EBF.EBF c,
+          Data.EBF.TypeIdent a, Data.EBF.TypeIdent b,
+          Data.EBF.TypeIdent c) =>
          Data.EBF.EBF (Triple a b c) where
         get
           = do index <- return 0
@@ -53,6 +56,4 @@ instance Data.Typeable.Typeable3 Triple where
  
 instance Data.EBF.TypeIdentSSS Triple where
         typeOfSSS _
-          = Data.Tree.Node
-              (UUID.UUID 123195489859573461007748878751097107471)
-              []
+          = Data.Tree.Node "5cae969a-6574-48eb-bc2e-af7f31d7340f" []

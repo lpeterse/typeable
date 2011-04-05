@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Tdd9cf67a3e2b488daeb9df9c29566a99 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,9 +16,9 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-import qualified Typeable.T26b9a53370bc4489a322192e2e0416ce
+import Data.String
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
+import qualified Typeable.T26b9a53370bc4489a322192e2e0416ce
  
 data Turn (a :: *) = Turn{who ::
                           Typeable.T26b9a53370bc4489a322192e2e0416ce.SimpleSpeaker,
@@ -29,7 +30,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Turn a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Turn a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (Turn a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Turn a) where
         get
           = do index <- return 0
                case index of
@@ -48,6 +50,4 @@ instance Data.Typeable.Typeable1 Turn where
  
 instance Data.EBF.TypeIdentS Turn where
         typeOfS _
-          = Data.Tree.Node
-              (UUID.UUID 294574384536236563116100439603536095897)
-              []
+          = Data.Tree.Node "dd9cf67a-3e2b-488d-aeb9-df9c29566a99" []

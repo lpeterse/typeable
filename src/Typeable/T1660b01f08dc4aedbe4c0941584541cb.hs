@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T1660b01f08dc4aedbe4c0941584541cb where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Kind = KindStar{}
           | KindApplication{function ::
@@ -50,6 +51,4 @@ instance Data.Typeable.Typeable Kind where
               []
  
 instance Data.EBF.TypeIdent Kind where
-        typeOf _
-          = Data.Tree.Node (UUID.UUID 29745048568592970892008165022699438539)
-              []
+        typeOf _ = Data.Tree.Node "1660b01f-08dc-4aed-be4c-0941584541cb" []

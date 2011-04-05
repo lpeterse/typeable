@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Tb0221a43509e4eddb062101bfd794bc4 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,13 +16,13 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
-import qualified Typeable.Taf20e1db8f0d414f90625b1521e41378
-import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068
-import qualified Typeable.T43c6cd1333b04fc8a480668ecb24768e
+import Data.String
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
 import qualified Typeable.T34c13bdaac7d413ed735e64edcac7ff5
+import qualified Typeable.T43c6cd1333b04fc8a480668ecb24768e
+import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
+import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068
+import qualified Typeable.Taf20e1db8f0d414f90625b1521e41378
  
 data StructuredText (a :: *) = Paragraph{paragraph ::
                                          Typeable.T43c6cd1333b04fc8a480668ecb24768e.Map
@@ -57,7 +58,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (StructuredText a)
 deriving instance (Prelude.Show a) => Prelude.Show
          (StructuredText a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (StructuredText a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (StructuredText a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
@@ -91,6 +93,4 @@ instance Data.Typeable.Typeable1 StructuredText where
  
 instance Data.EBF.TypeIdentS StructuredText where
         typeOfS _
-          = Data.Tree.Node
-              (UUID.UUID 234121198027222144668814280721031580612)
-              []
+          = Data.Tree.Node "b0221a43-509e-4edd-b062-101bfd794bc4" []

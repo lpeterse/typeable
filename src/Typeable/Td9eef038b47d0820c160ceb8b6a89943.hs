@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Td9eef038b47d0820c160ceb8b6a89943 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Either (a :: *) (b :: *) = Left{left :: a}
                               | Right{right :: b}
@@ -29,8 +30,9 @@ deriving instance (Prelude.Ord a, Prelude.Ord b) => Prelude.Ord
 deriving instance (Prelude.Show a, Prelude.Show b) => Prelude.Show
          (Either a b)
  
-instance (Data.EBF.EBF a, Data.EBF.EBF b) => Data.EBF.EBF
-         (Either a b) where
+instance (Data.EBF.EBF a, Data.EBF.EBF b, Data.EBF.TypeIdent a,
+          Data.EBF.TypeIdent b) =>
+         Data.EBF.EBF (Either a b) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
@@ -52,6 +54,4 @@ instance Data.Typeable.Typeable2 Either where
  
 instance Data.EBF.TypeIdentSS Either where
         typeOfSS _
-          = Data.Tree.Node
-              (UUID.UUID 289683114008598466473877021658943363395)
-              []
+          = Data.Tree.Node "d9eef038-b47d-0820-c160-ceb8b6a89943" []

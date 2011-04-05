@@ -1574,17 +1574,7 @@ t33       = dt {
            , name         = "UUID"
            , structure    = v0 $ (dt' :: Type Zero)
            { semantics    = "A universally unique identifier. It is defined to be a natural number in range 0 to 2^128-1. For all practical applications this type is assumed to provide infinitely many values. The order induced by the definition is to be ignored."
-           , constructors = Just [
-                                  defaultConstructor 
-                                    { Constructor.name = "UUID"
-                                    , Constructor.fields = [ defaultField             
-                                                              { Field.name = "uuid"
-                                                              , Field.type_ = DataType  "bbabbac1510d49aa9da25d8033147c54"
-                                                              }
-                                                          ]
-                                    
-                                    }
-                                 ]
+           , constructors = Nothing
           }}
 
 t40       = dt {

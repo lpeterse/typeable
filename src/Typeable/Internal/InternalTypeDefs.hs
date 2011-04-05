@@ -15,7 +15,6 @@ import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import Typeable.T606f253533d3420da3465afae341d598 --Time
 import Typeable.Tc1b1f6c722c2436fab3180146520814e --UTC
 import Typeable.T1660b01f08dc4aedbe4c0941584541cb --Kind
-import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 
 import Numeric
 import Data.Word
@@ -30,6 +29,7 @@ import Data.Time
 import Data.Time.Calendar
 import Data.Time.Clock
 import System.Locale
+import Data.UUID hiding (fromString)
 
 import Data.EBF
 
@@ -58,10 +58,7 @@ class (Show a) => Show' a where
   show'  = show
 
 instance Show' UUID where
-  show' (UUID x) = f $ showHex (fromIntegral x :: Integer) ""
-                   where
-                     f xs | length xs < 32 = f ('0':xs)
-                          | otherwise        = xs
+  show' = filter isHexDigit . Data.UUID.toString
 
 instance Show' Kind where
   show' x = show'' x False
@@ -90,9 +87,6 @@ instance Show' (Time UTC) where
 
 -- IsString instances
 ---------------------------------------------------------------------------------------------------
-
-instance IsString UUID where
-  fromString = UUID . fromInteger . fst . head . readHex . (filter isHexDigit)
 
 instance PeanoNumber k => IsString (StructuredText (Extension k)) where
   fromString [] = Paragraph M.empty

@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Ted098cc975df4cd0adb99a5b7dc48600 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Mailto
  
@@ -40,10 +41,7 @@ instance Data.Typeable.Typeable Mailto where
               []
  
 instance Data.EBF.TypeIdent Mailto where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 315076621171436751284015363799296280064)
-              []
+        typeOf _ = Data.Tree.Node "ed098cc9-75df-4cd0-adb9-9a5b7dc48600" []
  
 instance Prelude.Enum Mailto where
         succ = undefined

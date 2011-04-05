@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Te590e9ce9cea4dfe86a413e9270dd1c2 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,11 +16,11 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
+import qualified Typeable.T0174bd2264004820bfe34e211cb35a7d
 import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245
 import qualified Typeable.T9790ade9814a4aaca5eaa80c3e47685d
 import qualified Typeable.Tb0221a43509e4eddb062101bfd794bc4
-import qualified Typeable.T0174bd2264004820bfe34e211cb35a7d
  
 data Method (a :: *) = Method{name ::
                               Typeable.T9790ade9814a4aaca5eaa80c3e47685d.Designator,
@@ -34,7 +35,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Method a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Method a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (Method a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Method a) where
         get
           = do index <- return 0
                case index of
@@ -56,6 +58,4 @@ instance Data.Typeable.Typeable1 Method where
  
 instance Data.EBF.TypeIdentS Method where
         typeOfS _
-          = Data.Tree.Node
-              (UUID.UUID 305145643953376797342456263277431083458)
-              []
+          = Data.Tree.Node "e590e9ce-9cea-4dfe-86a4-13e9270dd1c2" []

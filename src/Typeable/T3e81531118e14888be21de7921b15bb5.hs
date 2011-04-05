@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T3e81531118e14888be21de7921b15bb5 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,14 +16,14 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-import qualified Typeable.Tf8f49ef6bbe874a42926fa23d5b3bc19
-import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245
-import qualified Typeable.Tb0221a43509e4eddb062101bfd794bc4
-import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3
-import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb
-import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f
+import Data.String
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
+import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb
+import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245
+import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3
+import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f
+import qualified Typeable.Tb0221a43509e4eddb062101bfd794bc4
+import qualified Typeable.Tf8f49ef6bbe874a42926fa23d5b3bc19
  
 data Type (a :: *) = Type{semantics ::
                           Typeable.Tb0221a43509e4eddb062101bfd794bc4.StructuredText
@@ -43,7 +44,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Type a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Type a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (Type a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Type a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
@@ -70,5 +72,4 @@ instance Data.Typeable.Typeable1 Type where
  
 instance Data.EBF.TypeIdentS Type where
         typeOfS _
-          = Data.Tree.Node (UUID.UUID 83083626827991633793225408481888132021)
-              []
+          = Data.Tree.Node "3e815311-18e1-4888-be21-de7921b15bb5" []

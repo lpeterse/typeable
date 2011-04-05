@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T606f253533d3420da3465afae341d598 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
 import qualified Typeable.Tc211e54d6eef4234a7b675d5f696efe5
  
 data Time (a :: *) = Time{seconds ::
@@ -27,7 +28,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Time a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Time a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (Time a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Time a) where
         get
           = do index <- return 0
                case index of
@@ -43,6 +45,4 @@ instance Data.Typeable.Typeable1 Time where
  
 instance Data.EBF.TypeIdentS Time where
         typeOfS _
-          = Data.Tree.Node
-              (UUID.UUID 128182987210936368809935960111371638168)
-              []
+          = Data.Tree.Node "606f2535-33d3-420d-a346-5afae341d598" []

@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Te959d9102edb11e091fa0800200c9a66 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,10 +16,10 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
+import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
 import qualified Typeable.T0c761f8e757e4ea79d242a01136452d2
 import qualified Typeable.Tdd9cf67a3e2b488daeb9df9c29566a99
-import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
  
 data SimpleDialog (a :: *) = SimpleDialog{dialoguemetadata ::
                                           Typeable.T0c761f8e757e4ea79d242a01136452d2.SimpleMeta,
@@ -32,7 +33,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (SimpleDialog a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (SimpleDialog a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (SimpleDialog a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (SimpleDialog a) where
         get
           = do index <- return 0
                case index of
@@ -51,6 +53,4 @@ instance Data.Typeable.Typeable1 SimpleDialog where
  
 instance Data.EBF.TypeIdentS SimpleDialog where
         typeOfS _
-          = Data.Tree.Node
-              (UUID.UUID 310176640003330740315334744190669855334)
-              []
+          = Data.Tree.Node "e959d910-2edb-11e0-91fa-0800200c9a66" []

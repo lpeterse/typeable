@@ -10,7 +10,6 @@ import Typeable.T2c62454c586f4bdea5e2b17e432db245 (Extension) --Extension
 import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
 import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068 as TE --TextElement
 import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
-import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
 import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
 import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
 import qualified Typeable.T3819884685d34bf19b3469304e15983d as Person
@@ -32,6 +31,7 @@ import Data.Monoid   (mconcat, mempty)
 import Data.Function
 import Data.String
 import Data.Char
+import Data.UUID hiding (null)
 import qualified Prelude              as P
 import qualified Data.List            as L
 import qualified Data.Map             as M
@@ -157,7 +157,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (DataType k) where
                                                  v'
                                                  nbsp
                                                  t'
-      htmlize' (Application
+{--     htmlize' (Application
                  (Application 
                    (DataType (UUID 107557859644440974686449305308309621121)) 
                    t1
@@ -170,6 +170,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (DataType k) where
                                                H.a ! A.href "/type/50eae3e85d2d42c88754b026cc360981" $ preEscapedString "&#x202F;\x2192&#x202F;"
                                                t2'
                                                if w then ")" else ""
+                                               --}
       htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
                                                                                               return $ do H.a ! A.href (stringValue $ show' $ reference t1) $ "["
                                                                                                           t2'

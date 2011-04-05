@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T2c62454c586f4bdea5e2b17e432db245 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
  
 data Extension (a :: *) = Type{}
                         | TypeConstructor{}
@@ -32,7 +33,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Extension a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Extension a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (Extension a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Extension a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
@@ -62,5 +64,4 @@ instance Data.Typeable.Typeable1 Extension where
  
 instance Data.EBF.TypeIdentS Extension where
         typeOfS _
-          = Data.Tree.Node (UUID.UUID 58996282441644944479584709752208077381)
-              []
+          = Data.Tree.Node "2c62454c-586f-4bde-a5e2-b17e432db245" []

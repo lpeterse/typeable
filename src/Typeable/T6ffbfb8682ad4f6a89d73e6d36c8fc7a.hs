@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T6ffbfb8682ad4f6a89d73e6d36c8fc7a where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,9 +16,9 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
+import Data.String
 import qualified Typeable.T0ba85f3f10099c75d4b696d0cf944e09
+import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
  
 data AbsolutePath = AbsolutePath{segments ::
                                  Typeable.T0ba85f3f10099c75d4b696d0cf944e09.List
@@ -44,7 +45,4 @@ instance Data.Typeable.Typeable AbsolutePath where
               []
  
 instance Data.EBF.TypeIdent AbsolutePath where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 148852675585444767583589071003325103226)
-              []
+        typeOf _ = Data.Tree.Node "6ffbfb86-82ad-4f6a-89d7-3e6d36c8fc7a" []

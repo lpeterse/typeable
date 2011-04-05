@@ -28,6 +28,7 @@ Executable        typeserver
 Library
  Build-Depends:   base >= 4.0,
                   largeword,
+                  uuid,
                   mtl,
                   haskell98,
                   haskell-src-exts,

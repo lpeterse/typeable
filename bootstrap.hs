@@ -24,7 +24,7 @@ main  = do args <- getArgs
                            _      -> putStrLn "Not available"
 
 download   :: String -> [String] -> IO [String]
-download h xs = do ys <- mapM (\x->(putStrLn $ "Download sourcefile of type "++x++": ") >> curlGetString ("http://"++h++"/type/"++x++"?format=haskell") []) xs
+download h xs = do ys <- mapM (\x->let fu="http://"++h++"/type/"++x++"?format=haskell" in (putStrLn $ fu++": ") >> curlGetString (fu) []) xs
                    if all ((==CurlOK) . fst) ys 
                      then return $ map snd ys
                      else (mapM_ f $ filter ((/=CurlOK) . fst . fst) (zip ys xs)) >> error ""

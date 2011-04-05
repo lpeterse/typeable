@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T53e0d483a64144259dce752799d64305 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,11 +16,11 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-import qualified Typeable.Tf18ae792e5324a68a16f11ea5c61442a
-import qualified Typeable.Td847a61a1a944723ab4bfcfb214bd8aa
+import Data.String
 import qualified Typeable.T1ea5eae4702844f7acbc3c65b2a40093
+import qualified Typeable.Td847a61a1a944723ab4bfcfb214bd8aa
 import qualified Typeable.Ted098cc975df4cd0adb99a5b7dc48600
+import qualified Typeable.Tf18ae792e5324a68a16f11ea5c61442a
  
 data ContactInformation = Email{email ::
                                 Typeable.T1ea5eae4702844f7acbc3c65b2a40093.UriByScheme
@@ -62,7 +63,4 @@ instance Data.Typeable.Typeable ContactInformation where
               []
  
 instance Data.EBF.TypeIdent ContactInformation where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 111493308447638495986004671842443739909)
-              []
+        typeOf _ = Data.Tree.Node "53e0d483-a641-4425-9dce-752799d64305" []

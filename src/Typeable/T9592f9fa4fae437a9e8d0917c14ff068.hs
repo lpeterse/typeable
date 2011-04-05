@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T9592f9fa4fae437a9e8d0917c14ff068 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
 import qualified Typeable.T0219c59f732a8ef507215fbdb4cceacd
 import qualified Typeable.T4f7db06c439541658a09689d3e7dd909
  
@@ -33,7 +34,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (TextElement a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (TextElement a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (TextElement a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (TextElement a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
@@ -68,6 +70,4 @@ instance Data.Typeable.Typeable1 TextElement where
  
 instance Data.EBF.TypeIdentS TextElement where
         typeOfS _
-          = Data.Tree.Node
-              (UUID.UUID 198818116864990475257433798689187426408)
-              []
+          = Data.Tree.Node "9592f9fa-4fae-437a-9e8d-0917c14ff068" []

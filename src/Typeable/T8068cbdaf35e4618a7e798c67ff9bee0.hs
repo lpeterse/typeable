@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T8068cbdaf35e4618a7e798c67ff9bee0 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,10 +16,10 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
+import qualified Typeable.T335b76330e724b64a5256190fb579dad
 import qualified Typeable.T6ffbfb8682ad4f6a89d73e6d36c8fc7a
 import qualified Typeable.Ta078d5123ead415d8d857dc6dc15b475
-import qualified Typeable.T335b76330e724b64a5256190fb579dad
  
 data Hierarchy = Authority{authority ::
                            Typeable.T335b76330e724b64a5256190fb579dad.Authority,
@@ -56,7 +57,4 @@ instance Data.Typeable.Typeable Hierarchy where
               []
  
 instance Data.EBF.TypeIdent Hierarchy where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 170685317009964650637881224407725752032)
-              []
+        typeOf _ = Data.Tree.Node "8068cbda-f35e-4618-a7e7-98c67ff9bee0" []

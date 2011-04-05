@@ -5,7 +5,7 @@
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
 {-# OPTIONS -XOverloadedStrings #-}
-module Typeable.T53e0d483a64144259dce752799d64305 where
+module Typeable.T964f0abad1bd422faaf57b6d9938db31 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
@@ -18,16 +18,17 @@ import qualified Data.Binary.Get
 import qualified Data.EBF
 import Data.String
  
-data ContactInformation
+data Tree (a :: *)
  
-instance Prelude.Eq ContactInformation
+instance (Prelude.Eq a) => Prelude.Eq (Tree a)
  
-instance Prelude.Ord ContactInformation
+instance (Prelude.Ord a) => Prelude.Ord (Tree a)
  
-instance Prelude.Show ContactInformation
+instance (Prelude.Show a) => Prelude.Show (Tree a)
  
-instance Data.EBF.EBF ContactInformation
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Tree a)
  
-instance Data.Typeable.Typeable ContactInformation
+instance Data.Typeable.Typeable1 Tree
  
-instance Data.EBF.TypeIdent ContactInformation
+instance Data.EBF.TypeIdentS Tree

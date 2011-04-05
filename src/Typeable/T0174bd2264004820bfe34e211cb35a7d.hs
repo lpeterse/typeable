@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T0174bd2264004820bfe34e211cb35a7d where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,11 +16,11 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
 import {-# SOURCE #-} qualified
        Typeable.T2a94a7a8d4e049759d8dd546e72293ff
-import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
 import qualified Typeable.T346674042a7248b4a94abff0726d0c43
+import qualified Typeable.T7af30cce93724981a16a80f3f193dc33
 import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f
  
 data DataType (a :: *) = DataType{reference ::
@@ -43,7 +44,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (DataType a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (DataType a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (DataType a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (DataType a) where
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
@@ -77,5 +79,4 @@ instance Data.Typeable.Typeable1 DataType where
  
 instance Data.EBF.TypeIdentS DataType where
         typeOfS _
-          = Data.Tree.Node (UUID.UUID 1935370531496413125155013876176345725)
-              []
+          = Data.Tree.Node "0174bd22-6400-4820-bfe3-4e211cb35a7d" []

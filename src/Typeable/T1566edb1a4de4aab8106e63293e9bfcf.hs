@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T1566edb1a4de4aab8106e63293e9bfcf where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
 import qualified Typeable.T6716d098a58743379e54c12f249cdc0c
 import qualified Typeable.Tff421b2c31774c37a7336c8245a74da9
  
@@ -63,6 +64,4 @@ instance Data.Typeable.Typeable Symbol where
               []
  
 instance Data.EBF.TypeIdent Symbol where
-        typeOf _
-          = Data.Tree.Node (UUID.UUID 28448223196538891981233667938686975951)
-              []
+        typeOf _ = Data.Tree.Node "1566edb1-a4de-4aab-8106-e63293e9bfcf" []

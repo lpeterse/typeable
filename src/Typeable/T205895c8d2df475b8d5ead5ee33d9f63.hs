@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.T205895c8d2df475b8d5ead5ee33d9f63 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,11 +16,11 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
+import qualified Typeable.T0174bd2264004820bfe34e211cb35a7d
 import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245
 import qualified Typeable.T9790ade9814a4aaca5eaa80c3e47685d
 import qualified Typeable.Tb0221a43509e4eddb062101bfd794bc4
-import qualified Typeable.T0174bd2264004820bfe34e211cb35a7d
  
 data Field (a :: *) = Field{name ::
                             Typeable.T9790ade9814a4aaca5eaa80c3e47685d.Designator,
@@ -34,7 +35,8 @@ deriving instance (Prelude.Ord a) => Prelude.Ord (Field a)
  
 deriving instance (Prelude.Show a) => Prelude.Show (Field a)
  
-instance (Data.EBF.EBF a) => Data.EBF.EBF (Field a) where
+instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
+         (Field a) where
         get
           = do index <- return 0
                case index of
@@ -56,5 +58,4 @@ instance Data.Typeable.Typeable1 Field where
  
 instance Data.EBF.TypeIdentS Field where
         typeOfS _
-          = Data.Tree.Node (UUID.UUID 42995255978593599213110487675926585187)
-              []
+          = Data.Tree.Node "205895c8-d2df-475b-8d5e-ad5ee33d9f63" []

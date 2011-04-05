@@ -4,6 +4,7 @@
 {-# OPTIONS -XFlexibleContexts #-}
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
+{-# OPTIONS -XOverloadedStrings #-}
 module Typeable.Tf2c4f6ddd939444ba209fbdf2152eb54 where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
@@ -15,7 +16,7 @@ import qualified Data.Binary
 import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
+import Data.String
 import qualified Typeable.T6716d098a58743379e54c12f249cdc0c
 import qualified Typeable.Tff421b2c31774c37a7336c8245a74da9
  
@@ -60,7 +61,4 @@ instance Data.Typeable.Typeable SchemeSymbol where
               []
  
 instance Data.EBF.TypeIdent SchemeSymbol where
-        typeOf _
-          = Data.Tree.Node
-              (UUID.UUID 322695872213636359840308879950416636756)
-              []
+        typeOf _ = Data.Tree.Node "f2c4f6dd-d939-444b-a209-fbdf2152eb54" []
