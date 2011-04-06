@@ -29,6 +29,7 @@ Library
  Build-Depends:   base >= 4.0,
                   largeword,
                   uuid,
+                  cryptohash,
                   mtl,
                   haskell98,
                   haskell-src-exts,
@@ -45,6 +46,7 @@ Library
                   parsec >= 3.0.0
  hs-source-dirs:  src
  Exposed-Modules: Data.EBF,
+                  Data.EBF.TypeIdent,
                   Data.Typeable.Extra,
                   Typeable.Internal.FormatHtml, 
                   Typeable.Internal.Types, 

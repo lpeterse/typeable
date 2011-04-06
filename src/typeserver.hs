@@ -28,6 +28,8 @@ import System.IO.Unsafe
 import System (getArgs)
 import System.FilePath.Posix
 
+import Data.EBF
+
 import Language.Haskell.Exts.Syntax (Module)
 import Language.Haskell.Exts.Pretty
 
@@ -75,6 +77,7 @@ serveType uuid = case M.lookup uuid (typeMap static) of
                                                                                                   ("static"</>"exports"</>"haskell"</>"T"++(show' uuid)<.>"hs-boot") 
                                                                                               , runC (typeModule True t) >>= ok . toResponse 
                                                                                               ]
+                                                                            "ebf" -> (return $ writeV00 t) >>= ok . toResponseBS "text/plain" 
                                                                             _         -> mempty
                                       , runC (htmlize t) >>= ok . toResponse . encapsulate
                                       ]
