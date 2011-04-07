@@ -1150,7 +1150,7 @@ t9       = dt {
           }}
 
 t10       = dt {
-             identifier   = "7704e26b08886d6b8c3c788a3a0b2db0)"
+             identifier   = "7704e26b08886d6b8c3c788a3a0b2db0"
            , name         = "Word8"
            , structure    = v0 $ (dt' :: Type Zero)
            { semantics    = "unsigned integer types with well defined range. These types are to be used if it is important to emphasize the size limitations."
@@ -1158,7 +1158,7 @@ t10       = dt {
           }}
 
 t11      = dt {
-             identifier   = "2b567f4ccc26027e, 0xa78edd227800fe94"
+             identifier   = "2b567f4ccc26027ea78edd227800fe94"
            , name         = "Word16"
            , structure    = v0 $ (dt' :: Type Zero)
            { semantics    = "unsigned integer types with well defined range. These types are to be used if it is important to emphasize the size limitations."
