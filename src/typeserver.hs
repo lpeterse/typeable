@@ -78,6 +78,7 @@ serveType uuid = case M.lookup uuid (typeMap static) of
                                                                                               , runC (typeModule True t) >>= ok . toResponse 
                                                                                               ]
                                                                             "ebf" -> (return $ writeV00 t) >>= ok . toResponseBS "text/plain" 
+                                                                            "show" -> (return $ show t) >>= ok . toResponse 
                                                                             _         -> mempty
                                       , runC (htmlize t) >>= ok . toResponse . encapsulate
                                       ]

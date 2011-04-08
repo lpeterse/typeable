@@ -272,6 +272,7 @@ metaPart x s = do author'              <- case author x of
                       H.ul $ do H.li $ H.a ! A.href (stringValue ((show' (identifier x)) ++ "?format=haskell")) $ "Haskell" 
                                 H.li $ H.a ! A.href (stringValue ((show' (identifier x)) ++ "?format=haskell-boot")) $ "Haskell-Boot" 
                                 H.li $ H.a ! A.href (stringValue ((show' (identifier x)) ++ "?format=ebf")) $ "ExtensibleBinaryFormat" 
+                                H.li $ H.a ! A.href (stringValue ((show' (identifier x)) ++ "?format=show")) $ "as an instance of Show" 
                     H.div ! A.id "description" $ do
                       H.h1 "Description"
                       H.div ! A.class_ "annotation" $ s
