@@ -260,12 +260,49 @@ t94      = dt {
            , structure    = v1 $ (dt' :: Type (Succ Zero))
            { semantics    = "An extension for making it possible to reference types, classes and functions within structured text."
            , constructors = Just [
-                                   defaultConstructor { Constructor.name   = "Type"                 }
-                                 , defaultConstructor { Constructor.name   = "TypeConstructor"      }
-                                 , defaultConstructor { Constructor.name   = "TypeConstructorField" }
+                                   defaultConstructor 
+                                   { Constructor.name   = "Type"
+                                   , Constructor.fields = [
+                                                            defaultField 
+                                                            { Field.name  = "type"
+                                                            , Field.type_ = Application
+                                                                              (DataType "0174bd2264004820bfe34e211cb35a7d")
+                                                                              (Variable First)
+                                                            }
+                                                          ]
+                                   }
+                                 , defaultConstructor 
+                                   { Constructor.name   = "ValueConstructor"      
+                                   , Constructor.fields = [
+                                                            defaultField 
+                                                            { Field.name  = "reference"
+                                                            , Field.type_ = DataType "346674042a7248b4a94abff0726d0c43"
+                                                            }
+                                                          , defaultField 
+                                                            { Field.name  = "constructorIndex"
+                                                            , Field.type_ = DataType "62d2d5371f08461aa328bc06561594f6"
+                                                            }
+                                                          ]
+                                   }
+                                 , defaultConstructor 
+                                   { Constructor.name   = "ValueConstructorField"      
+                                   , Constructor.fields = [
+                                                            defaultField 
+                                                            { Field.name  = "reference"
+                                                            , Field.type_ = DataType "346674042a7248b4a94abff0726d0c43"
+                                                            }
+                                                          , defaultField 
+                                                            { Field.name  = "constructorIndex"
+                                                            , Field.type_ = DataType "62d2d5371f08461aa328bc06561594f6"
+                                                            }
+                                                          , defaultField 
+                                                            { Field.name  = "fieldIndex"
+                                                            , Field.type_ = DataType "62d2d5371f08461aa328bc06561594f6"
+                                                            }
+                                                          ]
+                                   }
                                  , defaultConstructor { Constructor.name   = "Class"                }
                                  , defaultConstructor { Constructor.name   = "ClassMethod"          }
-                                 , defaultConstructor { Constructor.name   = "Function"             }
                                  , defaultConstructor { Constructor.name   = "Constraint"           }
                                  , defaultConstructor { Constructor.name   = "Expression"           }
                                  ]

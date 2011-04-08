@@ -28,8 +28,8 @@ Executable        typeserver
 Library
  Build-Depends:   base >= 4.0,
                   largeword,
-                  cryptohash,
                   uuid,
+                  cryptohash,
                   mtl,
                   haskell98,
                   haskell-src-exts,
@@ -71,7 +71,7 @@ Library
                   ,Typeable.T205895c8d2df475b8d5ead5ee33d9f63
                   ,Typeable.T26b9a53370bc4489a322192e2e0416ce
                   ,Typeable.T2a94a7a8d4e049759d8dd546e72293ff
-                  ,Typeable.T2b567f4ccc26027e0a78edd227800fe9
+                  ,Typeable.T2b567f4ccc26027ea78edd227800fe94
                   ,Typeable.T2c62454c586f4bdea5e2b17e432db245
                   ,Typeable.T2dbb6df873ad4e4baeb82172074ed042
                   ,Typeable.T335b76330e724b64a5256190fb579dad

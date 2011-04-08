@@ -17,13 +17,24 @@ import qualified Data.Binary.Put
 import qualified Data.Binary.Get
 import qualified Data.EBF
 import Data.String
+import qualified Typeable.T0174bd2264004820bfe34e211cb35a7d
+import qualified Typeable.T346674042a7248b4a94abff0726d0c43
+import qualified Typeable.T62d2d5371f08461aa328bc06561594f6
  
-data Extension (a :: *) = Type{}
-                        | TypeConstructor{}
-                        | TypeConstructorField{}
+data Extension (a :: *) = Type{type_ ::
+                               Typeable.T0174bd2264004820bfe34e211cb35a7d.DataType a}
+                        | ValueConstructor{reference ::
+                                           Typeable.T346674042a7248b4a94abff0726d0c43.UUID,
+                                           constructorIndex ::
+                                           Typeable.T62d2d5371f08461aa328bc06561594f6.Word}
+                        | ValueConstructorField{reference ::
+                                                Typeable.T346674042a7248b4a94abff0726d0c43.UUID,
+                                                constructorIndex ::
+                                                Typeable.T62d2d5371f08461aa328bc06561594f6.Word,
+                                                fieldIndex ::
+                                                Typeable.T62d2d5371f08461aa328bc06561594f6.Word}
                         | Class{}
                         | ClassMethod{}
-                        | Function{}
                         | Constraint{}
                         | Expression{}
  
@@ -38,22 +49,36 @@ instance (Data.EBF.EBF a, Data.EBF.TypeIdent a) => Data.EBF.EBF
         get
           = do index <- Data.Binary.Get.getWord8
                case index of
-                   0 -> return Type
-                   1 -> return TypeConstructor
-                   2 -> return TypeConstructorField
+                   0 -> (>>=) Data.EBF.get (\ a0 -> return (Type a0))
+                   1 -> (>>=) Data.EBF.get
+                          (\ a0 ->
+                             (>>=) Data.EBF.get (\ a1 -> return (ValueConstructor a0 a1)))
+                   2 -> (>>=) Data.EBF.get
+                          (\ a0 ->
+                             (>>=) Data.EBF.get
+                               (\ a1 ->
+                                  (>>=) Data.EBF.get
+                                    (\ a2 -> return (ValueConstructorField a0 a1 a2))))
                    3 -> return Class
                    4 -> return ClassMethod
-                   5 -> return Function
-                   6 -> return Constraint
-                   7 -> return Expression
-        put Type = do Data.Binary.Put.putWord8 0
-        put TypeConstructor = do Data.Binary.Put.putWord8 1
-        put TypeConstructorField = do Data.Binary.Put.putWord8 2
+                   5 -> return Constraint
+                   6 -> return Expression
+        put (Type a)
+          = do Data.Binary.Put.putWord8 0
+               Data.EBF.put a
+        put (ValueConstructor a b)
+          = do Data.Binary.Put.putWord8 1
+               Data.EBF.put a
+               Data.EBF.put b
+        put (ValueConstructorField a b c)
+          = do Data.Binary.Put.putWord8 2
+               Data.EBF.put a
+               Data.EBF.put b
+               Data.EBF.put c
         put Class = do Data.Binary.Put.putWord8 3
         put ClassMethod = do Data.Binary.Put.putWord8 4
-        put Function = do Data.Binary.Put.putWord8 5
-        put Constraint = do Data.Binary.Put.putWord8 6
-        put Expression = do Data.Binary.Put.putWord8 7
+        put Constraint = do Data.Binary.Put.putWord8 5
+        put Expression = do Data.Binary.Put.putWord8 6
  
 instance Data.Typeable.Typeable1 Extension where
         typeOf1 _
