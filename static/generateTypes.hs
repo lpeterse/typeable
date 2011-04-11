@@ -1,6 +1,6 @@
 {-# OPTIONS -XNoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
-module Typeable.Internal.Types where
+module Main where
 
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
@@ -19,6 +19,15 @@ import Typeable.Internal.InternalTypeDefs
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Ratio
+
+import Data.EBF
+import qualified Data.ByteString.Lazy as LBS
+
+main :: IO ()
+main  = mapM_ f types
+        where
+          f x = do LBS.writeFile ("types/T"++(show' $ identifier x)++".ebf") $ writeV00 x
+                   putStrLn $ "Generate "++(show' $ identifier x)++"."++(show' $ name x)++"... Done."
 
 dt :: Definition Type
 dt  = Definition 
@@ -119,12 +128,6 @@ types   = [  t1
            , t55
            , t56
            , t57
---           , t59
---           , t60
---           , t61
---           , t62
---           , t63
---           , t64
            , t65
            , t66
            , t67
