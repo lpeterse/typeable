@@ -5,11 +5,13 @@
 {-# OPTIONS -XUndecidableInstances #-}
 {-# OPTIONS -XStandaloneDeriving #-}
 {-# OPTIONS -XOverloadedStrings #-}
+{-# OPTIONS -XDeriveDataTypeable #-}
 module Typeable.Ta9c059006c8d4849af902d3ad12ee3cc where
 import Prelude
        (fromInteger, return, fail, undefined, (>>=), (>>), (==))
 import qualified Prelude
 import qualified Data.Tree
+import qualified Data.Data
 import qualified Data.Typeable
 import qualified Data.Typeable.Extra
 import qualified Data.Binary

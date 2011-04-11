@@ -144,8 +144,6 @@ types   = [  t1
            , t86
            , t87
            , t90
-           , t91
-           , t92
            , t93 -- Ordering
            , t94 -- Extension
            , t95 -- Extension
@@ -315,7 +313,7 @@ t86      = dt {
            , author       = Nothing
            , name         = "Function"
            , structure    = v2 $ (dt' :: Type (Succ (Succ Zero)))  
-           { semantics    = "A function: a total mapping from the domain $a to the domain $b."
+           { semantics    = "A function: a total mapping from the domain $0 to the domain $1."
            , constructors = Nothing
            }
           }
@@ -1034,7 +1032,7 @@ t41       = dt {
                                    } 
                                  , defaultConstructor'  
                                    { Constructor.name      = "Variable"
-                                   , Constructor.semantics = "Bound variable. You supply the set of variables manually via $a"
+                                   , Constructor.semantics = "Bound variable. You supply the set of variables manually via $0"
                                    , Constructor.fields    = [ defaultField 
                                                               { Field.name      = "variable"
                                                               , Field.type_      = Variable First
@@ -1367,39 +1365,6 @@ t24       = dt {
                                   
                                  ]
           }}
-
-t91       = dt
-            { identifier    = "606d6a25-5371-4be6-b046-7d2eb2c0708e"
-            , name          = "Concrete"
-            , author        = Just personLars
-            , structure     = v0 $ (dt' :: Type Zero)
-            { semantics     = "The concrete kind."
-            , constructors  = Just []
-            }}
-
-t92       = dt
-            { identifier    = "be46fbdd-7467-43fe-9ef3-9717c30b21fb"
-            , name          = "Application"
-            , author        = Just personLars
-            , structure     = v2 $ (dt' :: Type (Succ (Succ Zero)))
-            { semantics     = "The concrete kind."
-            , constructors  = Just [ 
-                                     defaultConstructor''
-                                     { Constructor.name      = "First"
-                                     , Constructor.semantics = "The first variable."
-                                     }
-                                   , defaultConstructor''
-                                     { Constructor.name      = "Next"
-                                     , Constructor.semantics = "The next variable. Only applicable if $b is of higher kind."
-                                     , Constructor.fields    = [ defaultField'' 
-                                                                { Field.name      = "previous"
-                                                                , Field.semantics = "yields the kind of the codomain"
-                                                                , Field.type_      = Variable (Next First)
-                                                                }
-                                                              ]
-                                     }
-                                   ]
-            }}
 
 
 t90       = dt {

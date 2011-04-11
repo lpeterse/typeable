@@ -6,7 +6,7 @@ module Typeable.Internal.FormatHtml where
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import Typeable.Tb0221a43509e4eddb062101bfd794bc4 --StructuredText
-import Typeable.T2c62454c586f4bdea5e2b17e432db245 (Extension) --Extension 
+import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245 as Ext --Extension 
 import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
 import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068 as TE --TextElement
 import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
@@ -112,9 +112,31 @@ instance Htmlize Namespace where
       cs = S.toList (nsclasses x)
       ns = M.toList (subspaces x)
 
-instance (PeanoNumber k) => Htmlize (StructuredText (Extension k)) where
-  htmlize (Paragraph m) = let ls = M.findWithDefault [] ENG m
-                          in  return $  if null ls then "" else string $ show $ TE.text $ head ls
+instance (Htmlize k, PeanoNumber k) => Htmlize (StructuredText (Ext.Extension k)) where
+  htmlize (Paragraph   m) = mapM htmlize (M.findWithDefault [] ENG m) >>= \ls-> return $ H.p  (mconcat ls) 
+  htmlize (IndentList  m) = mapM htmlize m >>= \ls-> return $ H.ul (mconcat $ map H.li ls)  
+  htmlize (BulletList  m) = mapM htmlize m >>= \ls-> return $ H.ul (mconcat $ map H.li ls)  
+  htmlize (IndexedList m) = mapM htmlize m >>= \ls-> return $ H.ol (mconcat $ map H.li ls)  
+  htmlize (TitledList ls) = do ms <- mapM f ls
+                               return $ H.dl $ mconcat ms
+                            where
+                              f (m,t) = do t' <- htmlize t
+                                           return $ do H.dt $ text (M.findWithDefault "" ENG m)  
+                                                       H.li $ t' 
+                         
+instance (PeanoNumber k, Htmlize k) => Htmlize (TE.TextElement (Ext.Extension k)) where
+  htmlize (TE.Plaintext t b i m c) = return $ H.span ! A.style (stringValue s) $ text t 
+                                     where
+                                       s =    (if b then "text-weight: bold;" else "")
+                                           ++ (if i then "font-style: italic;" else "")
+                                           ++ (if m then "font-family: monospace;" else "")
+                                           ++ (if c then "text-decoration: line-trough;" else "")
+  htmlize (TE.Extension x)         = htmlize x
+
+instance (PeanoNumber k, Htmlize k) => Htmlize (Ext.Extension k) where
+  htmlize (Ext.Type a) = htmlize a
+  htmlize _            = fail "htmlize: insufficient pattern for Extension"
+
 
 instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
@@ -157,20 +179,6 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (DataType k) where
                                                  v'
                                                  nbsp
                                                  t'
-{--     htmlize' (Application
-                 (Application 
-                   (DataType (UUID 107557859644440974686449305308309621121)) 
-                   t1
-                 ) 
-                 t2
-               )            w = do t1' <- htmlize' t1 True 
-                                   t2' <- htmlize  t2
-                                   return $ do if w then "(" else ""
-                                               t1'
-                                               H.a ! A.href "/type/50eae3e85d2d42c88754b026cc360981" $ preEscapedString "&#x202F;\x2192&#x202F;"
-                                               t2'
-                                               if w then ")" else ""
-                                               --}
       htmlize' (Application t1 t2) w | t1 == DataType "0ba85f3f10099c75d4b696d0cf944e09" = do t2' <- htmlize t2
                                                                                               return $ do H.a ! A.href (stringValue $ show' $ reference t1) $ "["
                                                                                                           t2'

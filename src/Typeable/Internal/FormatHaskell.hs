@@ -74,9 +74,10 @@ typeModule b x
                   iEnum   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Enum")) [Ident "succ", Ident "pred", Ident "toEnum", Ident "fromEnum"]  b dd
                   iShow   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Show")) [Ident "show"]                                                  b dd
                   iRead   <- instanceOf (Qual (ModuleName "Prelude") (Ident "Read")) [Ident "readsPrec"]  b dd
-                  iTypeable  <- instanceTypeable   b x dd
+                  iTypeable  <- instanceTypeable  b x dd
+                  --iData      <- instanceData      b x dd
                   iTypeIdent <- instanceTypeIdent b x dd
-                  iBinary    <- instanceBinary     b x dd
+                  iBinary    <- instanceBinary    b x dd
                   im <- importMapping
                   let impDecl m = ImportDecl sl m True False Nothing Nothing Nothing
                   let imps2  = [ let s = identifier x `S.member` runGraph (successorsToDepth 5 z) im
@@ -98,6 +99,7 @@ typeModule b x
                                                                  }
                               , impDecl (ModuleName "Prelude")
                               , impDecl (ModuleName "Data.Tree")
+                              , impDecl (ModuleName "Data.Data")
                               , impDecl (ModuleName "Data.Typeable")
                               , impDecl (ModuleName "Data.Typeable.Extra")
                               , impDecl (ModuleName "Data.Binary")
@@ -119,7 +121,7 @@ typeModule b x
                              , OptionsPragma sl Nothing "-XUndecidableInstances"
                              , OptionsPragma sl Nothing "-XStandaloneDeriving"
                              , OptionsPragma sl Nothing "-XOverloadedStrings"
-                             --, OptionsPragma sl Nothing "-XGeneralizedNewtypeDeriving"
+                             , OptionsPragma sl Nothing "-XDeriveDataTypeable"
                              ]                           -- [OptionPragma]
                              Nothing                     -- Maybe WarningText
                              Nothing                     -- Maybe [ExportSpec]
@@ -242,6 +244,36 @@ instanceTypeable b x (DataDecl _ _ _ n vs cs _)
                            )
                            (BDecls [])
                   )       
+
+instanceData b x (DataDecl _ _ _ n vs cs _) 
+  = do let vs'  = map (\(KindedVar n _) -> TyVar n)  vs 
+       let vA (TyApp a b) = vA a
+           vA (TyCon _  ) = False
+           vA (TyVar _  ) = True
+           vA _           = False
+       let starVariables = map (\(KindedVar n _) -> TyVar n) $ filter (\(KindedVar _ k) -> k == KindStar) vs
+       let fieldTypes = let u (QualConDecl _ _ _ (RecDecl _ xs)) = map (\(_, UnBangedTy t)->t) xs
+                        in  nub $ concatMap u cs :: [Syntax.Type]
+       let ctxTypes   = nub $ (filter vA fieldTypes) ++ starVariables
+       let cn = Qual (ModuleName "Data.Data") (Ident "Data")
+       return $ if not $ null cs 
+                  then DerivDecl
+                         sl
+                         ((map (\t-> ClassA cn [t]) ctxTypes) ++ (map (\t-> ClassA (Qual (ModuleName "Prelude") (Ident "Ord")) [t]) ctxTypes))
+                         cn
+                         [foldl TyApp (TyCon $ UnQual n) vs']
+                  else InstDecl 
+                         sl 
+                         ((map (\t-> ClassA cn [t]) ctxTypes) ++ (map (\t-> ClassA (Qual (ModuleName "Prelude") (Ident "Ord")) [t]) ctxTypes))
+                         cn
+                         [foldl TyApp (TyCon $ UnQual n) vs']
+                         (if b 
+                            then [] 
+                            else map 
+                                   (\cm-> InsDecl $ FunBind $ return $ Match sl (Ident cm) [] Nothing (UnGuardedRhs $ Var $ UnQual $ Ident "undefined") (BDecls [])) 
+                                   ["gfoldl", "gunfold", "toConstr", "dataTypeOf", "dataCast1"]
+                         )
+ 
 
 instanceTypeIdent b x (DataDecl _ _ _ n vs cs _) 
   = do let k KindStar     = "S"

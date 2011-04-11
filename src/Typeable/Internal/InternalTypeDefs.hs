@@ -8,7 +8,8 @@ import Typeable.T9790ade9814a4aaca5eaa80c3e47685d --Designator
 import Typeable.T1566edb1a4de4aab8106e63293e9bfcf --Symbol
 import Typeable.Tb0221a43509e4eddb062101bfd794bc4 --StructuredText
 import Typeable.T9592f9fa4fae437a9e8d0917c14ff068 --TextElement
-import Typeable.T2c62454c586f4bdea5e2b17e432db245 (Extension) --Extension
+import Typeable.T2c62454c586f4bdea5e2b17e432db245 --Extension
+import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
 import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
@@ -30,6 +31,9 @@ import Data.Time.Calendar
 import Data.Time.Clock
 import System.Locale
 import Data.UUID hiding (fromString)
+
+import Text.Parsec
+import Text.Parsec.Char
 
 import Data.EBF
 
@@ -90,11 +94,9 @@ instance Show' (Time UTC) where
 
 instance PeanoNumber k => IsString (StructuredText (Extension k)) where
   fromString [] = Paragraph M.empty
-  fromString xs = Paragraph $ M.singleton ENG $ [Plaintext (T.pack xs) False False False False]
-               --   where 
-               --     s = domain :: [k]
-               --     f ('$':x:' ':xs) | (fromEnum x)-(fromEnum 'a')) <= length s =  
-
+  fromString xs = Paragraph $ M.singleton ENG $ case parse (p :: Parsec String u [TextElement (Extension k)]) "" xs of
+                                                  Left _  -> error "error parsing annotation"
+                                                  Right x -> x 
 instance IsString Designator where
   fromString []     = error "Designator must consist of at least one letter."
   fromString (x:xs) | i < 97 || i > 122 = error $ "Character '"++(show x)++"' is not a letter."
@@ -119,3 +121,23 @@ data Namespace = Namespace {
                             ,subspaces    :: M.Map Designator Namespace
                            } deriving (Eq, Show)
                            
+-- Parsing of Annotations (not really necessary, just for fun)
+----------------------------------------------------------------
+
+p         :: (PeanoNumber k) => Parsec String u [TextElement (Extension k)] 
+p          =     (eof       >> return [])
+             <|> (pVariable >>= \x-> p >>= \xs-> return (x:xs))
+             <|> (pText     >>= \x-> p >>= \xs-> return (x:xs))
+
+pText     :: forall k u. (PeanoNumber k) => Parsec String u (TextElement (Extension k))
+pText      = do ts <- anyChar `manyTill` choice [eof, lookAhead (pVariable :: Parsec String u (TextElement (Extension k)))  >> return ()]
+                return $ Plaintext (T.pack ts) False False False False
+
+pVariable :: forall k u. (PeanoNumber k) => Parsec String u (TextElement (Extension k))
+pVariable  = do char '$'
+                d <- digit
+                let d' = read [d] :: Int
+                let vs = domain   :: [k]
+                if length vs > d'
+                  then return (Extension $ Type $ Variable $ vs !! d')
+                  else fail ""
