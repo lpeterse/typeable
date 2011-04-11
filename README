@@ -1,0 +1,13 @@
+# Installation
+
+For installing the typeserver with the types included in the repository just type:
+
+> cabal install
+
+Maybe you first have to update cabal's package list. Do so by:
+
+> cabal update
+
+If everything compiled correctly you can now start a typeserver (i.e. on port 5000) by typing
+
+> ~/.cabal/bin/typeserver 5000
