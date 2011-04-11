@@ -57,6 +57,9 @@ instance TypeIdent Bool where
 instance TypeIdentS Maybe where
   typeOfS _ = Node "f8f49ef6bbe874a42926fa23d5b3bc19" []
 
+instance TypeIdentSS Either where
+  typeOfSS _ = Node "d9eef038-b47d-0820-c160-ceb8b6a89943" []
+
 instance TypeIdentS [] where
   typeOfS _ = Node "0ba85f3f10099c75d4b696d0cf944e09" []
 
@@ -80,6 +83,9 @@ instance TypeIdent Text where
 
 instance TypeIdentS Ratio where  
   typeOfS _ = Node "c211e54d6eef4234a7b675d5f696efe5" []
+
+instance TypeIdent Char where  
+  typeOf _ = Node "16f4245df3cc0b534f028235ff8aae16" []
 
 instance TypeIdent Int where
   typeOf _ = Node "ac2e770f2132aced749ec197385ff552" []
