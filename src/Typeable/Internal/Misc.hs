@@ -1,6 +1,6 @@
 {-# OPTIONS -XFlexibleInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module Typeable.Internal.InternalTypeDefs where
+module Typeable.Internal.Misc where
 
 import Typeable.T6716d098a58743379e54c12f249cdc0c --LatinAlphabet
 import Typeable.Tff421b2c31774c37a7336c8245a74da9 --DecimalAlphabet

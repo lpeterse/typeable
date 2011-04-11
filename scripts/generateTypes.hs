@@ -1,75 +1,40 @@
+#!/usr/bin/runhaskell
 {-# OPTIONS -XNoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 module Main where
+
+import Prelude hiding (maybe)
+import System         (getArgs)
+import System.FilePath
+
+import Data.EBF
+import qualified Data.Set             as S
+import qualified Data.Map             as M
+import qualified Data.ByteString.Lazy as LBS
+
+import Typeable.Internal.Defaults
+import Typeable.Internal.Misc
 
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import Typeable.T606f253533d3420da3465afae341d598 --Time
 import Typeable.T1660b01f08dc4aedbe4c0941584541cb --Kind
-import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
-import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field --Field
-import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor
-import Typeable.T3e81531118e14888be21de7921b15bb5 -- Type
 import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
-
-import Prelude hiding (maybe)
-
-import Typeable.Internal.TypesDefault
-import Typeable.Internal.InternalTypeDefs
-import qualified Data.Set as S
-import qualified Data.Map as M
-import Data.Ratio
-
-import Data.EBF
-import qualified Data.ByteString.Lazy as LBS
+import Typeable.T3e81531118e14888be21de7921b15bb5 --Type
+import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
+import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field 
+import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor
 
 main :: IO ()
-main  = mapM_ f types
-        where
-          f x = do LBS.writeFile ("types/T"++(show' $ identifier x)++".ebf") $ writeV00 x
-                   putStrLn $ "Generate "++(show' $ identifier x)++"."++(show' $ name x)++"... Done."
-
-dt :: Definition Type
-dt  = Definition 
-        { identifier       = undefined
-        , antecedent       = Nothing
-        , creationTime     = Time 3499718400
-        , modificationTime = Time 3499718400
-        , author           = Nothing
-        , maintainer       = defaultPerson
-        , name             = undefined
-        , structure        = undefined  
-        }
-
-dt' = Type { semantics = "", constructors = Nothing }
-
-defaultConstructor :: forall a. PeanoNumber a => Constructor.Constructor a
-defaultConstructor  = Constructor.Constructor {
-                        Constructor.name       = undefined
-                      , Constructor.semantics  = ""  
-                      , Constructor.fields     = []  :: [Field.Field a]
-                      }
-
-defaultField       :: (PeanoNumber a) => Field.Field a
-defaultField        = Field.Field {
-                        Field.name             = undefined 
-                      , Field.semantics        = ""       
-                      , Field.type_            = undefined -- :: Type a
-                      }
-
-defaultConstructor' :: Constructor.Constructor (Succ Zero)
-defaultConstructor'  = defaultConstructor
-defaultConstructor'' :: Constructor.Constructor (Succ (Succ Zero))
-defaultConstructor''  = defaultConstructor
-defaultConstructor''' :: Constructor.Constructor (Succ (Succ (Succ Zero)))
-defaultConstructor'''  = defaultConstructor
-
-defaultField' :: Field.Field (Succ Zero)
-defaultField'  = defaultField
-defaultField'' :: Field.Field (Succ (Succ Zero))
-defaultField''  = defaultField
-defaultField''' :: Field.Field (Succ (Succ (Succ Zero)))
-defaultField'''  = defaultField
+main  = do args <- getArgs
+           let target = if null args
+                           then "static" </> "types"
+                           else args !! 0
+           let f x    = do let path = target </> "T"++(show' $ identifier x) <.> "ebf"
+                           putStr $ "Writing " ++ path ++ " ..."
+                           LBS.writeFile path (writeV00 x)
+                           putStrLn "Done."
+           mapM_ f types
 
 types  :: [Definition Type]
 types   = [  t1

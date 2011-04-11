@@ -1,42 +1,40 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS -XTypeSynonymInstances -XFlexibleInstances #-}
 module Main where
 
-import Typeable.T346674042a7248b4a94abff0726d0c43 --UUID
-import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
-import Typeable.T3e81531118e14888be21de7921b15bb5 --Type
+import Happstack.Server 
 
-import Happstack.Server hiding (serveFile)
-import Happstack.Server.FileServe
+import System                        (getArgs)
+import System.IO.Unsafe
+import System.Directory
+import System.FilePath.Posix
+
+import Data.EBF
+import Data.UUID                     (UUID)
+import Data.Monoid
+import Data.String
+import Control.Monad
+import qualified Data.Set             as S
+import qualified Data.Map             as M
+import qualified Data.ByteString.Lazy as LBS
+
+import Language.Haskell.Exts.Syntax  (Module)
+import Language.Haskell.Exts.Pretty
+
+import Text.Parsec.String
 import Text.Blaze
 import Text.Blaze.Renderer.Utf8
-import qualified Data.ByteString.Lazy as LBS
-import Control.Monad
-import Data.Monoid
-import qualified Data.Set as S
-import qualified Data.Map as M
-import Data.String
-import Typeable.Internal.NamespaceParser
-import Text.ParserCombinators.Parsec hiding (string)
+import qualified Text.Blaze.Html5            as H
+import qualified Text.Blaze.Html5.Attributes as A
 
-import Typeable.Internal.InternalTypeDefs
 import Typeable.Internal.Classes
-import Typeable.Internal.TypesDefault
 import Typeable.Internal.Context
 import Typeable.Internal.FormatHtml
 import Typeable.Internal.FormatHaskell
-import System.IO.Unsafe
-import System (getArgs)
-import System.FilePath.Posix
-import System.Directory
+import Typeable.Internal.NamespaceParser
+import Typeable.Internal.Misc
 
-import Data.EBF
-
-import Language.Haskell.Exts.Syntax (Module)
-import Language.Haskell.Exts.Pretty
-
-import qualified Text.Blaze.Html5 as H
-import qualified Text.Blaze.Html5.Attributes as A
+import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
+import Typeable.T3e81531118e14888be21de7921b15bb5 --Type
 
 main :: IO ()
 main  = do args <- getArgs
@@ -56,20 +54,16 @@ namespace  = unsafePerformIO $ do n <- parseFromFile namespaceParser "static/def
                                     Right e -> return e
 
 handlers :: Static -> [ServerPart Response]
-handlers s = [
-              dirs "static/style.css" $ fileServe [] "static/style.css"  
-            , dir  "type"   $ nullDir >> listTypes   s
-            , dir  "type"   $ path $     serveType   s
-            , dir  "class"  $ nullDir >> listClasses s
-            , dir  "class"  $ path $     serveClass  s
-            , serveOverview s
-            ]
+handlers s = [ dirs "static/style.css" $ serveDirectory DisableBrowsing [] "static/style.css"  
+             , dir  "type"   $ nullDir >> listTypes   s
+             , dir  "type"   $ path $     serveType   s
+             , serveOverview s
+             ]
 
 serveOverview :: Static -> ServerPartT IO Response
 serveOverview s = runContext (htmlize namespace) s >>= ok . toResponse . encapsulate 
 
-listTypes   s = ok $ toResponse $ unlines $ map show' $ M.keys (typeMap s)
-listClasses s = ok $ toResponse $ unlines $ map show' $ M.keys (classMap s)
+listTypes     s = ok $ toResponse $ unlines $ map show' $ M.keys (typeMap s)
 
 serveType :: Static -> UUID -> ServerPartT IO Response
 serveType s uuid = case M.lookup uuid (typeMap s) of
@@ -84,16 +78,13 @@ serveType s uuid = case M.lookup uuid (typeMap s) of
                                                                                                   ("static"</>"exports"</>"haskell"</>"T"++(show' uuid)<.>"hs-boot") 
                                                                                               , runContext (typeModule True t) s >>= ok . toResponse 
                                                                                               ]
-                                                                            "ebf" -> (return $ writeV00 t) >>= ok . toResponseBS "text/plain" 
-                                                                            "show" -> (return $ show t) >>= ok . toResponse 
-                                                                            _         -> mempty
+                                                                            "ebf"  -> (return $ writeV00 t) >>= ok . toResponseBS "text/plain" 
+                                                                            "show" -> (return $ show t)     >>= ok . toResponse 
+                                                                            _      -> mempty
                                       , runContext (htmlize t) s >>= ok . toResponse . encapsulate
                                       ]
                    Nothing -> notFound $ toResponse ((show' uuid)++" does not exist.") 
 
-serveClass = serveType
-
------------------
 
 instance FromReqURI UUID where
   fromReqURI s = do a <- fromReqURI s :: Maybe String
@@ -102,4 +93,3 @@ instance FromReqURI UUID where
 instance ToMessage Module where
   toContentType _ = "text/plain"
   toMessage       = toMessage . prettyPrint
-

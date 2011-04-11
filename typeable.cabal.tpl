@@ -29,6 +29,7 @@ Library
  Build-Depends:   base >= 4.0,
                   largeword,
                   uuid,
+                  curl,
                   cryptohash,
                   mtl,
                   haskell98,
@@ -51,9 +52,9 @@ Library
                   Data.Typeable.Extra,
                   Typeable.Internal.FormatHtml, 
                   Typeable.Internal.Classes, 
-                  Typeable.Internal.TypesDefault, 
-                  Typeable.Internal.InternalTypeDefs, 
+                  Typeable.Internal.Defaults, 
                   Typeable.Internal.FormatHaskell, 
                   Typeable.Internal.Context, 
                   Typeable.Internal.NamespaceParser,
-                  Typeable.Internal.Graph
+                  Typeable.Internal.Graph,
+                  Typeable.Internal.Misc 

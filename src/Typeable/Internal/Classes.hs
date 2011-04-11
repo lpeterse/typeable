@@ -12,8 +12,8 @@ import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 
 import Prelude hiding (maybe)
 
-import Typeable.Internal.TypesDefault
-import Typeable.Internal.InternalTypeDefs
+import Typeable.Internal.Defaults
+import Typeable.Internal.Misc
 import qualified Data.Set as S
 import qualified Data.Map as M
 

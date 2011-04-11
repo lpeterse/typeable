@@ -3,27 +3,28 @@ module Typeable.Internal.FormatHaskell where
 
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
-import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
 import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
-import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field --Field
-import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor --Constructor
-import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type --Type
 import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
+import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field 
+import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor 
+import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type 
+import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
 
 import Data.List
 import Data.String
 import Data.Char
 import Data.UUID hiding (null)
+import Control.Monad
 
 import qualified Data.Map as M
 import qualified Data.Set as S
 
-import Language.Haskell.Exts.Syntax hiding (Context, Type, DataType)
-import qualified Language.Haskell.Exts.Syntax as Syntax
+import Language.Haskell.Exts.Syntax           hiding (Context, Type, DataType)
+import qualified Language.Haskell.Exts.Syntax as     Syntax
+
 import Typeable.Internal.Context
-import Typeable.Internal.InternalTypeDefs
+import Typeable.Internal.Misc
 import Typeable.Internal.Graph
-import Control.Monad
 
 sl = SrcLoc "" 0 0
 

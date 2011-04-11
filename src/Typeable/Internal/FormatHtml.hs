@@ -1,4 +1,4 @@
-{-# OPTIONS -XFlexibleInstances -XNoMonomorphismRestriction #-}
+{-# OPTIONS -XFlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
 module Typeable.Internal.FormatHtml where
@@ -6,41 +6,36 @@ module Typeable.Internal.FormatHtml where
 import Typeable.T9e2e1e478e094a8abe5507f8574ac91f --Succ
 import Typeable.T421496848904471ea3197f25e2a02b72 --Zero
 import Typeable.Tb0221a43509e4eddb062101bfd794bc4 --StructuredText
-import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245 as Ext --Extension 
 import Typeable.Taf20e1db8f0d414f90625b1521e41378 --Language
-import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068 as TE --TextElement
-import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as K --Kind
-import Typeable.T0174bd2264004820bfe34e211cb35a7d hiding (constraints)--DataType
+import Typeable.T0174bd2264004820bfe34e211cb35a7d --DataType
 import Typeable.T2a94a7a8d4e049759d8dd546e72293ff --Constraint
+import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 import qualified Typeable.T3819884685d34bf19b3469304e15983d as Person
 import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field
 import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor
-import qualified Typeable.Te590e9ce9cea4dfe86a413e9270dd1c2 as Method --Method
-import qualified Typeable.T4e0b8f8ea2b145228fa4ec74b559bf6a as Class --Class
-import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type --Type
-import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
+import qualified Typeable.Te590e9ce9cea4dfe86a413e9270dd1c2 as Method 
+import qualified Typeable.T4e0b8f8ea2b145228fa4ec74b559bf6a as Class  
+import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type  
+import qualified Typeable.T1660b01f08dc4aedbe4c0941584541cb as Kind
+import qualified Typeable.T9592f9fa4fae437a9e8d0917c14ff068 as TextElement
+import qualified Typeable.T2c62454c586f4bdea5e2b17e432db245 as Extension 
 
 import Text.Blaze
-import Text.Blaze.Renderer.Utf8
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Prelude
-import Numeric
-import Data.Monoid   (mconcat, mempty)
-import Data.Function
-import Data.String
 import Data.Char
+import Data.String
+import Data.Monoid      (mconcat, mempty)
+import Data.Function
 import Data.UUID hiding (null)
-import qualified Prelude              as P
 import qualified Data.List            as L
 import qualified Data.Map             as M
 import qualified Data.Set             as S
 import qualified Data.Text            as T
-import qualified Data.ByteString.Lazy as BS
 
 import Typeable.Internal.Context
-import Typeable.Internal.InternalTypeDefs 
+import Typeable.Internal.Misc 
 
 encapsulate  :: Html -> Html
 encapsulate t = H.docTypeHtml $ do 
@@ -58,40 +53,40 @@ encapsulate t = H.docTypeHtml $ do
 
 nbsp = preEscapedString "&nbsp;"
 
-kind               :: (PeanoNumber a) => Type.Type a -> K.Kind
-kind (Type.Quantification k x) = K.KindApplication k (kind x) 
-kind _                         = K.KindStar
+kind               :: (PeanoNumber a) => Type.Type a -> Kind.Kind
+kind (Type.Quantification k x) = Kind.KindApplication k (kind x) 
+kind _                         = Kind.KindStar
                               
-kind'               :: (PeanoNumber a) => Class.Class a -> K.Kind
-kind' (Class.Quantification k x) = K.KindApplication k (kind' x) 
-kind' _                          = K.KindStar
+kind'               :: (PeanoNumber a) => Class.Class a -> Kind.Kind
+kind' (Class.Quantification k x) = Kind.KindApplication k (kind' x) 
+kind' _                          = Kind.KindStar
                               
-variables          :: K.Kind -> [Html]
+variables          :: Kind.Kind -> [Html]
 variables x         = f 0 x
                       where
-                        f _ K.KindStar          = []
-                        f n (K.KindApplication k y) = ( H.span ! A.class_ "variable bound"
-                                                          ! A.title  (stringValue $ show k)
-                                                          $ string [toEnum ((fromEnum 'a') + n)]
-                                                 ):( 
-                                                   f (n+1) y 
-                                                 )
+                        f _ Kind.KindStar          = []
+                        f n (Kind.KindApplication k y) = ( H.span ! A.class_ "variable bound"
+                                                            ! A.title  (stringValue $ show k)
+                                                            $ string [toEnum ((fromEnum 'a') + n)]
+                                                   ):( 
+                                                     f (n+1) y 
+                                                   )
 
 class Htmlize a where
   htmlize :: (Monad m) => a -> (Context m Html)
 
-instance Htmlize K.Kind where
+instance Htmlize Kind.Kind where
   htmlize = htmlize' False
     where
-      htmlize' _     K.KindStar          = return "\x2605" 
+      htmlize' _     Kind.KindStar      = return "\x2605" 
       htmlize' True  x                  = htmlize' False x >>= \y-> return $ do "("
                                                                                 y
                                                                                 ")"
-      htmlize' False (K.KindApplication a b) = do a' <- htmlize' True  a
-                                                  b' <- htmlize' False b
-                                                  return $ do a'
-                                                              "\x202f\x2192\x202f"
-                                                              b'
+      htmlize' False (Kind.KindApplication a b) = do a' <- htmlize' True  a
+                                                     b' <- htmlize' False b
+                                                     return $ do a'
+                                                                 "\x202f\x2192\x202f"
+                                                                 b'
 
 instance Htmlize Zero where
   htmlize = undefined
@@ -112,7 +107,7 @@ instance Htmlize Namespace where
       cs = S.toList (nsclasses x)
       ns = M.toList (subspaces x)
 
-instance (Htmlize k, PeanoNumber k) => Htmlize (StructuredText (Ext.Extension k)) where
+instance (Htmlize k, PeanoNumber k) => Htmlize (StructuredText (Extension.Extension k)) where
   htmlize (Paragraph   m) = mapM htmlize (M.findWithDefault [] ENG m) >>= \ls-> return $ H.p  (mconcat ls) 
   htmlize (IndentList  m) = mapM htmlize m >>= \ls-> return $ H.ul (mconcat $ map H.li ls)  
   htmlize (BulletList  m) = mapM htmlize m >>= \ls-> return $ H.ul (mconcat $ map H.li ls)  
@@ -124,18 +119,18 @@ instance (Htmlize k, PeanoNumber k) => Htmlize (StructuredText (Ext.Extension k)
                                            return $ do H.dt $ text (M.findWithDefault "" ENG m)  
                                                        H.li $ t' 
                          
-instance (PeanoNumber k, Htmlize k) => Htmlize (TE.TextElement (Ext.Extension k)) where
-  htmlize (TE.Plaintext t b i m c) = return $ H.span ! A.style (stringValue s) $ text t 
+instance (PeanoNumber k, Htmlize k) => Htmlize (TextElement.TextElement (Extension.Extension k)) where
+  htmlize (TextElement.Plaintext t b i m c) = return $ H.span ! A.style (stringValue s) $ text t 
                                      where
                                        s =    (if b then "text-weight: bold;" else "")
                                            ++ (if i then "font-style: italic;" else "")
                                            ++ (if m then "font-family: monospace;" else "")
                                            ++ (if c then "text-decoration: line-trough;" else "")
-  htmlize (TE.Extension x)         = htmlize x
+  htmlize (TextElement.Extension x)         = htmlize x
 
-instance (PeanoNumber k, Htmlize k) => Htmlize (Ext.Extension k) where
-  htmlize (Ext.Type a) = htmlize a
-  htmlize _            = fail "htmlize: insufficient pattern for Extension"
+instance (PeanoNumber k, Htmlize k) => Htmlize (Extension.Extension k) where
+  htmlize (Extension.Type a) = htmlize a
+  htmlize _                  = fail "htmlize: insufficient pattern for Extension"
 
 
 instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
@@ -163,7 +158,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Method.Method k) where
 instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor.Constructor k) where
   htmlize (Constructor.Constructor n s cs) = do s'  <- htmlize s
                                                 cs' <- htmlize cs
-                                                return $ do H.tr $ do H.td ! A.class_ "constructor" ! A.rowspan (stringValue $ show (P.length cs + 1)) $ string (show' n)
+                                                return $ do H.tr $ do H.td ! A.class_ "constructor" ! A.rowspan (stringValue $ show (length cs + 1)) $ string (show' n)
                                                                       H.td ! A.class_ "annotation"  ! A.colspan "3" $ s'
                                                             cs'
 
