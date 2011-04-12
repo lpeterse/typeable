@@ -261,7 +261,7 @@ metaPart x s = do author'              <- case author x of
                       H.table $ do H.tr $ do H.td "Name"
                                              H.td ! A.class_ "type" $ string $ show' $ name x
                                    H.tr $ do H.td "UUID"
-                                             H.td $ string $ toString (identifier x)
+                                             H.td $ string $ show' (identifier x)
                                    H.tr $ do H.td "Author"
                                              H.td author'
                                    H.tr $ do H.td "Maintainer"

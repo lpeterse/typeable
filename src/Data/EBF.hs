@@ -16,6 +16,7 @@ import Data.EBF.TypeIdent
 import qualified Data.Binary     as B
 import qualified Data.Binary.Put as BP
 import qualified Data.Binary.Get as BG
+import qualified Data.Binary.IEEE754 as B754
 import qualified Data.Map        as M
 import qualified Data.Set        as S
 import Data.Text hiding (take, drop)
@@ -70,6 +71,10 @@ writeV00 x       = headerV00 `LBS.append` hash `LBS.append` content
 deriving instance (Ord a) => Ord (Tree a)
 
 instance EBF UUID where
+  get = B.get
+  put = B.put
+
+instance EBF () where
   get = B.get
   put = B.put
 
@@ -191,3 +196,10 @@ instance EBF (LargeKey Word64 Word64) where
   put x = BP.putWord64be (hiHalf x) >> BP.putWord64be (loHalf x)
   get   = BG.getWord64be >>= \h-> BG.getWord64be >>= \l-> return (fromIntegral (((fromIntegral h)*2^64+(fromIntegral l))::Integer))
 
+instance EBF Float where
+  put = B754.putFloat32be
+  get = B754.getFloat32be
+
+instance EBF Double where
+  put = B754.putFloat64be
+  get = B754.getFloat64be

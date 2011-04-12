@@ -63,6 +63,9 @@ instance TypeIdentSS Either where
 instance TypeIdentS [] where
   typeOfS _ = Node "0ba85f3f10099c75d4b696d0cf944e09" []
 
+instance TypeIdent () where
+  typeOf _ = Node "10f280df659654becb6e08122e846284" []
+
 instance TypeIdentSS (,) where
   typeOfSS _ = Node "34c13bdaac7d413ed735e64edcac7ff5" []
 
@@ -119,6 +122,12 @@ instance TypeIdent Word64 where
 
 instance TypeIdentSS LargeKey where
   typeOfSS = undefined
+
+instance TypeIdent Float where
+  typeOf _ = Node "c74c35ddb3ef689646c50be868d11bdf" []
+
+instance TypeIdent Double where
+  typeOf _ = Node "4b19d19d959322ac0ccd319a4d275bd0" []
 
 -- unspecific instances
 --------------------------------------------------------

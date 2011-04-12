@@ -1,16 +1,3 @@
-{-# OPTIONS -XEmptyDataDecls #-}
-{-# OPTIONS -XKindSignatures #-}
-{-# OPTIONS -XNoImplicitPrelude #-}
-{-# OPTIONS -XFlexibleContexts #-}
-{-# OPTIONS -XUndecidableInstances #-}
-{-# OPTIONS -XStandaloneDeriving #-}
-module Typeable.T964f0abad1bd422faaf57b6d9938db31 where
-import Prelude
-       (fromInteger, return, fail, undefined, (>>=), (>>), (==))
+module Typeable.T964f0abad1bd422faaf57b6d9938db31 (Data.Tree.Tree) where
 
-import qualified Data.Tree
-import qualified Data.EBF
-import qualified Typeable.T346674042a7248b4a94abff0726d0c43 as UUID
-
-type Tree a = Data.Tree.Tree a
-
+import Data.Tree

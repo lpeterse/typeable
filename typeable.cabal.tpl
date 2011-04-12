@@ -45,7 +45,8 @@ Library
                   blaze-html,
                   happstack-server >= 0.5.0.4, 
                   old-locale,     
-                  parsec >= 3.0.0
+                  parsec >= 3.0.0,
+                  data-binary-ieee754
  hs-source-dirs:  src
  Exposed-Modules: Data.EBF,
                   Data.EBF.TypeIdent,
