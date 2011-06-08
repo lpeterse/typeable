@@ -29,6 +29,7 @@ Library
  Build-Depends:   base >= 4.0,
                   largeword,
                   uuid,
+                  uuid-quasi,
                   curl,
                   cryptohash,
                   mtl,
@@ -44,6 +45,7 @@ Library
                   text,
                   blaze-html,
                   happstack-server >= 0.5.0.4, 
+                  happstack-state,
                   old-locale,     
                   parsec >= 3.0.0,
                   data-binary-ieee754
@@ -58,7 +60,8 @@ Library
                   Typeable.Internal.Context, 
                   Typeable.Internal.NamespaceParser,
                   Typeable.Internal.Graph,
-                  Typeable.Internal.Misc 
+                  Typeable.Internal.Misc, 
+                  Typeable.Internal.Manipulator
                   ,Typeable.T0174bd2264004820bfe34e211cb35a7d
                   ,Typeable.T0219c59f732a8ef507215fbdb4cceacd
                   ,Typeable.T0ba85f3f10099c75d4b696d0cf944e09
