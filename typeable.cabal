@@ -30,6 +30,7 @@ Library
                   largeword,
                   uuid,
                   uuid-quasi,
+                  transformers,
                   curl,
                   cryptohash,
                   mtl,

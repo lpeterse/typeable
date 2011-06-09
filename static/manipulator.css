@@ -1,0 +1,126 @@
+body {
+  background: white;
+  color: black;
+  text-align: left;
+  position: relative;
+  font-family: sans-serif;
+  font-size:13px;
+}
+
+a { text-decoration: none; font-weight: bold; }
+a[href]:link { color: rgb(196,69,29); }
+a[href]:visited { color: rgb(171,105,84); }
+a[href]:hover { text-decoration:underline; }
+
+h1 { font-size: 131%; /* 17pt */ }
+
+p {
+  padding-left: 10px;
+}
+
+table { border: none; margin: 0px; }
+
+td {
+  vertical-align: top;
+  background-color: #eeeeff;
+  padding: 5px;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
+ }
+
+td.variable.bound {
+  background-color: #ffeeee;
+}
+
+td.kind {
+  background-color: #E5EBE4;
+}
+
+td.type {
+  background-color: #FFE5CF;
+  
+}
+
+.wrapbutton { cursor: pointer; }
+.redcell { margin: 5px; }
+td.function {
+ background-color: #FFF1BA;
+ color: #A38A26;
+}
+
+.caption {
+  font-size: 120%;
+  background-color: #FFE5CF;
+  color: rgb(196,69,29);
+}
+
+.variable {
+  font-family: monospace;
+  font-weight: normal;
+  color: blue;
+}
+
+.constraints {
+  background-color: #fff1da;
+  color: #FFAAAA;
+}
+
+.variable.bound {
+  color: red;
+}
+
+.kind {
+  font-family: monospace;
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.annotation {
+  background-color: #eeeeff;
+  font-family: Vollkorn;
+  padding: 0px;
+  width: 99%;
+}
+
+.type {
+  font-family: monospace;
+  color: rgb(196,69,29);
+}
+
+.class {
+  font-family: monospace;
+  color: green;
+  font-weight: bold;
+}
+
+.fixedwidth {
+   font-family:monospace;
+}
+
+td.constructor {
+  font-family: monospace;
+  background-color: #eeffcc;
+  color: #333333;
+  font-weight: bold;
+}
+
+#meta {
+float: left;
+}
+#description {
+clear: both;
+padding-top: 5px;
+}
+#structure {
+}
+#exports {
+float: left;
+padding-left: 10px;
+}
+
+ 
+
+
+
+

@@ -62,12 +62,14 @@ namespace  = unsafePerformIO $ do n <- parseFromFile namespaceParser "static/def
                                     Right e -> return e
 
 handlers :: Static -> [ServerPart Response]
-handlers s = [ dirs "static/style.css" $ serveDirectory DisableBrowsing [] "static/style.css"  
+handlers s = [ dir "static"  $ msum [ serveDirectory DisableBrowsing [] "static"  
+                                    , notFound $ toResponse ("the requested file could not be found!" :: String)
+                                    ]
              , dir  "type"   $ nullDir >> listTypes   s
              , dir  "type"   $ path $     serveType   s
              , dir  "data"   $ do i <- look "id"
                                   if all isHexDigit i && length i == 32
-                                    then serveManipulator (fromString i)
+                                    then serveManipulator s (fromString i)
                                     else mzero
              , dir "data"    $ ok $ toResponse ("please choose a datatype!" :: String)
              , serveOverview s
