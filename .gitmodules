@@ -1,0 +1,3 @@
+[submodule "jQuery-SelectBox"]
+	path = jQuery-SelectBox
+	url = https://github.com/revsystems/jQuery-SelectBox.git

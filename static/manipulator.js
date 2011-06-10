@@ -12,3 +12,9 @@ function toggle(x)
   }
 
 }
+
+ $(document).ready(function(){
+   $("select").selectbox("attach");
+   $("select").selectbox("enable");
+ });
+

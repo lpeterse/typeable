@@ -101,13 +101,20 @@ fillWith (DataType.Variable a)      x = let f (DataType.Application a b) 0 = b
 
 visualize ::(Monad m) => DataType.DataType Zero.Zero -> UntypedTree -> Context m Html
 visualize t Undefined = do t' <- htmlize t
-                           return $ H.table 
-                                      ! A.cellpadding "0"
-                                      ! A.cellspacing "0"
-                                      $ H.tr 
-                                        $ H.td 
-                                        ! A.class_ "type"
-                                          $ toHtml $ t'
+                           return $ H.table
+                                     ! A.cellpadding "0"
+                                     ! A.cellspacing "0"
+                                     $ H.tr
+                                        $ H.td
+                                           ! A.class_ "type"
+                                           $ do H.div
+                                                 ! A.class_ "tools"
+                                                 $ H.span
+                                                    ! A.class_ "button"
+                                                    $ "⇲"
+                                                H.div
+                                                 ! A.class_ "typeName"
+                                                 $ toHtml t'
 visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                       outer (DataType.Application x y) = outer x
                                   td <- getType (outer t)
@@ -123,12 +130,26 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                    $ do H.td 
                                                                          ! A.rowspan (toValue $ length xs)
                                                                          ! A.class_ "constructor" 
-                                                                         $ do H.span 
-                                                                               ! A.class_  "button"
-                                                                               ! A.onclick "toggle($(this).parent().parent().parent().parent());"
-                                                                               $ "⇱"
-                                                                              " "
-                                                                              k
+                                                                         $ do H.div
+                                                                               ! A.class_  "tools"
+                                                                               $ do H.span 
+                                                                                     ! A.class_  "button"
+                                                                                     ! A.onclick "toggle($(this).parent().parent().parent().parent().parent());"
+                                                                                     $ "⇱"
+                                                                                    H.br
+                                                                                    H.span
+                                                                                     ! A.class_  "button"
+                                                                                     $ "ℹ"
+                                                                              H.div
+                                                                               ! A.class_ "constructorName"
+                                                                               $ do H.span k
+                                                                                     ! A.style "display: none;"
+                                                                                    H.select
+                                                                                     ! A.class_ "sbHolder"
+                                                                                     $ do H.option "True"
+                                                                                          H.option "False"
+                                                                                          H.option "Both"
+                                                                                          H.option "None"
                                                                         if null fs
                                                                           then mempty
                                                                           else head fs
@@ -138,20 +159,29 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                            H.table 
                                                              ! A.cellpadding "0"
                                                              ! A.cellspacing "0"
-                                                             ! A.style   "display: none;"
-                                                             $ H.tr 
-                                                               $ H.td 
+                                                             ! A.style  "display: none;"
+                                                             $ H.tr
+                                                                $ H.td
                                                                    ! A.class_ "type"
-                                                                   $ do H.span 
-                                                                         ! A.class_  "button"
-                                                                         ! A.onclick "toggle($(this).parent().parent().parent().parent());"
-                                                                         $ "⇲"
-                                                                        " "
-                                                                        toHtml $ t'
+                                                                   $ do H.div
+                                                                         ! A.class_ "tools"
+                                                                         $ do H.span 
+                                                                               ! A.class_  "button"
+                                                                               ! A.onclick "toggle($(this).parent().parent().parent().parent().parent());"
+                                                                               $ "⇲"
+                                                                        H.div
+                                                                         ! A.class_ "typeName"
+                                                                         $ toHtml $ t'
                                where
                                   h :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> Context m (Html, [Html])
                                   h x       = do ms <- mapM (\(al,fd)-> let tt = Field.type_ fd `fillWith` t
-                                                                        in  visualize tt al >>= \m-> (return (H.td ! A.class_ "function" $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) >> H.td m)) 
+                                                                        in  do m <- visualize tt al 
+                                                                               return $ do H.td 
+                                                                                            ! A.class_ "function" 
+                                                                                            $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) 
+                                                                                           H.td
+                                                                                            ! A.class_ "type"
+                                                                                            $ m
                                                             ) 
                                                             (zip xs $ Constructor.fields x) 
                                                  return $ ( toHtml $ show' $ Constructor.name x
@@ -180,6 +210,8 @@ template t = H.docTypeHtml $ do
                     H.script mempty ! A.src   "/static/jquery.js"
                                     ! A.type_ "text/javascript"
                     H.script mempty ! A.src   "/static/manipulator.js"
+                                    ! A.type_ "text/javascript"
+                    H.script mempty ! A.src   "/static/jquery.selectbox-0.1.2.min.js"
                                     ! A.type_ "text/javascript"
                   H.body t
 

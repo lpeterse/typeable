@@ -14,39 +14,142 @@ a[href]:hover { text-decoration:underline; }
 
 h1 { font-size: 131%; /* 17pt */ }
 
-table { border: none; margin: 0px;}
 
 
-td.type {
-  background-color: #FFE5CF;
-  padding:          5px;
-  
+
+
+div.tools {
+  float:        left;
+  position:     relative;
+  padding:      0px;
+  margin-left:  5px;
+  margin-right: 5px;
 }
 
-td.function {
- background-color: #FFF1BA;
- color: #A38A26;
- padding: 5px;
- vertical-align: top;
+div.constructorName {
+  position: relative;
+  float: left;
+  padding: 3px;
 }
 
-.type {
-  font-family: monospace;
-  color: rgb(196,69,29);
+div.typeName {
+  position: relative;
+  float: left;
+  padding: 3px;
 }
 
 .button {
   cursor: pointer;
 }
 
-td.constructor {
-  font-family: monospace;
+.constructorSelection {
   background-color: #eeffcc;
-  color: #333333;
-  font-weight: bold;
-  padding: 5px;
-  border-right: 1px solid white;
-  vertical-align: top;
+  border: none;
 }
 
+td.constructor {
+  background-color: #eeffcc;
+  color:            black;
+  vertical-align:   top;
+}
+
+td.function {
+  background-color: #FFF1BA;
+  color:            #A38A26;
+  vertical-align:   top;
+  padding:          3px;
+}
+
+td.type {
+  background-color: #FFE5CF;
+}
+
+.sbHolder{
+	background-color: #2d2d2d;
+	border: solid 1px #515151;
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	height: 30px;
+	position: relative;
+	width: 200px;
+}
+.sbSelector{
+	display: block;
+	height: 30px;
+	left: 0;
+	line-height: 30px;
+	outline: none;
+	overflow: hidden;
+	position: absolute;
+	text-indent: 10px;
+	top: 0;
+	width: 170px;
+}
+.sbSelector:link, .sbSelector:visited, .sbSelector:hover{
+	color: #EBB52D;
+	outline: none;
+	text-decoration: none;
+}
+.sbToggle{
+	background: url(../img/select-icons.png) 0 -116px no-repeat;
+	display: block;
+	height: 30px;
+	outline: none;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 30px;
+}
+.sbToggle:hover{
+	background: url(../img/select-icons.png) 0 -167px no-repeat;
+}
+.sbToggleOpen{
+	background: url(../img/select-icons.png) 0 -16px no-repeat;
+}
+.sbToggleOpen:hover{
+	background: url(../img/select-icons.png) 0 -66px no-repeat;
+}
+.sbHolderDisabled{
+	background-color: #3C3C3C;
+	border: solid 1px #515151;
+}
+.sbHolderDisabled .sbHolder{
+	
+}
+.sbHolderDisabled .sbToggle{
+	
+}
+.sbOptions{
+	background-color: #212121;
+	border: solid 1px #515151;
+	list-style: none;
+	left: -1px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 30px;
+	width: 200px;
+	z-index: 1;
+	overflow-y: auto;
+}
+.sbOptions li{
+	padding: 0 7px;
+}
+.sbOptions a{
+	border-bottom: dotted 1px #515151;
+	display: block;
+	outline: none;
+	padding: 7px 0 7px 3px;
+}
+.sbOptions a:link, .sbOptions a:visited{
+	color: #ddd;
+	text-decoration: none;
+}
+.sbOptions a:hover{
+	color: #EBB52D;
+}
+.sbOptions li.last a{
+	border-bottom: none;
+}
 
