@@ -7,7 +7,8 @@ import Happstack.Server
 import Happstack.State
 import Data.Data
 import Data.Tree
-import Data.UUID
+import Data.Char
+import Data.UUID hiding (null)
 import Data.EBF
 import Data.UUID.Quasi
 import Data.Monoid
@@ -15,8 +16,8 @@ import qualified Data.Map as M
 import Control.Monad.Identity
 import Control.Monad.Trans.Class
 import Text.Blaze
-import qualified Text.Blaze.Html5            as H
-import qualified Text.Blaze.Html5.Attributes as A
+import qualified Text.Blaze.Html4.Transitional            as H
+import qualified Text.Blaze.Html4.Transitional.Attributes as A
 
 import Typeable.Internal.Context
 import Typeable.Internal.Misc
@@ -27,6 +28,8 @@ import qualified Typeable.T0174bd2264004820bfe34e211cb35a7d as DataType
 import qualified Typeable.T421496848904471ea3197f25e2a02b72 as Zero
 import qualified Typeable.T3e81531118e14888be21de7921b15bb5 as Type
 import qualified Typeable.T37c8a341f0b34cc6bbbc9f2403f09be3 as Constructor
+import qualified Typeable.T205895c8d2df475b8d5ead5ee33d9f63 as Field
+import qualified Typeable.T9e2e1e478e094a8abe5507f8574ac91f as Succ
 
 data AppState = AppState { dates :: M.Map UUID Date
                          }
@@ -55,11 +58,22 @@ $(deriveSerialize ''UntypedTree)
 
 uuid1 = [uuid|0198ec39-0e3f-47c3-a231-6edb65c27c83|] 
 uuid2 = [uuid|9900416f-e2cf-4ffe-a05a-278d3b12651c|]
-uuid3 = [uuid|0219c59f-732a-8ef5-0721-5fbdb4cceacd|]
+uuid3 = [uuid|0219c59f-732a-8ef5-0721-5fbdb4cceacd|] -- bool
+uuid4 = [uuid|f8f49ef6-bbe8-74a4-2926-fa23d5b3bc19|] -- maybe
+uuid5 = [uuid|451f847e-1cb6-42d0-b7c5-dbdfa03f41b5|] -- Definition
+uuid6 = [uuid|3e815311-18e1-4888-be21-de7921b15bb5|] -- Type
+
+ttt   = Node
+          [uuid|d9eef038-b47d-0820-c160-ceb8b6a89943|]
+          [ Node uuid4 [Node uuid3 []]
+          , Node [uuid|af20e1db-8f0d-414f-9062-5b1521e41378|] []
+          ]
+
+uuu   = Node uuid5 [Node uuid6 []]
 
 instance Component AppState where
   type Dependencies AppState = End
-  initialValue = AppState $ M.singleton uuid1 (Date (Node uuid3 []) (Algebraic 0 [Undefined]))
+  initialValue = AppState $ M.singleton uuid1 (Date uuu (Algebraic 0 [ Undefined, Undefined, Algebraic 0 [Undefined, Undefined], Undefined, Undefined, Undefined, Undefined, Undefined]))
 
 getDate  :: UUID -> Update AppState Date
 getDate u = do as <- getState
@@ -78,9 +92,18 @@ serveManipulator s u = do d <- update $ GetDate u
                           ok $ toResponse $ template $ runIdentity $ runContext (visualize (convertType $ dateType d) (dateTree d)) s
 
 
+fillWith :: forall n. PeanoNumber n => DataType.DataType n -> DataType.DataType Zero.Zero -> DataType.DataType Zero.Zero
+fillWith (DataType.DataType u)      _ = DataType.DataType u
+fillWith (DataType.Application a b) x = DataType.Application (a `fillWith` x) (b `fillWith`x)
+fillWith (DataType.Variable a)      x = let f (DataType.Application a b) 0 = b
+                                            f (DataType.Application a b) i = f a (i-1)  
+                                        in  f x $ (length $ (domain :: [n])) - (fromEnum a) - 1
+
 visualize ::(Monad m) => DataType.DataType Zero.Zero -> UntypedTree -> Context m Html
 visualize t Undefined = do t' <- htmlize t
                            return $ H.table 
+                                      ! A.cellpadding "0"
+                                      ! A.cellspacing "0"
                                       $ H.tr 
                                         $ H.td 
                                         ! A.class_ "type"
@@ -90,33 +113,57 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                   td <- getType (outer t)
                                   t' <- htmlize t
                                   case td of
-                                    Nothing -> fail "error4534"
-                                    Just z  -> return $ do H.table
-                                                             ! A.onclick "toggle(this);"
-                                                             $ H.tr 
-                                                                 $ H.td 
-                                                                 ! A.class_ "constructor" 
-                                                                    $ f $ Definition.structure z
-                                                        
+                                    Nothing -> fail "error4359: unknown type"
+                                    Just z  -> do (k,fs) <- f (Definition.structure z)
+                                                  return $ do 
+                                                           H.table
+                                                             ! A.cellpadding "0"
+                                                             ! A.cellspacing "0"
+                                                             $ do H.tr 
+                                                                   $ do H.td 
+                                                                         ! A.rowspan (toValue $ length xs)
+                                                                         ! A.class_ "constructor" 
+                                                                         $ do H.span 
+                                                                               ! A.class_  "button"
+                                                                               ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                                               $ "⇱"
+                                                                              " "
+                                                                              k
+                                                                        if null fs
+                                                                          then mempty
+                                                                          else head fs
+                                                                  if null fs
+                                                                    then mempty
+                                                                    else mconcat $ map H.tr (tail fs)
                                                            H.table 
+                                                             ! A.cellpadding "0"
+                                                             ! A.cellspacing "0"
                                                              ! A.style   "display: none;"
-                                                             ! A.onclick "toggle(this);"
                                                              $ H.tr 
                                                                $ H.td 
                                                                    ! A.class_ "type"
-                                                                    $ toHtml $ t'
-                                                        
+                                                                   $ do H.span 
+                                                                         ! A.class_  "button"
+                                                                         ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                                         $ "⇲"
+                                                                        " "
+                                                                        toHtml $ t'
                                where
-                                  h :: (PeanoNumber a) => Constructor.Constructor a -> Html
-                                  h x       = toHtml $ show' $ Constructor.name x
-                                  g :: (PeanoNumber a) => Maybe [Constructor.Constructor a] -> Html
-                                  g Nothing = toHtml ("abstract" :: String)
-                                  g (Just ys)      = h (ys !! i) 
-                                  f :: (PeanoNumber a) => Type.Type a -> Html
+                                  h :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> Context m (Html, [Html])
+                                  h x       = do ms <- mapM (\(al,fd)-> let tt = Field.type_ fd `fillWith` t
+                                                                        in  visualize tt al >>= \m-> (return (H.td ! A.class_ "function" $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) >> H.td m)) 
+                                                            ) 
+                                                            (zip xs $ Constructor.fields x) 
+                                                 return $ ( toHtml $ show' $ Constructor.name x
+                                                          , ms 
+                                                          )
+                                  g :: (Monad m, PeanoNumber a) => Maybe [Constructor.Constructor a] -> Context m (Html, [Html])
+                                  g Nothing                   = return $ let a = toHtml ("abstract" :: String) in (a,[a])
+                                  g (Just ys)                 = h (ys !! i) 
+                                  f :: (Monad m, PeanoNumber a) => Type.Type a -> Context m (Html, [Html])
                                   f (Type.Quantification k q) = f q
                                   f x                         = g (Type.constructors x)
                                   
-
 
 convertType :: Tree UUID -> DataType.DataType Zero.Zero 
 convertType (Node u xs) = foldl DataType.Application (DataType.DataType u) (map convertType xs)

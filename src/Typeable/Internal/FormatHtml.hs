@@ -43,7 +43,7 @@ encapsulate t = H.docTypeHtml $ do
                     H.title              "typeable.org"
                     H.meta ! A.httpEquiv "Content-Type" 
                            ! A.content   "text/html; charset=utf-8"
-                    H.link ! A.href      "../static/style.css"
+                    H.link ! A.href      "/static/style.css"
                            ! A.rel       "stylesheet" 
                            ! A.type_     "text/css"
                     H.link ! A.href      "http://fonts.googleapis.com/css?family=Vollkorn" 
@@ -98,8 +98,8 @@ instance Htmlize Namespace where
   htmlize x = do ns' <- mapM (htmlize . snd) ns >>= return . zip (map fst ns)
                  ts' <- mapM humanify ts        >>= return . L.sortBy (compare `on` snd) . zip ts
                  cs' <- mapM humanify cs        >>= return . L.sortBy (compare `on` snd) . zip cs
-                 return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "class/"++(show' u)) $ H.span ! A.class_ "class" $ string n) cs'
-                                    mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "type/"++(show' u))  $ H.span ! A.class_ "type"  $ string n) ts'
+                 return $ H.ul $ do mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "/class/"++(show' u)) $ H.span ! A.class_ "class" $ string n) cs'
+                                    mconcat $ map (\(u,n)-> H.li $ H.a ! A.href (stringValue $ "/type/"++(show' u))  $ H.span ! A.class_ "type"  $ string n) ts'
                                     mconcat $ map (\(f,s)-> H.li (string (show' f) >> s)) ns' 
 
     where
@@ -136,7 +136,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Extension.Extension k) where
 instance (Htmlize k, PeanoNumber k) => Htmlize (Constraint k) where
   htmlize (Constraint i ts) = do ts' <- htmlize ts
                                  i'  <- humanify i
-                                 return $ do H.a ! A.href (stringValue $ "../class/"++(show' i)) $ H.span ! A.class_ "class" $ string i'
+                                 return $ do H.a ! A.href (stringValue $ "/class/"++(show' i)) $ H.span ! A.class_ "class" $ string i'
                                              nbsp
                                              ts'
 
@@ -165,7 +165,7 @@ instance (PeanoNumber k, Htmlize k) => Htmlize (Constructor.Constructor k) where
 instance (PeanoNumber k, Htmlize k) => Htmlize (DataType k) where
   htmlize x = htmlize' x False
     where 
-      htmlize' (DataType i) _ = humanify i >>= return . (H.a ! A.href (stringValue $ show' i)) . string
+      htmlize' (DataType i) _ = humanify i >>= return . (H.a ! A.href (toValue $ "/type/" ++ (show' i))) . string
       htmlize' (Variable v) _ = htmlize v
       htmlize' (Forall _ t)   _ = do let vs = domain :: [k] 
                                      t' <- htmlize t 
