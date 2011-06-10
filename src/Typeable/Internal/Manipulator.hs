@@ -145,9 +145,9 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                                $ do H.span k
                                                                                      ! A.style "display: none;"
                                                                                     H.select
-                                                                                     ! A.class_ "sbHolder"
+                                                                                     ! A.class_ "constructorSelect"
                                                                                      $ do H.option "True"
-                                                                                          H.option "False"
+                                                                                          H.option "Fdakjsdhaksjdhasdalse"
                                                                                           H.option "Both"
                                                                                           H.option "None"
                                                                         if null fs
@@ -204,6 +204,9 @@ template t = H.docTypeHtml $ do
                     H.title "typeable.org"
                     H.meta ! A.httpEquiv "Content-Type"
                            ! A.content "text/html; charset=utf-8"
+                    H.link ! A.href "/static/jquery.sb.css"
+                           ! A.rel "stylesheet"
+                           ! A.type_ "text/css"
                     H.link ! A.href "/static/manipulator.css"
                            ! A.rel "stylesheet"
                            ! A.type_ "text/css"
@@ -211,7 +214,7 @@ template t = H.docTypeHtml $ do
                                     ! A.type_ "text/javascript"
                     H.script mempty ! A.src   "/static/manipulator.js"
                                     ! A.type_ "text/javascript"
-                    H.script mempty ! A.src   "/static/jquery.selectbox-0.1.2.min.js"
+                    H.script mempty ! A.src   "/static/jquery.selectbox/jquery.sb.min.js"
                                     ! A.type_ "text/javascript"
                   H.body t
 
