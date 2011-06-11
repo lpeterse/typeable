@@ -73,7 +73,7 @@ uuu   = Node uuid5 [Node uuid6 []]
 
 instance Component AppState where
   type Dependencies AppState = End
-  initialValue = AppState $ M.singleton uuid1 (Date uuu (Algebraic 0 [ Undefined, Undefined, Algebraic 0 [Undefined, Undefined], Undefined, Undefined, Undefined, Undefined, Undefined]))
+  initialValue = AppState $ M.singleton uuid1 (Date uuu (Algebraic 0 [ Undefined, Undefined, Algebraic 0 [Algebraic 0 [], Undefined], Undefined, Undefined, Undefined, Undefined, Undefined]))
 
 getDate  :: UUID -> Update AppState Date
 getDate u = do as <- getState
@@ -111,7 +111,7 @@ visualize t Undefined = do t' <- htmlize t
                                                  ! A.class_ "tools"
                                                  $ H.span
                                                     ! A.class_ "button"
-                                                    $ "⇲"
+                                                    $ "►"
                                                 H.div
                                                  ! A.class_ "typeName"
                                                  $ toHtml t'
@@ -135,21 +135,14 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                                $ do H.span 
                                                                                      ! A.class_  "button"
                                                                                      ! A.onclick "toggle($(this).parent().parent().parent().parent().parent());"
-                                                                                     $ "⇱"
+                                                                                     $ "◄"
                                                                                     H.br
                                                                                     H.span
                                                                                      ! A.class_  "button"
                                                                                      $ "ℹ"
                                                                               H.div
                                                                                ! A.class_ "constructorName"
-                                                                               $ do H.span k
-                                                                                     ! A.style "display: none;"
-                                                                                    H.select
-                                                                                     ! A.class_ "constructorSelect"
-                                                                                     $ do H.option "True"
-                                                                                          H.option "Fdakjsdhaksjdhasdalse"
-                                                                                          H.option "Both"
-                                                                                          H.option "None"
+                                                                               $ k
                                                                         if null fs
                                                                           then mempty
                                                                           else head fs
@@ -168,12 +161,12 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                          $ do H.span 
                                                                                ! A.class_  "button"
                                                                                ! A.onclick "toggle($(this).parent().parent().parent().parent().parent());"
-                                                                               $ "⇲"
+                                                                               $ "►"
                                                                         H.div
                                                                          ! A.class_ "typeName"
                                                                          $ toHtml $ t'
                                where
-                                  h :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> Context m (Html, [Html])
+                                  h :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> Context m [Html]
                                   h x       = do ms <- mapM (\(al,fd)-> let tt = Field.type_ fd `fillWith` t
                                                                         in  do m <- visualize tt al 
                                                                                return $ do H.td 
@@ -184,18 +177,25 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                                             $ m
                                                             ) 
                                                             (zip xs $ Constructor.fields x) 
-                                                 return $ ( toHtml $ show' $ Constructor.name x
-                                                          , ms 
-                                                          )
+                                                 return $ ms
+                                  cn :: [(Int, Constructor.Constructor a)] -> Html
+                                  cn xs = H.select $ mconcat $ map 
+                                            (\(l,c)->  let r = toHtml $ show' $ Constructor.name c
+                                                       in  if i==l
+                                                             then H.option ! A.selected "selected" $ r
+                                                             else H.option r
+                                            )
+                                            xs
                                   g :: (Monad m, PeanoNumber a) => Maybe [Constructor.Constructor a] -> Context m (Html, [Html])
                                   g Nothing                   = return $ let a = toHtml ("abstract" :: String) in (a,[a])
-                                  g (Just ys)                 = h (ys !! i) 
+                                  g (Just ys)                 = do a <- h (ys !! i) 
+                                                                   return (cn $ zip [0..] ys, a)
                                   f :: (Monad m, PeanoNumber a) => Type.Type a -> Context m (Html, [Html])
                                   f (Type.Quantification k q) = f q
                                   f x                         = g (Type.constructors x)
                                   
 
-convertType :: Tree UUID -> DataType.DataType Zero.Zero 
+convertType            :: Tree UUID -> DataType.DataType Zero.Zero 
 convertType (Node u xs) = foldl DataType.Application (DataType.DataType u) (map convertType xs)
 
 template :: Html -> Html
@@ -216,5 +216,5 @@ template t = H.docTypeHtml $ do
                                     ! A.type_ "text/javascript"
                     H.script mempty ! A.src   "/static/jquery.selectbox/jquery.sb.min.js"
                                     ! A.type_ "text/javascript"
-                  H.body t
+                  H.body $ H.div ! A.style "border: 1px solid white;" $ t
 
