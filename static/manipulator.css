@@ -55,6 +55,7 @@ td.constructor {
   background-color: #eeffcc;
   color:            black;
   vertical-align:   top;
+  border: 1px solid #ccddaa;
 }
 
 td.function {
@@ -62,8 +63,7 @@ td.function {
   color:            #A38A26;
   vertical-align:   top;
   padding:          3px;
-  border-left: 1px solid white;
-  border-right: 1px solid white;
+  border: 1px solid #ddd19a;
 }
 
 td.type {

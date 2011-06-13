@@ -35,7 +35,7 @@ import Typeable.Internal.FormatHtml
 import Typeable.Internal.FormatHaskell
 import Typeable.Internal.NamespaceParser
 import Typeable.Internal.Misc
-import Typeable.Internal.Manipulator
+import Typeable.Internal.Manipulator hiding (path)
 
 import Typeable.T451f847e1cb642d0b7c5dbdfa03f41b5 --Definition
 import Typeable.T3e81531118e14888be21de7921b15bb5 --Type
@@ -68,7 +68,7 @@ handlers s = [ dirs "static/jquery.selectbox" $ serveDirectory EnableBrowsing []
                                     ]
              , dir  "type"   $ nullDir >> listTypes   s
              , dir  "type"   $ path $     serveType   s
-             , dir  "data"   $ do i <- look "id"
+             , dir  "data"   $ do i <- queryString $ look "id"
                                   if all isHexDigit i && length i == 32
                                     then serveManipulator s (fromString i)
                                     else mzero

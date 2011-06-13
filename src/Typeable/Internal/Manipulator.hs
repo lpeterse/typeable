@@ -3,18 +3,21 @@
 {-# OPTIONS  -XQuasiQuotes -XScopedTypeVariables #-}
 module Typeable.Internal.Manipulator where
 
-import Happstack.Server
+import Happstack.Server hiding (path)
 import Happstack.State
-import Data.Data
+import Data.Data hiding (constrIndex)
 import Data.Tree
 import Data.Char
+import Data.Maybe
 import Data.UUID hiding (null)
-import Data.EBF
 import Data.UUID.Quasi
 import Data.Monoid
-import qualified Data.Map as M
+import qualified Data.IntMap as IM
+import qualified Data.Map    as M
 import Control.Monad.Identity
 import Control.Monad.Trans.Class
+import Control.Monad.State
+import Control.Monad.Reader
 import Text.Blaze
 import qualified Text.Blaze.Html4.Transitional            as H
 import qualified Text.Blaze.Html4.Transitional.Attributes as A
@@ -41,10 +44,21 @@ data Date     = Date
                 }
                 deriving (Eq, Ord, Read, Show, Data, Typeable)
 
-data UntypedTree = Undefined
-                 | Algebraic Int [UntypedTree]
+data UntypedTree = Algebraic
+                   { constrIndex :: Maybe Int                         -- The chosen constructor, Nothing denotes undefined
+                   , fields      :: IM.IntMap (IM.IntMap UntypedTree) -- The outer map maps constructors, the inner one fields
+                   , expanded    :: Bool                              -- denotes whether the constructor is expanded
+                   }
                  deriving (Eq, Ord, Read, Show, Data, Typeable)
- 
+
+alg     :: Int -> (IM.IntMap UntypedTree) -> UntypedTree
+alg i ls = Algebraic (Just i) (IM.singleton i ls) False
+
+u       :: UntypedTree
+u        = Algebraic Nothing IM.empty False
+
+emptyTree = Algebraic Nothing IM.empty False
+
 instance Version AppState
 instance Version UUID
 instance Version Date
@@ -69,11 +83,25 @@ ttt   = Node
           , Node [uuid|af20e1db-8f0d-414f-9062-5b1521e41378|] []
           ]
 
+
+tt2   = Node
+          [uuid|0ba85f3f-1009-9c75-d4b6-96d0cf944e09|]
+          [ Node [uuid|6716d098-a587-4337-9e54-c12f249cdc0c|] []]
+
 uuu   = Node uuid5 [Node uuid6 []]
 
 instance Component AppState where
   type Dependencies AppState = End
-  initialValue = AppState $ M.singleton uuid1 (Date uuu (Algebraic 0 [ Undefined, Undefined, Algebraic 0 [Algebraic 0 [], Undefined], Undefined, Undefined, Undefined, Undefined, Undefined]))
+  initialValue = AppState $ M.fromList    [ (uuid1, (Date uuu (alg 0 $ IM.fromList [(2,alg 0 $ IM.fromList [(0,alg 0 IM.empty)
+                                                                                                           ,(1,alg 1 IM.empty)
+                                                                                                           ]
+                                                                                    )
+                                                                                   ]
+                                                              )
+                                                     )
+                                             )
+                                          , (uuid2, (Date tt2 (alg 1 $ IM.fromList [(0, alg 0 IM.empty), (1, alg 0 IM.empty)])))
+                                          ]
 
 getDate  :: UUID -> Update AppState Date
 getDate u = do as <- getState
@@ -88,9 +116,25 @@ putDate u d = do as <- getState
 $(mkMethods ''AppState ['getDate, 'putDate])
 
 serveManipulator  :: Static -> UUID -> ServerPart Response
-serveManipulator s u = do d <- update $ GetDate u 
-                          ok $ toResponse $ template $ runIdentity $ runContext (visualize (convertType $ dateType d) (dateTree d)) s
-
+serveManipulator s u = do d     <- update $ GetDate u 
+                          let st = SessionStateS
+                                    []
+                                    (dateType d) 
+                                    (dateTree d)
+                                    (dateType d)
+                                    (dateTree d)
+                          msum [ do methodM POST
+                                    decodeBody (defaultBodyPolicy "/tmp" 0 1000 1000)
+                                    action <- look "action"
+                                    case action of
+                                      "setConstructor" -> do p <- look "path"
+                                                             i <- look "index"
+                                                             let (value, state) = runIdentity $ runContext (runStateT (setConstructor (read p) (read i)) st) s
+                                                             update $ PutDate u $ d { dateTree = subTree state }
+                                                             ok $ toResponse value
+                                      _                -> fail "error8274: unknown command"
+                               , ok $ toResponse $ template $ runIdentity $ runContext ( evalStateT visualize st ) s
+                               ]
 
 fillWith :: forall n. PeanoNumber n => DataType.DataType n -> DataType.DataType Zero.Zero -> DataType.DataType Zero.Zero
 fillWith (DataType.DataType u)      _ = DataType.DataType u
@@ -99,28 +143,141 @@ fillWith (DataType.Variable a)      x = let f (DataType.Application a b) 0 = b
                                             f (DataType.Application a b) i = f a (i-1)  
                                         in  f x $ (length $ (domain :: [n])) - (fromEnum a) - 1
 
-visualize ::(Monad m) => DataType.DataType Zero.Zero -> UntypedTree -> Context m Html
-visualize t Undefined = do t' <- htmlize t
-                           return $ H.table
-                                     ! A.cellpadding "0"
-                                     ! A.cellspacing "0"
-                                     $ H.tr
-                                        $ H.td
-                                           ! A.class_ "type"
-                                           $ do H.div
-                                                 ! A.class_ "tools"
-                                                 $ H.span
-                                                    ! A.class_ "button"
-                                                    $ "►"
-                                                H.div
-                                                 ! A.class_ "typeName"
-                                                 $ toHtml t'
-visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
-                                      outer (DataType.Application x y) = outer x
-                                  td <- getType (outer t)
-                                  t' <- htmlize t
+treeTypeToListType                           :: PeanoNumber n => DataType.DataType n -> Tree UUID
+treeTypeToListType (DataType.DataType u)      = Node u []
+treeTypeToListType (DataType.Application a b) = let Node u ls = treeTypeToListType a
+                                                in  Node u $ ls ++ [treeTypeToListType b]
+
+listTypeToTreeType                           :: PeanoNumber n => Tree UUID -> DataType.DataType n
+listTypeToTreeType (Node u ls)                = foldl DataType.Application (DataType.DataType u) (map listTypeToTreeType ls) 
+
+----------------------------
+-- SessionState Monad
+
+type SessionState m a = StateT SessionStateS m a
+
+data SessionStateS    = SessionStateS
+                      { path     :: [(Int, Int)]
+                      , subType  :: Tree UUID
+                      , subTree  :: UntypedTree
+                      , rootType :: Tree UUID
+                      , rootTree :: UntypedTree
+                      }
+
+type Path = [(Int, Int)]
+
+getPath     :: (Monad m) => SessionState m [(Int, Int)]
+getPath      = get >>= (return . path)
+
+setPath     :: (Monad m) => [(Int, Int)] -> SessionState m ()
+setPath p    = modify (\x-> x { path = p })
+
+getSubType  :: (Monad m) => SessionState m (Tree UUID)
+getSubType   = gets subType
+
+getSubTree  :: Monad m => SessionState m UntypedTree
+getSubTree   = gets subTree
+
+setSubTree  :: Monad m => UntypedTree -> SessionState m ()
+setSubTree t = modify (\x-> x { subTree = t })
+
+-- gets the fields in the current branch if constructor index is not undefined
+getFields   :: Monad m => SessionState m (Maybe (IM.IntMap UntypedTree))
+getFields    = do st <- getSubTree
+                  case constrIndex st of
+                    Nothing -> return Nothing
+                    Just ci -> return $ IM.lookup ci (fields st)
+
+-- going down the tree choosing a constructor and a field
+branch      :: Monad m => (Int,Int) -> SessionState (ReaderT Static m) ()
+branch (i,j) = do Node u ls <- gets subType
+                  st        <- gets subTree
+                  rt        <- gets rootType
+                  td        <- lift $ getType u
+                  modify (\x-> x { path    = (i,j):(path x)
+                                 , subType = f rt (Definition.structure $ fromJust td) 
+                                 , subTree = IM.findWithDefault emptyTree j (IM.findWithDefault IM.empty i $ fields st)
+                                 } )
+             where
+               f                            :: PeanoNumber a => Tree UUID -> Type.Type a -> Tree UUID
+               f t (Type.Quantification _ q) = f t q
+               f t x                         = g t (Type.constructors x)  
+               g                            :: PeanoNumber a => Tree UUID -> Maybe [Constructor.Constructor a] -> Tree UUID
+               g t Nothing                   = error "error7329: can't branch an abstract type"
+               g t (Just ys)                 = if length ys < i || i < 0
+                                                 then error "error4953: invalid constructor index"
+                                                 else let fs = Constructor.fields (ys !! i) 
+                                                      in  if length fs < j || j < 0
+                                                            then error "error9231: invalid field index"
+                                                            else treeTypeToListType $ Field.type_ (fs !! j) `fillWith` (listTypeToTreeType t)
+
+-- creating a temporary context within that the given action is performed. path is rewinded, changes to the tree persist, root tree is never changed
+branchLocal    :: Monad m => (Int,Int) -> SessionState (ReaderT Static m) a -> SessionState (ReaderT Static m) a
+branchLocal i@(j,k) m = do s <- get 
+                           branch i
+                           x <- m
+                           subSubTree <- getSubTree
+                           let oldSubTree = subTree s
+                           let newSubTree = oldSubTree { fields = IM.unionWith IM.union (IM.singleton j (IM.singleton k subSubTree)) (fields oldSubTree) }
+                           modify (\x-> x { subType = (subType s), path = (path s), subTree = newSubTree })
+                           return x
+
+pathLocal         :: Monad m => Path -> SessionState (ReaderT Static m) a -> SessionState (ReaderT Static m) a
+pathLocal []     a = a
+pathLocal (x:xs) a = branchLocal x $ pathLocal xs a
+
+-- sets the context according to path, changes the constructor index and returns a visualization of the altered subtree
+setConstructor    :: Monad m => Path -> Int -> SessionState (ReaderT Static m) Html
+setConstructor p i = pathLocal (reverse p) $ do st <- getSubTree
+                                                setSubTree $ st { constrIndex = Just i }
+                                                visualize
+
+----------------------------
+-- Html generation
+
+template :: Html -> Html
+template t = H.docTypeHtml $ do
+                  H.head $ do
+                    H.title "typeable.org"
+                    H.meta ! A.httpEquiv "Content-Type"
+                           ! A.content "text/html; charset=utf-8"
+                    H.link ! A.href "/static/jquery.sb.css"
+                           ! A.rel "stylesheet"
+                           ! A.type_ "text/css"
+                    H.link ! A.href "/static/manipulator.css"
+                           ! A.rel "stylesheet"
+                           ! A.type_ "text/css"
+                    H.script mempty ! A.src   "/static/jquery.js"
+                                    ! A.type_ "text/javascript"
+                    H.script mempty ! A.src   "/static/manipulator.js"
+                                    ! A.type_ "text/javascript"
+                    H.script mempty ! A.src   "/static/jquery.selectbox/jquery.sb.min.js"
+                                    ! A.type_ "text/javascript"
+                  H.body t
+
+visualize :: Monad m => SessionState (ReaderT Static m) Html
+visualize  = do st <- getSubTree 
+                t  <- getSubType
+                t' <- lift $ htmlize (listTypeToTreeType t :: DataType.DataType Zero.Zero)
+                case constrIndex st of
+                  Nothing ->    return $ H.table
+                                          ! A.cellpadding "0"
+                                          ! A.cellspacing "0"
+                                          $ H.tr
+                                             $ H.td
+                                                ! A.class_ "type"
+                                                $ do H.div
+                                                      ! A.class_ "tools"
+                                                      $ H.span
+                                                         ! A.class_ "button"
+                                                         $ "☰"
+                                                     H.div
+                                                      ! A.class_ "typeName"
+                                                      $ toHtml t'
+                  Just i ->  do   td <- lift $ getType $ rootLabel t
+                                  p  <- getPath
                                   case td of
-                                    Nothing -> fail "error4359: unknown type"
+                                    Nothing -> error "error4359: unknown type"
                                     Just z  -> do (k,fs) <- f (Definition.structure z)
                                                   return $ do 
                                                            H.table
@@ -128,7 +285,7 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                              ! A.cellspacing "0"
                                                              $ do H.tr 
                                                                    $ do H.td 
-                                                                         ! A.rowspan (toValue $ length xs)
+                                                                         ! A.rowspan (toValue $ length fs)
                                                                          ! A.class_ "constructor" 
                                                                          $ do H.div
                                                                                ! A.class_  "tools"
@@ -139,6 +296,7 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                                     H.br
                                                                                     H.span
                                                                                      ! A.class_  "button"
+                                                                                     ! A.onclick (toValue $ "alert(\""++(show $ reverse p)++"\");")
                                                                                      $ "ℹ"
                                                                               H.div
                                                                                ! A.class_ "constructorName"
@@ -166,55 +324,45 @@ visualize t (Algebraic i xs) = do let outer (DataType.DataType x)      = x
                                                                          ! A.class_ "typeName"
                                                                          $ toHtml $ t'
                                where
-                                  h :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> Context m [Html]
-                                  h x       = do ms <- mapM (\(al,fd)-> let tt = Field.type_ fd `fillWith` t
-                                                                        in  do m <- visualize tt al 
-                                                                               return $ do H.td 
-                                                                                            ! A.class_ "function" 
-                                                                                            $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) 
-                                                                                           H.td
-                                                                                            ! A.class_ "type"
-                                                                                            $ m
+                                  h        :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> SessionState (ReaderT Static m) [Html]
+                                  h x       = do tr <- getSubTree
+                                                 ms <- mapM (\(al,fd)-> do m <- branchLocal (fromJust $ constrIndex tr,  al) $ visualize 
+                                                                           return $ do H.td 
+                                                                                        ! A.class_ "function" 
+                                                                                        $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) 
+                                                                                       H.td
+                                                                                        ! A.class_ "type"
+                                                                                        $ m
                                                             ) 
-                                                            (zip xs $ Constructor.fields x) 
-                                                 return $ ms
-                                  cn :: [(Int, Constructor.Constructor a)] -> Html
-                                  cn xs = H.select $ mconcat $ map 
-                                            (\(l,c)->  let r = toHtml $ show' $ Constructor.name c
-                                                       in  if i==l
-                                                             then H.option ! A.selected "selected" $ r
-                                                             else H.option r
-                                            )
-                                            xs
-                                  g :: (Monad m, PeanoNumber a) => Maybe [Constructor.Constructor a] -> Context m (Html, [Html])
-                                  g Nothing                   = return $ let a = toHtml ("abstract" :: String) in (a,[a])
-                                  g (Just ys)                 = do a <- h (ys !! i) 
-                                                                   return (cn $ zip [0..] ys, a)
-                                  f :: (Monad m, PeanoNumber a) => Type.Type a -> Context m (Html, [Html])
-                                  f (Type.Quantification k q) = f q
+                                                            (zip [0..] $ Constructor.fields x) 
+                                                 return ms
+                                  -- renders a selectbox for choosing a constructor. current constructor is preselected
+                                  cn :: (Monad m, PeanoNumber a) => [Constructor.Constructor a] -> SessionState (ReaderT Static m) Html
+                                  cn xs = do st <- getSubTree
+                                             p  <- getPath
+                                             return $ H.select 
+                                                       ! A.onchange (toValue $ "setConstructor($(this).parent().parent().parent().parent(), '"++(show p)++"', this.value);")
+                                                       $ mconcat $ map 
+                                                                             (\(i,c)->  let r = toHtml $ show' $ Constructor.name c
+                                                                                        in  if Just i == constrIndex st
+                                                                                              then H.option ! A.value (toValue i) ! A.selected "selected" $ r
+                                                                                              else H.option ! A.value (toValue i) $ r
+                                                                             )
+                                                                             (zip [0..] xs)
+                                  -- returns the selectbox and the fields for the preselected entry
+                                  g :: (Monad m, PeanoNumber a) => Maybe [Constructor.Constructor a] -> SessionState (ReaderT Static m) (Html, [Html])
+                                  g Nothing                   = error "error3204: abstract types not yet implemented"
+                                  g (Just cs)                 = do st <- getSubTree
+                                                                   case constrIndex st of
+                                                                     Nothing -> error "error0125: if constructor undefined one shouldn't see one"
+                                                                     Just i  -> if length cs < i || i < 0
+                                                                                  then error "error2419: constructor index out of range"
+                                                                                  else do a <- cn cs
+                                                                                          b <- h (cs !! i) 
+                                                                                          return (a,b)
+                                  f :: (Monad m, PeanoNumber a) => Type.Type a -> SessionState (ReaderT Static m) (Html, [Html])
+                                  f (Type.Quantification _ q) = f q
                                   f x                         = g (Type.constructors x)
                                   
 
-convertType            :: Tree UUID -> DataType.DataType Zero.Zero 
-convertType (Node u xs) = foldl DataType.Application (DataType.DataType u) (map convertType xs)
-
-template :: Html -> Html
-template t = H.docTypeHtml $ do
-                  H.head $ do
-                    H.title "typeable.org"
-                    H.meta ! A.httpEquiv "Content-Type"
-                           ! A.content "text/html; charset=utf-8"
-                    H.link ! A.href "/static/jquery.sb.css"
-                           ! A.rel "stylesheet"
-                           ! A.type_ "text/css"
-                    H.link ! A.href "/static/manipulator.css"
-                           ! A.rel "stylesheet"
-                           ! A.type_ "text/css"
-                    H.script mempty ! A.src   "/static/jquery.js"
-                                    ! A.type_ "text/javascript"
-                    H.script mempty ! A.src   "/static/manipulator.js"
-                                    ! A.type_ "text/javascript"
-                    H.script mempty ! A.src   "/static/jquery.selectbox/jquery.sb.min.js"
-                                    ! A.type_ "text/javascript"
-                  H.body $ H.div ! A.style "border: 1px solid white;" $ t
 

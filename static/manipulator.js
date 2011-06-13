@@ -13,6 +13,18 @@ function toggle(x)
 
 }
 
+function setConstructor(e, p, i)
+{
+  var url     = document.URL
+  var data    = { action: 'setConstructor'
+                , path:   p
+                , index:  i
+                }
+  var success = function(x){ $(e).html(x); $(e).("select").sb(); }
+
+  $.post(url,data, success);
+}
+
  $(document).ready(function(){
    $("select").sb();
  });
