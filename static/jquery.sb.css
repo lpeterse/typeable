@@ -6,15 +6,12 @@
 .selectbox .display{
   background:none;
   border: none;
-  color:#000;
   cursor:default;
   display:block;
-  font-weight:bold;
   overflow:hidden;
   outline:none;
   padding:0 24px 0 0px;
   position:relative;
-  text-decoration:none;
   overflow:hidden;
 }
 .selectbox.disabled .display{color:#999;}

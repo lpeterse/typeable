@@ -100,7 +100,7 @@ instance Component AppState where
                                                               )
                                                      )
                                              )
-                                          , (uuid2, (Date tt2 (alg 1 $ IM.fromList [(0, alg 0 IM.empty), (1, alg 0 IM.empty)])))
+                                          , (uuid2, (Date tt2 emptyTree))
                                           ]
 
 getDate  :: UUID -> Update AppState Date
@@ -192,7 +192,7 @@ getFields    = do st <- getSubTree
 branch      :: Monad m => (Int,Int) -> SessionState (ReaderT Static m) ()
 branch (i,j) = do Node u ls <- gets subType
                   st        <- gets subTree
-                  rt        <- gets rootType
+                  rt        <- gets subType
                   td        <- lift $ getType u
                   modify (\x-> x { path    = (i,j):(path x)
                                  , subType = f rt (Definition.structure $ fromJust td) 
@@ -229,7 +229,7 @@ pathLocal (x:xs) a = branchLocal x $ pathLocal xs a
 -- sets the context according to path, changes the constructor index and returns a visualization of the altered subtree
 setConstructor    :: Monad m => Path -> Int -> SessionState (ReaderT Static m) Html
 setConstructor p i = pathLocal (reverse p) $ do st <- getSubTree
-                                                setSubTree $ st { constrIndex = Just i }
+                                                setSubTree $ st { constrIndex = if i == -1 then Nothing else Just i }
                                                 visualize
 
 ----------------------------
@@ -259,110 +259,105 @@ visualize :: Monad m => SessionState (ReaderT Static m) Html
 visualize  = do st <- getSubTree 
                 t  <- getSubType
                 t' <- lift $ htmlize (listTypeToTreeType t :: DataType.DataType Zero.Zero)
-                case constrIndex st of
-                  Nothing ->    return $ H.table
-                                          ! A.cellpadding "0"
-                                          ! A.cellspacing "0"
-                                          $ H.tr
-                                             $ H.td
-                                                ! A.class_ "type"
-                                                $ do H.div
-                                                      ! A.class_ "tools"
-                                                      $ H.span
-                                                         ! A.class_ "button"
-                                                         $ "☰"
-                                                     H.div
-                                                      ! A.class_ "typeName"
-                                                      $ toHtml t'
-                  Just i ->  do   td <- lift $ getType $ rootLabel t
-                                  p  <- getPath
-                                  case td of
-                                    Nothing -> error "error4359: unknown type"
-                                    Just z  -> do (k,fs) <- f (Definition.structure z)
-                                                  return $ do 
-                                                           H.table
-                                                             ! A.cellpadding "0"
-                                                             ! A.cellspacing "0"
-                                                             $ do H.tr 
-                                                                   $ do H.td 
-                                                                         ! A.rowspan (toValue $ length fs)
-                                                                         ! A.class_ "constructor" 
-                                                                         $ do H.div
-                                                                               ! A.class_  "tools"
-                                                                               $ do H.span 
-                                                                                     ! A.class_  "button"
-                                                                                     ! A.onclick "toggle($(this).parent().parent().parent().parent().parent());"
-                                                                                     $ "◄"
-                                                                                    H.br
-                                                                                    H.span
-                                                                                     ! A.class_  "button"
-                                                                                     ! A.onclick (toValue $ "alert(\""++(show $ reverse p)++"\");")
-                                                                                     $ "ℹ"
-                                                                              H.div
-                                                                               ! A.class_ "constructorName"
-                                                                               $ k
-                                                                        if null fs
-                                                                          then mempty
-                                                                          else head fs
-                                                                  if null fs
-                                                                    then mempty
-                                                                    else mconcat $ map H.tr (tail fs)
-                                                           H.table 
-                                                             ! A.cellpadding "0"
-                                                             ! A.cellspacing "0"
-                                                             ! A.style  "display: none;"
-                                                             $ H.tr
-                                                                $ H.td
-                                                                   ! A.class_ "type"
-                                                                   $ do H.div
-                                                                         ! A.class_ "tools"
-                                                                         $ do H.span 
-                                                                               ! A.class_  "button"
-                                                                               ! A.onclick "toggle($(this).parent().parent().parent().parent().parent());"
-                                                                               $ "►"
-                                                                        H.div
-                                                                         ! A.class_ "typeName"
-                                                                         $ toHtml $ t'
-                               where
-                                  h        :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> SessionState (ReaderT Static m) [Html]
-                                  h x       = do tr <- getSubTree
-                                                 ms <- mapM (\(al,fd)-> do m <- branchLocal (fromJust $ constrIndex tr,  al) $ visualize 
-                                                                           return $ do H.td 
-                                                                                        ! A.class_ "function" 
-                                                                                        $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) 
-                                                                                       H.td
-                                                                                        ! A.class_ "type"
-                                                                                        $ m
-                                                            ) 
-                                                            (zip [0..] $ Constructor.fields x) 
-                                                 return ms
-                                  -- renders a selectbox for choosing a constructor. current constructor is preselected
-                                  cn :: (Monad m, PeanoNumber a) => [Constructor.Constructor a] -> SessionState (ReaderT Static m) Html
-                                  cn xs = do st <- getSubTree
-                                             p  <- getPath
-                                             return $ H.select 
-                                                       ! A.onchange (toValue $ "setConstructor($(this).parent().parent().parent().parent(), '"++(show p)++"', this.value);")
-                                                       $ mconcat $ map 
-                                                                             (\(i,c)->  let r = toHtml $ show' $ Constructor.name c
-                                                                                        in  if Just i == constrIndex st
-                                                                                              then H.option ! A.value (toValue i) ! A.selected "selected" $ r
-                                                                                              else H.option ! A.value (toValue i) $ r
-                                                                             )
-                                                                             (zip [0..] xs)
-                                  -- returns the selectbox and the fields for the preselected entry
-                                  g :: (Monad m, PeanoNumber a) => Maybe [Constructor.Constructor a] -> SessionState (ReaderT Static m) (Html, [Html])
-                                  g Nothing                   = error "error3204: abstract types not yet implemented"
-                                  g (Just cs)                 = do st <- getSubTree
-                                                                   case constrIndex st of
-                                                                     Nothing -> error "error0125: if constructor undefined one shouldn't see one"
-                                                                     Just i  -> if length cs < i || i < 0
-                                                                                  then error "error2419: constructor index out of range"
-                                                                                  else do a <- cn cs
-                                                                                          b <- h (cs !! i) 
-                                                                                          return (a,b)
-                                  f :: (Monad m, PeanoNumber a) => Type.Type a -> SessionState (ReaderT Static m) (Html, [Html])
-                                  f (Type.Quantification _ q) = f q
-                                  f x                         = g (Type.constructors x)
-                                  
+                let i = constrIndex st
+                td <- lift $ getType $ rootLabel t
+                p  <- getPath
+                case td of
+                  Nothing -> error "error4359: unknown type"
+                  Just z  -> do (k,fs) <- f (Definition.structure z)
+                                return $ do 
+                                         H.table
+                                           ! A.cellpadding "0"
+                                           ! A.cellspacing "0"
+                                           ! ( if i == Nothing
+                                                 then A.style "display: none;"
+                                                 else A.style mempty
+                                             )
+                                           $ do H.tr 
+                                                 $ do H.td 
+                                                       ! A.rowspan (toValue $ length fs)
+                                                       ! A.class_ (toValue $ "constructorTools" ++ (if i == Nothing then " undefined" else "" :: String)) 
+                                                       $ do H.span 
+                                                             ! A.class_  "button"
+                                                             ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                             $ "◄"
+                                                            H.span
+                                                             ! A.class_  "button"
+                                                             ! A.onclick (toValue $ "alert(\""++(show $ reverse p)++"\");")
+                                                             $ "ℹ"
+                                                      H.td
+                                                       ! A.rowspan (toValue $ length fs)
+                                                       ! A.class_ (toValue $ "constructorName" ++ (if i == Nothing then " undefined" else "" :: String)) 
+                                                       $ k
+                                                      if null fs
+                                                        then mempty
+                                                        else head fs
+                                                if null fs
+                                                  then mempty
+                                                  else mconcat $ map H.tr (tail fs)
+                                         H.table 
+                                           ! A.cellpadding "0"
+                                           ! A.cellspacing "0"
+                                           ! ( if i /= Nothing
+                                                 then A.style  "display: none;"
+                                                 else A.style mempty
+                                             )
+                                           $ H.tr
+                                              $ do H.td
+                                                    ! A.class_ "typeTools"
+                                                    $ if i == Nothing 
+                                                        then H.span
+                                                              ! A.class_  "button"
+                                                              ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                              $ "▤" 
+                                                        else H.span 
+                                                              ! A.class_  "button"
+                                                              ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                              $ "►"
+                                                   H.td
+                                                    ! A.class_ "typeName"
+                                                    $ toHtml $ t'
+                  where
+                     h        :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> SessionState (ReaderT Static m) [Html]
+                     h x       = do tr <- getSubTree
+                                    ms <- mapM (\(al,fd)-> do m <- branchLocal (fromJust $ constrIndex tr,  al) $ visualize 
+                                                              return $ do H.td 
+                                                                           ! A.class_ "function" 
+                                                                           $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) 
+                                                                          H.td
+                                                                           ! A.class_ "type"
+                                                                           $ m
+                                               ) 
+                                               (zip [0..] $ Constructor.fields x) 
+                                    return ms
+                     -- renders a selectbox for choosing a constructor. current constructor is preselected
+                     cn :: (Monad m, PeanoNumber a) => [Constructor.Constructor a] -> SessionState (ReaderT Static m) Html
+                     cn xs = do st <- getSubTree
+                                p  <- getPath
+                                return $ H.select 
+                                          ! A.onchange (toValue $ "setConstructor($(this).parent().parent().parent().parent(), '"++(show p)++"', this.value);")
+                                          $ mconcat $ ((H.option ! A.value "-1" $ "undefined"):)
+                                                    $ map 
+                                                                (\(i,c)->  let r = toHtml $ show' $ Constructor.name c
+                                                                           in  if Just i == constrIndex st
+                                                                                 then H.option ! A.value (toValue i) ! A.selected "selected" $ r
+                                                                                 else H.option ! A.value (toValue i) $ r
+                                                                )
+                                                                (zip [0..] xs)
+                     -- returns the selectbox and the fields for the preselected entry
+                     g :: (Monad m, PeanoNumber a) => Maybe [Constructor.Constructor a] -> SessionState (ReaderT Static m) (Html, [Html])
+                     g Nothing                   = return ("abstract types aren't supported yet",[])
+                     g (Just cs)                 = do st <- getSubTree
+                                                      a  <- cn cs
+                                                      case constrIndex st of
+                                                        Nothing -> return (a,[])
+                                                        Just i  -> if length cs < i || i < 0
+                                                                     then error "error2419: constructor index out of range"
+                                                                     else do b <- h (cs !! i) 
+                                                                             return (a,b)
+                     f :: (Monad m, PeanoNumber a) => Type.Type a -> SessionState (ReaderT Static m) (Html, [Html])
+                     f (Type.Quantification _ q) = f q
+                     f x                         = g (Type.constructors x)
+                     
 
 

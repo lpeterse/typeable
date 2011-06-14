@@ -18,25 +18,26 @@ h1 { font-size: 131%; /* 17pt */ }
 
 
 
-div.tools {
-  float:        left;
-  position:     relative;
+td.constructorTools {
   text-align: center;
-  padding:      1px;
-  margin-left:  5px;
-  margin-right: 3px;
+  vertical-align: top;
+  padding: 3px;
+  width: 15px;
 }
 
-div.constructorName {
-  position: relative;
-  float: left;
+td.typeTools {
+  text-align: center;
+  vertical-align: top;
   padding: 3px;
+  padding-top: 1px;
+  width: 15px;
 }
 
-div.typeName {
-  position: relative;
-  float: left;
-  padding: 3px;
+
+
+td.typeName {
+  vertical-align: top;
+  padding: 4px;
 }
 
 .button {
@@ -44,6 +45,7 @@ div.typeName {
   color: black;
   filter: alpha(opacity=20);
   opacity: 0.2;
+  display: block;
 }
 
 .constructorSelection {
@@ -51,11 +53,22 @@ div.typeName {
   border: none;
 }
 
-td.constructor {
+td.constructorName {
   background-color: #eeffcc;
   color:            black;
   vertical-align:   top;
   border: 1px solid #ccddaa;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 3px;
+}
+
+td.constructorName.undefined {
+  background-color: #FF7070 ;
+  border: 1px solid #D43131;
+  color: #D43131;
+  text-decoration: italic;
+  font-weight: normal;
 }
 
 td.function {
@@ -68,6 +81,7 @@ td.function {
 
 td.type {
   background-color: #FFE5CF;
+  vertical-align: top;
 }
 
 

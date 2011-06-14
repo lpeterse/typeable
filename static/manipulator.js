@@ -20,7 +20,7 @@ function setConstructor(e, p, i)
                 , path:   p
                 , index:  i
                 }
-  var success = function(x){ $(e).html(x); $(e).("select").sb(); }
+  var success = function(x){ $(e).html(x); $("select").sb(); }
 
   $.post(url,data, success);
 }
