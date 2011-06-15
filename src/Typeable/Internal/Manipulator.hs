@@ -253,7 +253,7 @@ template t = H.docTypeHtml $ do
                                     ! A.type_ "text/javascript"
                     H.script mempty ! A.src   "/static/jquery.selectbox/jquery.sb.min.js"
                                     ! A.type_ "text/javascript"
-                  H.body t
+                  H.body $ H.div ! A.id "treeContainer" $ t
 
 visualize :: Monad m => SessionState (ReaderT Static m) Html
 visualize  = do st <- getSubTree 
@@ -267,6 +267,10 @@ visualize  = do st <- getSubTree
                   Just z  -> do (k,fs) <- f (Definition.structure z)
                                 return $ do 
                                          H.table
+                                           ! ( if i == Nothing
+                                                 then A.class_ "contentUndefined"
+                                                 else A.class_ ""
+                                             )
                                            ! A.cellpadding "0"
                                            ! A.cellspacing "0"
                                            ! ( if i == Nothing
@@ -278,7 +282,10 @@ visualize  = do st <- getSubTree
                                                        ! A.rowspan (toValue $ length fs)
                                                        ! A.class_ (toValue $ "constructorTools" ++ (if i == Nothing then " undefined" else "" :: String)) 
                                                        $ do H.span 
-                                                             ! A.class_  "button"
+                                                             ! A.class_  (if i == Nothing
+                                                                            then "button undefined"
+                                                                            else "button"
+                                                                         )
                                                              ! A.onclick "toggle($(this).parent().parent().parent().parent());"
                                                              $ "◄"
                                                             H.span
@@ -287,7 +294,10 @@ visualize  = do st <- getSubTree
                                                              $ "ℹ"
                                                       H.td
                                                        ! A.rowspan (toValue $ length fs)
-                                                       ! A.class_ (toValue $ "constructorName" ++ (if i == Nothing then " undefined" else "" :: String)) 
+                                                       ! A.class_ (if i == Nothing
+                                                                     then "constructorName undefined"
+                                                                     else "constructorName"
+                                                                  )
                                                        $ k
                                                       if null fs
                                                         then mempty
@@ -307,9 +317,9 @@ visualize  = do st <- getSubTree
                                                     ! A.class_ "typeTools"
                                                     $ if i == Nothing 
                                                         then H.span
-                                                              ! A.class_  "button"
+                                                              ! A.class_  "button undefined"
                                                               ! A.onclick "toggle($(this).parent().parent().parent().parent());"
-                                                              $ "▤" 
+                                                              $ "►"
                                                         else H.span 
                                                               ! A.class_  "button"
                                                               ! A.onclick "toggle($(this).parent().parent().parent().parent());"
@@ -335,7 +345,7 @@ visualize  = do st <- getSubTree
                      cn xs = do st <- getSubTree
                                 p  <- getPath
                                 return $ H.select 
-                                          ! A.onchange (toValue $ "setConstructor($(this).parent().parent().parent().parent(), '"++(show p)++"', this.value);")
+                                          ! A.onchange (toValue $ "setConstructor($(this).parent().parent().parent().parent().parent(), '"++(show p)++"', this.value);")
                                           $ mconcat $ ((H.option ! A.value "-1" $ "undefined"):)
                                                     $ map 
                                                                 (\(i,c)->  let r = toHtml $ show' $ Constructor.name c

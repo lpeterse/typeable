@@ -22,15 +22,14 @@ td.constructorTools {
   text-align: center;
   vertical-align: top;
   padding: 3px;
-  width: 15px;
+  min-width: 15px;
 }
 
 td.typeTools {
   text-align: center;
   vertical-align: top;
   padding: 3px;
-  padding-top: 1px;
-  width: 15px;
+  min-width: 15px;
 }
 
 
@@ -43,9 +42,21 @@ td.typeName {
 .button {
   cursor: pointer;
   color: black;
-  filter: alpha(opacity=20);
   opacity: 0.2;
   display: block;
+}
+
+.first
+{
+  background-color: #FF7070;
+  color: #D43131;
+  border-bottom: 1px solid red;
+}
+
+.button.undefined
+{
+  color:   red;
+  opacity: 1.0;
 }
 
 .constructorSelection {
@@ -65,10 +76,17 @@ td.constructorName {
 
 td.constructorName.undefined {
   background-color: #FF7070 ;
-  border: 1px solid #D43131;
+  border: 1px solid red;
   color: #D43131;
-  text-decoration: italic;
+  padding-left: 25px;
   font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+}
+
+td.constructorName.undefinedHint
+{
+  border-left: 1px solid red;
 }
 
 td.function {

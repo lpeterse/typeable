@@ -43,7 +43,7 @@
 .selectbox.items.above{}
 .selectbox.items li{display:block;margin:0;padding:0;/*white-space:nowrap; maybe necessary if using fixedWidth: false */}
 .selectbox.items li.first{margin-top:0;}
-.selectbox.items li>.item{color:#000;cursor:default;display:block;padding:4px 6px;text-decoration:none;}
+.selectbox.items li>.item{;cursor:default;display:block;padding:4px 6px;text-decoration:none;}
 .selectbox.items li>.item>.text{display:inline-block;*display:inline;zoom:1;}
 .selectbox.items li.selected>.item{border-bottom:1px dotted #999;border-top:1px dotted #999;}
 .selectbox.items li.disabled>.item{color:#999;}
