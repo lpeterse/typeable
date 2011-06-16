@@ -1,16 +1,8 @@
-function toggle(x)
+function setExpansion(x,p,b)
 {
-  if(x.css('display') == 'none')
-  {
-    x.css('display', '');
-    x.siblings().css('display', 'none');
-  }
-  else
-  {
-    x.css('display', 'none');
-    x.siblings().css('display', '');
-  }
-
+  x.parent().children('.contentTable').css('display', b?'':'none');
+  x.parent().children('.typeTable').css('display',    b?'none':'');
+  $.post(document.URL, { action: 'setExpansion', path: p, expanded: b?'True':'False' });
 }
 
 function setConstructor(e, p, i)

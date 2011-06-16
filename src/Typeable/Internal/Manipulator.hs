@@ -132,6 +132,11 @@ serveManipulator s u = do d     <- update $ GetDate u
                                                              let (value, state) = runIdentity $ runContext (runStateT (setConstructor (read p) (read i)) st) s
                                                              update $ PutDate u $ d { dateTree = subTree state }
                                                              ok $ toResponse value
+                                      "setExpansion"   -> do p <- look "path"
+                                                             e <- look "expanded"
+                                                             let (value, state) = runIdentity $ runContext (runStateT (setExpansion   (read p) (read e)) st) s
+                                                             update $ PutDate u $ d { dateTree = subTree state }
+                                                             ok $ toResponse value
                                       _                -> fail "error8274: unknown command"
                                , ok $ toResponse $ template $ runIdentity $ runContext ( evalStateT visualize st ) s
                                ]
@@ -223,14 +228,21 @@ branchLocal i@(j,k) m = do s <- get
                            return x
 
 pathLocal         :: Monad m => Path -> SessionState (ReaderT Static m) a -> SessionState (ReaderT Static m) a
-pathLocal []     a = a
-pathLocal (x:xs) a = branchLocal x $ pathLocal xs a
+pathLocal xs a     = pl $ reverse xs
+                   where
+                     pl []     = a
+                     pl (y:ys) = branchLocal y $ pl ys
 
 -- sets the context according to path, changes the constructor index and returns a visualization of the altered subtree
 setConstructor    :: Monad m => Path -> Int -> SessionState (ReaderT Static m) Html
-setConstructor p i = pathLocal (reverse p) $ do st <- getSubTree
-                                                setSubTree $ st { constrIndex = if i == -1 then Nothing else Just i }
-                                                visualize
+setConstructor p i = pathLocal p $ do st <- getSubTree
+                                      setSubTree $ st { constrIndex = if i == -1 then Nothing else Just i }
+                                      visualize
+
+setExpansion      :: Monad m => Path -> Bool -> SessionState (ReaderT Static m) Html
+setExpansion   p e = pathLocal p $ do st <- getSubTree 
+                                      setSubTree $ st { expanded = e }
+                                      return mempty
 
 ----------------------------
 -- Html generation
@@ -259,23 +271,23 @@ visualize :: Monad m => SessionState (ReaderT Static m) Html
 visualize  = do st <- getSubTree 
                 t  <- getSubType
                 t' <- lift $ htmlize (listTypeToTreeType t :: DataType.DataType Zero.Zero)
-                let i = constrIndex st
+                let i   = constrIndex st
                 td <- lift $ getType $ rootLabel t
                 p  <- getPath
                 case td of
                   Nothing -> error "error4359: unknown type"
                   Just z  -> do (k,fs) <- f (Definition.structure z)
                                 return $ do 
-                                         H.table
+                                         H.table -- contains constructor and fields
                                            ! ( if i == Nothing
-                                                 then A.class_ "contentUndefined"
-                                                 else A.class_ ""
+                                                 then A.class_ "contentTable contentUndefined"
+                                                 else A.class_ "contentTable"
                                              )
                                            ! A.cellpadding "0"
                                            ! A.cellspacing "0"
-                                           ! ( if i == Nothing
-                                                 then A.style "display: none;"
-                                                 else A.style mempty
+                                           ! ( if i == Nothing  || (not $ expanded st)
+                                                 then A.style "display: none;" -- don't show
+                                                 else A.style mempty           -- show
                                              )
                                            $ do H.tr 
                                                  $ do H.td 
@@ -286,11 +298,11 @@ visualize  = do st <- getSubTree
                                                                             then "button undefined"
                                                                             else "button"
                                                                          )
-                                                             ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                             ! A.onclick (toValue $ "setExpansion($(this).parent().parent().parent().parent(), '"++(show p)++"', false);")
                                                              $ "◄"
                                                             H.span
                                                              ! A.class_  "button"
-                                                             ! A.onclick (toValue $ "alert(\""++(show $ reverse p)++"\");")
+                                                             ! A.onclick (toValue $ "alert(\""++(show $ expanded st)++"\");")
                                                              $ "ℹ"
                                                       H.td
                                                        ! A.rowspan (toValue $ length fs)
@@ -305,12 +317,13 @@ visualize  = do st <- getSubTree
                                                 if null fs
                                                   then mempty
                                                   else mconcat $ map H.tr (tail fs)
-                                         H.table 
+                                         H.table  -- contains type and expansion button 
                                            ! A.cellpadding "0"
                                            ! A.cellspacing "0"
-                                           ! ( if i /= Nothing
-                                                 then A.style  "display: none;"
-                                                 else A.style mempty
+                                           ! A.class_      "typeTable"
+                                           ! ( if i == Nothing || (not $ expanded st)
+                                                 then A.style  mempty             -- show
+                                                 else A.style "display: none;"    -- don't show
                                              )
                                            $ H.tr
                                               $ do H.td
@@ -318,11 +331,11 @@ visualize  = do st <- getSubTree
                                                     $ if i == Nothing 
                                                         then H.span
                                                               ! A.class_  "button undefined"
-                                                              ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                              ! A.onclick (toValue $ "setExpansion($(this).parent().parent().parent().parent(), '"++(show p)++"', true);")
                                                               $ "►"
                                                         else H.span 
                                                               ! A.class_  "button"
-                                                              ! A.onclick "toggle($(this).parent().parent().parent().parent());"
+                                                              ! A.onclick (toValue $ "setExpansion($(this).parent().parent().parent().parent(), '"++(show p)++"', true);")
                                                               $ "►"
                                                    H.td
                                                     ! A.class_ "typeName"
