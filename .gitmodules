@@ -1,3 +1,6 @@
 [submodule "jQuery-SelectBox"]
 	path = jQuery-SelectBox
 	url = https://github.com/revsystems/jQuery-SelectBox.git
+[submodule "static/jquery.form"]
+	path = static/jquery.form
+	url = https://github.com/malsup/form.git
