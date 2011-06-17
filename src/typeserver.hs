@@ -62,8 +62,7 @@ namespace  = unsafePerformIO $ do n <- parseFromFile namespaceParser "static/def
                                     Right e -> return e
 
 handlers :: Static -> [ServerPart Response]
-handlers s = [ dirs "static/jquery.selectbox" $ serveDirectory EnableBrowsing [] "jQuery-SelectBox"
-             , dir  "static" $ msum [ serveDirectory DisableBrowsing [] "static"  
+handlers s = [ dir  "static" $ msum [ serveDirectory DisableBrowsing [] "static"  
                                     , notFound $ toResponse ("the requested file could not be found!" :: String)
                                     ]
              , dir  "type"   $ nullDir >> listTypes   s

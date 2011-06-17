@@ -275,6 +275,8 @@ template t = H.docTypeHtml $ do
                                     ! A.type_ "text/javascript"
                     H.script mempty ! A.src   "/static/jquery.selectbox/jquery.sb.min.js"
                                     ! A.type_ "text/javascript"
+                    H.script mempty ! A.src   "/static/jquery.form/jquery.form.js"
+                                    ! A.type_ "text/javascript"
                   H.body $ H.div ! A.id "treeContainer" $ t
 
 visualize :: Monad m => SessionState (ReaderT Static m) Html
