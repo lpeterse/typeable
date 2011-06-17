@@ -9,6 +9,7 @@ import Data.Data hiding (constrIndex)
 import Data.Tree
 import Data.Char
 import Data.Maybe
+import qualified Data.ByteString as BS
 import Data.UUID hiding (null)
 import Data.UUID.Quasi
 import Data.Monoid
@@ -44,31 +45,38 @@ data Date     = Date
                 }
                 deriving (Eq, Ord, Read, Show, Data, Typeable)
 
-data UntypedTree = Algebraic
-                   { constrIndex :: Maybe Int                         -- The chosen constructor, Nothing denotes undefined
-                   , fields      :: IM.IntMap (IM.IntMap UntypedTree) -- The outer map maps constructors, the inner one fields
-                   , expanded    :: Bool                              -- denotes whether the constructor is expanded
+data UntypedTree = UntypedTree
+                   { element     :: UntypedElement    
+                   , expanded    :: Bool                              -- denotes whether the field is expanded
                    }
                  deriving (Eq, Ord, Read, Show, Data, Typeable)
 
+data UntypedElement = Abstract   { binary      :: Maybe BS.ByteString }
+                    | Algebraic  { constrIndex :: Maybe Int 
+                                 , fields      :: IM.IntMap (IM.IntMap UntypedTree)
+                                 }
+                 deriving (Eq, Ord, Read, Show, Data, Typeable)
+
 alg     :: Int -> (IM.IntMap UntypedTree) -> UntypedTree
-alg i ls = Algebraic (Just i) (IM.singleton i ls) False
+alg i ls = UntypedTree (Algebraic (Just i) (IM.singleton i ls)) False
 
-u       :: UntypedTree
-u        = Algebraic Nothing IM.empty False
+--u       :: UntypedTree
+--u        = Algebraic Nothing IM.empty False
 
-emptyTree = Algebraic Nothing IM.empty False
+emptyTree = UntypedTree (Algebraic Nothing IM.empty) False
 
 instance Version AppState
 instance Version UUID
 instance Version Date
 instance Version UntypedTree
+instance Version UntypedElement
 instance (Version a) => Version (Tree a)
 $(deriveSerialize ''AppState)
 $(deriveSerialize ''Date)
 $(deriveSerialize ''UUID)
 $(deriveSerialize ''Tree)
 $(deriveSerialize ''UntypedTree)
+$(deriveSerialize ''UntypedElement)
 
 uuid1 = [uuid|0198ec39-0e3f-47c3-a231-6edb65c27c83|] 
 uuid2 = [uuid|9900416f-e2cf-4ffe-a05a-278d3b12651c|]
@@ -162,7 +170,7 @@ listTypeToTreeType (Node u ls)                = foldl DataType.Application (Data
 type SessionState m a = StateT SessionStateS m a
 
 data SessionStateS    = SessionStateS
-                      { path     :: [(Int, Int)]
+                      { path     :: Path
                       , subType  :: Tree UUID
                       , subTree  :: UntypedTree
                       , rootType :: Tree UUID
@@ -171,10 +179,10 @@ data SessionStateS    = SessionStateS
 
 type Path = [(Int, Int)]
 
-getPath     :: (Monad m) => SessionState m [(Int, Int)]
+getPath     :: (Monad m) => SessionState m Path
 getPath      = get >>= (return . path)
 
-setPath     :: (Monad m) => [(Int, Int)] -> SessionState m ()
+setPath     :: (Monad m) => Path -> SessionState m ()
 setPath p    = modify (\x-> x { path = p })
 
 getSubType  :: (Monad m) => SessionState m (Tree UUID)
@@ -189,9 +197,9 @@ setSubTree t = modify (\x-> x { subTree = t })
 -- gets the fields in the current branch if constructor index is not undefined
 getFields   :: Monad m => SessionState m (Maybe (IM.IntMap UntypedTree))
 getFields    = do st <- getSubTree
-                  case constrIndex st of
+                  case (constrIndex . element) st of
                     Nothing -> return Nothing
-                    Just ci -> return $ IM.lookup ci (fields st)
+                    Just ci -> return $ IM.lookup ci (fields $ element st)
 
 -- going down the tree choosing a constructor and a field
 branch      :: Monad m => (Int,Int) -> SessionState (ReaderT Static m) ()
@@ -201,7 +209,7 @@ branch (i,j) = do Node u ls <- gets subType
                   td        <- lift $ getType u
                   modify (\x-> x { path    = (i,j):(path x)
                                  , subType = f rt (Definition.structure $ fromJust td) 
-                                 , subTree = IM.findWithDefault emptyTree j (IM.findWithDefault IM.empty i $ fields st)
+                                 , subTree = IM.findWithDefault emptyTree j (IM.findWithDefault IM.empty i $ fields $ element st)
                                  } )
              where
                f                            :: PeanoNumber a => Tree UUID -> Type.Type a -> Tree UUID
@@ -222,8 +230,8 @@ branchLocal i@(j,k) m = do s <- get
                            branch i
                            x <- m
                            subSubTree <- getSubTree
-                           let oldSubTree = subTree s
-                           let newSubTree = oldSubTree { fields = IM.unionWith IM.union (IM.singleton j (IM.singleton k subSubTree)) (fields oldSubTree) }
+                           let oldSubTree = element $ subTree s
+                           let newSubTree = (subTree s) { element = oldSubTree { fields = IM.unionWith IM.union (IM.singleton j (IM.singleton k subSubTree)) (fields oldSubTree) }}
                            modify (\x-> x { subType = (subType s), path = (path s), subTree = newSubTree })
                            return x
 
@@ -236,8 +244,10 @@ pathLocal xs a     = pl $ reverse xs
 -- sets the context according to path, changes the constructor index and returns a visualization of the altered subtree
 setConstructor    :: Monad m => Path -> Int -> SessionState (ReaderT Static m) Html
 setConstructor p i = pathLocal p $ do st <- getSubTree
-                                      setSubTree $ st { constrIndex = if i == -1 then Nothing else Just i }
-                                      visualize
+                                      case element st of
+                                        Abstract _     -> fail "error8453: can't set the constructor for an abstract type"
+                                        Algebraic _ fs -> do setSubTree $ st { element = Algebraic (if i == -1 then Nothing else Just i) fs }
+                                                             visualize
 
 setExpansion      :: Monad m => Path -> Bool -> SessionState (ReaderT Static m) Html
 setExpansion   p e = pathLocal p $ do st <- getSubTree 
@@ -271,7 +281,7 @@ visualize :: Monad m => SessionState (ReaderT Static m) Html
 visualize  = do st <- getSubTree 
                 t  <- getSubType
                 t' <- lift $ htmlize (listTypeToTreeType t :: DataType.DataType Zero.Zero)
-                let i   = constrIndex st
+                let i   = constrIndex  (element st)
                 td <- lift $ getType $ rootLabel t
                 p  <- getPath
                 case td of
@@ -343,7 +353,7 @@ visualize  = do st <- getSubTree
                   where
                      h        :: (Monad m, PeanoNumber a) => Constructor.Constructor a -> SessionState (ReaderT Static m) [Html]
                      h x       = do tr <- getSubTree
-                                    ms <- mapM (\(al,fd)-> do m <- branchLocal (fromJust $ constrIndex tr,  al) $ visualize 
+                                    ms <- mapM (\(al,fd)-> do m <- branchLocal (fromJust $ constrIndex $ element tr,  al) $ visualize 
                                                               return $ do H.td 
                                                                            ! A.class_ "function" 
                                                                            $ (toHtml $ (\(z:zs)->(toLower z):zs) $ show' $ Field.name fd) 
@@ -362,7 +372,7 @@ visualize  = do st <- getSubTree
                                           $ mconcat $ ((H.option ! A.value "-1" $ "undefined"):)
                                                     $ map 
                                                                 (\(i,c)->  let r = toHtml $ show' $ Constructor.name c
-                                                                           in  if Just i == constrIndex st
+                                                                           in  if Just i == constrIndex (element st)
                                                                                  then H.option ! A.value (toValue i) ! A.selected "selected" $ r
                                                                                  else H.option ! A.value (toValue i) $ r
                                                                 )
@@ -372,7 +382,7 @@ visualize  = do st <- getSubTree
                      g Nothing                   = return ("abstract types aren't supported yet",[])
                      g (Just cs)                 = do st <- getSubTree
                                                       a  <- cn cs
-                                                      case constrIndex st of
+                                                      case constrIndex (element st) of
                                                         Nothing -> return (a,[])
                                                         Just i  -> if length cs < i || i < 0
                                                                      then error "error2419: constructor index out of range"
